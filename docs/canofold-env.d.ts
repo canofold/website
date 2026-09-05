@@ -1,7 +1,7 @@
 /**
  * Minimal declarations for trusted project-local TSX components.
  *
- * Docfuse intentionally does not publish or emulate a UI component module.
+ * Canofold intentionally does not publish or emulate a UI component module.
  * Projects that need full React types should install React in the authored project.
  */
 

@@ -1,17 +1,17 @@
-import { externalLinks, kroki, linkCard, math, mermaid, pagefind, plantUml } from '@docfuse/plugins'
-import { defineConfig } from 'docfuse'
+import { externalLinks, kroki, linkCard, math, mermaid, pagefind, plantUml } from '@canofold/plugins'
+import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  title: 'Docfuse',
+  title: 'Canofold',
   description: '静态优先、低侵入、可扩展的知识文档平台',
-  siteUrl: 'https://docfuse.dev',
-  github: 'https://github.com/jiangxinlei/docfuse',
-  editUrl: 'https://github.com/jiangxinlei/docfuse/edit/main/site/docs',
-  requiredVersion: '^0.1.0',
+  siteUrl: 'https://canofold.dev',
+  github: 'https://github.com/canofold/canofold',
+  editUrl: 'https://github.com/canofold/canofold/edit/main/site/docs',
+  requiredVersion: '^0.2.0',
   theme: {
-    logo: '/logo-light.svg',
-    logoDark: '/logo-dark.svg',
-    favicon: '/favicon.svg',
+    logo: '/logo-light.webp',
+    logoDark: '/logo-dark.webp',
+    favicon: '/favicon.webp',
     darkMode: true
   },
   search: {
@@ -26,8 +26,8 @@ export default defineConfig({
       mermaid(),
       plantUml({ server: 'https://www.plantuml.com/plantuml/svg' }),
       kroki(),
-      externalLinks({ internalHosts: ['docfuse.dev'] }),
-      linkCard({ internalHosts: ['docfuse.dev'] })
+      externalLinks({ internalHosts: ['canofold.dev'] }),
+      linkCard({ internalHosts: ['canofold.dev'] })
     ]
   },
   navigation: {
