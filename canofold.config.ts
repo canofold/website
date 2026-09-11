@@ -6,8 +6,8 @@ export default defineConfig({
   description: '静态优先、低侵入、可扩展的知识文档平台',
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
-  editUrl: 'https://github.com/canofold/canofold/edit/main/site/docs',
-  requiredVersion: '^0.2.0',
+  editUrl: 'https://github.com/canofold/website/edit/main/docs',
+  requiredVersion: '^0.2.1',
   theme: {
     logo: '/logo-light.webp',
     logoDark: '/logo-dark.webp',
