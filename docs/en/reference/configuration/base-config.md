@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.2.0'
+  requiredVersion: '^0.3.0'
 })
 ```
 
@@ -37,7 +37,7 @@ export default defineConfig({
 | `requiredVersion` | unset | Semver range that the running CLI must satisfy |
 | `docsDir` | `docs` | Content directory for a single-version site; cannot be combined with `versions` |
 | `outputDir` | `.canofold/dist` | Static site output directory |
-| `styles` | `[]` | Project CSS files loaded after the default stylesheet |
+| `styles` | `[]` | Site-wide project CSS loaded after the default stylesheet; demo CSS should be imported by components |
 | `layout.header` | `true` | Render brand, top navigation, search entry, and locale/version controls |
 
 Keep `siteUrl` as the origin and express a deployment subdirectory with `basePath`. Omit unresolved `editUrl` and `github` values. Disabling `layout.header` leaves the content sidebar, page outline, and search shortcut available.
@@ -56,12 +56,21 @@ Keep `siteUrl` as the origin and express a deployment subdirectory with `basePat
 
 The standalone `<Markdown>` component defaults to `html: 'strip'`, unlike the Canofold site default. See [Markdown](/en/markdown/) for integration and [Official plugins](/en/guide/site/plugins/) for plugin setup.
 
+## Component demos
+
+| Field | Default | Purpose |
+|---|---|---|
+| `demos.engine` | unset | Component demo engine; Vite projects use `vite()` |
+| `demos.setup` | unset | Optional shared React wrapper for providers, theming, or internationalization |
+
+The demo engine is a replaceable Canofold capability and does not replace the project's build tool. `@canofold/vite` reads the existing `vite.config` and mounts Vite middleware and HMR on the same Canofold development server. See [Component demos](/en/guide/writing/component-demos/) for the complete workflow.
+
 ## Theme and search
 
 | Field | Default | Purpose |
 |---|---|---|
-| `theme.logo` / `logoDark` | unset | Light and dark brand images; `logoDark` requires `logo` and `darkMode: true` |
-| `theme.favicon` | built-in icon | Site favicon |
+| `theme.logo` / `logoDark` | Canofold light/dark logo | Brand images; a custom `logoDark` requires `logo` and `darkMode: true` |
+| `theme.favicon` | Canofold favicon | Site favicon |
 | `theme.accentColor` | `canofold` | Preset name or valid CSS color |
 | `theme.baseColor` | `paper` | `paper`, `neutral`, `slate`, `zinc`, or `stone` |
 | `theme.darkMode` | `false` | Generate the dark theme and its switch |

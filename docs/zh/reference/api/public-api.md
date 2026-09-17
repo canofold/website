@@ -14,7 +14,7 @@ Canofold 有意保持较小的公共面。请只使用文档明确说明的 Pack
 
 ## Package 契约
 
-Canofold 发布三个包。`canofold` 根入口公开 `canofoldVersion`、`defineConfig`、`CANOFOLD_EXTENSION_API_VERSION`、`defineExtension`、`defineSearchProvider` 以及文档化的配置、搜索和扩展类型。`@canofold/markdown` 只支持 package export map 中声明的 React、客户端增强、服务端渲染、分析、主题和 CSS 入口。`@canofold/plugins` 通过聚合根入口和按能力子路径公开官方 Markdown 插件与搜索 Provider 工厂；浏览器和 CSS 子路径由生成站点按需加载。
+Canofold 发布四个包。`canofold` 根入口公开 `canofoldVersion`、`defineConfig`、`CANOFOLD_EXTENSION_API_VERSION`、`defineExtension`、`defineSearchProvider` 以及文档化的配置、搜索和扩展类型。`@canofold/markdown` 只支持 package export map 中声明的 React、客户端增强、服务端渲染、分析、主题和 CSS 入口。`@canofold/vite` 的根入口公开 `vite()` Demo 引擎及其配置类型，复用项目已有的 Vite 配置。`@canofold/plugins` 通过聚合根入口和按能力子路径公开官方 Markdown 插件与搜索 Provider 工厂；浏览器和 CSS 子路径由生成站点按需加载。
 
 AI Manifest 与扩展描述符带有独立版本；消费者遇到不支持的版本应明确拒绝，不能猜测兼容。
 

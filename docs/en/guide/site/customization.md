@@ -12,7 +12,7 @@ Start with theme configuration. Load project CSS only when the configuration doe
 
 ## Logo and base appearance
 
-Put images in `docs/public/` and reference them with site-absolute paths:
+Canofold uses its official light/dark logos and favicon by default. Only put images in `docs/public/` and reference them with site-absolute paths when replacing them with your own brand:
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'

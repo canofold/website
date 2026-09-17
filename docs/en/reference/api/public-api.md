@@ -14,7 +14,7 @@ The [Markdown syntax reference](/en/markdown/syntax/) defines the authoring cont
 
 ## Package contracts
 
-Canofold publishes three packages. `canofold` exports `canofoldVersion`, `defineConfig`, `CANOFOLD_EXTENSION_API_VERSION`, `defineExtension`, `defineSearchProvider`, and the documented configuration, search, and extension types from its root. `@canofold/markdown` supports only the subpaths declared in its package export map: React, client enhancement, server rendering, analysis, theme, and CSS layers. `@canofold/plugins` exposes official Markdown plugin and search-provider factories through its aggregate root and focused subpaths; generated sites load its browser and CSS subpaths on demand.
+Canofold publishes four packages. `canofold` exports `canofoldVersion`, `defineConfig`, `CANOFOLD_EXTENSION_API_VERSION`, `defineExtension`, `defineSearchProvider`, and the documented configuration, search, and extension types from its root. `@canofold/markdown` supports only the subpaths declared in its package export map: React, client enhancement, server rendering, analysis, theme, and CSS layers. The `@canofold/vite` root exports the `vite()` Demo Engine and its option types while reusing the project's Vite configuration. `@canofold/plugins` exposes official Markdown plugin and search-provider factories through its aggregate root and focused subpaths; generated sites load its browser and CSS subpaths on demand.
 
 Generated AI Manifests and extension descriptors carry explicit versions. Reject versions your consumer does not understand.
 

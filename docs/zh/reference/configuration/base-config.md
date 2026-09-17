@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.2.0'
+  requiredVersion: '^0.3.0'
 })
 ```
 
@@ -37,7 +37,7 @@ export default defineConfig({
 | `requiredVersion` | 未设置 | 当前 CLI 必须满足的 semver 范围 |
 | `docsDir` | `docs` | 单版本内容目录；不能与 `versions` 同时配置 |
 | `outputDir` | `.canofold/dist` | 静态站点输出目录 |
-| `styles` | `[]` | 在默认样式之后加载的项目 CSS 文件 |
+| `styles` | `[]` | 在默认样式之后加载的站点级项目 CSS；组件 Demo 的 CSS 应由组件入口导入 |
 | `layout.header` | `true` | 是否渲染品牌、顶部导航、搜索入口和语言/版本控件 |
 
 `siteUrl` 只写 origin，子目录由 `basePath` 表达。`editUrl` 和 `github` 未确定时直接省略。关闭 `layout.header` 不会移除正文侧栏、页内导航或搜索快捷键。
@@ -56,12 +56,21 @@ export default defineConfig({
 
 独立使用 `<Markdown>` 时，HTML 默认值是 `strip`，与 Canofold 站点配置的 `sanitize` 不同。接入方法见 [Markdown](/markdown/)，插件配置见[官方插件](/guide/site/plugins/)。
 
+## 组件示例
+
+| 字段 | 默认值 | 说明 |
+|---|---|---|
+| `demos.engine` | 未设置 | 组件 Demo 引擎；Vite 项目使用 `vite()` |
+| `demos.setup` | 未设置 | 可选的共享 React 包装组件，用于 Provider、主题或国际化上下文 |
+
+Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具。`@canofold/vite` 会读取已有 `vite.config`，并把 Vite 中间件和 HMR 接到 Canofold 的同一个开发服务器。完整用法见[组件示例](/guide/writing/component-demos/)。
+
 ## 主题与搜索
 
 | 字段 | 默认值 | 说明 |
 |---|---|---|
-| `theme.logo` / `logoDark` | 未设置 | 亮色和暗色品牌图片；`logoDark` 需要同时设置 `logo` 和 `darkMode: true` |
-| `theme.favicon` | 内置图标 | 站点 favicon |
+| `theme.logo` / `logoDark` | Canofold 明暗 Logo | 亮色和暗色品牌图片；自定义 `logoDark` 需要同时设置 `logo` 和 `darkMode: true` |
+| `theme.favicon` | Canofold favicon | 站点 favicon |
 | `theme.accentColor` | `canofold` | 预设名或合法 CSS 颜色 |
 | `theme.baseColor` | `paper` | `paper`、`neutral`、`slate`、`zinc` 或 `stone` |
 | `theme.darkMode` | `false` | 生成暗色主题和切换控件 |
