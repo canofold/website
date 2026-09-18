@@ -28,8 +28,10 @@ Never place secrets in Markdown, MDX, browser configuration fields, or `docs/pub
 
 Canofold does not provide SSO/RBAC. A hosting identity layer must protect HTML, Markdown sources, search, AI files, assets, and redirects together.
 
+`seo.robots: 'disallow'` only asks compliant crawlers not to crawl. It cannot prevent access, downloads, or index leakage and does not replace login, gateway policy, or private object-storage permissions.
+
 ## HTML and external runtimes
 
 Sanitization removes scripts, event attributes, and unsafe URLs from Markdown HTML; it is not a JavaScript sandbox. MDX remains executable trusted code.
 
-`mermaid()` executes the plugin's pinned bundled runtime and does not request a remote module. An explicit `mermaid({ moduleUrl })` override executes that module in the reader's browser; treat it as a remote-code supply-chain dependency and allow its origin in CSP only when needed. PlantUML and embedded media likewise require explicit service trust and domain allowlists.
+`mermaid()` executes the plugin's pinned bundled runtime and does not request a remote module. An explicit `mermaid({ moduleUrl })` override executes that module in the reader's browser; treat it as a remote-code supply-chain dependency and allow its origin in CSP only when needed. `kroki()` and `plantUml({ server })` send diagram source to the configured service. Build warnings make that behavior visible, but the endpoints still require explicit trust and domain allowlists.

@@ -84,6 +84,8 @@ flowchart LR
 
 `canofold check` loads the config and uses plugin declarations to validate directives and code fences; it does not render complete pages. `canofold build` and `canofold dev` execute plugin transforms. Removing a plugin stops its syntax from being transformed, and fences not claimed by another plugin remain subject to the unknown-language policy.
 
+Kroki sends diagram source to its configured service. PlantUML does so only when `server` is configured. Canofold emits one explicit warning when a document actually activates either external renderer. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint. The warning does not replace network, CSP, or data-governance review.
+
 ## Run and verify
 
 ```bash

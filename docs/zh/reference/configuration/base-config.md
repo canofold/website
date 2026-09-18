@@ -39,6 +39,7 @@ export default defineConfig({
 | `outputDir` | `.canofold/dist` | 静态站点输出目录 |
 | `styles` | `[]` | 在默认样式之后加载的站点级项目 CSS；组件 Demo 的 CSS 应由组件入口导入 |
 | `layout.header` | `true` | 是否渲染品牌、顶部导航、搜索入口和语言/版本控件 |
+| `seo.robots` | `allow` | `robots.txt` 使用 `Allow: /` 或 `Disallow: /`；这只是抓取提示，不是访问控制 |
 
 `siteUrl` 只写 origin，子目录由 `basePath` 表达。`editUrl` 和 `github` 未确定时直接省略。关闭 `layout.header` 不会移除正文侧栏、页内导航或搜索快捷键。
 
@@ -49,12 +50,15 @@ export default defineConfig({
 | `markdown.html` | `sanitize` | 普通 Markdown 的 Raw HTML 策略：`trusted`、`sanitize` 或 `strip`；MDX 仍是可执行的可信代码 |
 | `markdown.code.themes` | 内置亮色/暗色主题 | 替换 Shiki 主题名 |
 | `markdown.code.fallbackLanguage` | `text` | 未声明语言时的围栏标签 |
+| `markdown.code.overflow` | `wrap` | 长行默认自动换行；设为 `scroll` 后保持单行并允许横向滚动 |
 | `markdown.code.unknownLanguage` | `warn` | 遇到未知围栏语言时使用 `warn`、`error` 或 `plain-text` |
 | `markdown.features` | 各项启用 | 分别关闭 Callout、Tabs、Code Group、Steps、Terminal、文档块、表格或代码块 |
 | `markdown.labels` | 按 locale 使用内置文案 | 覆盖 Markdown 交互的可访问性文案 |
 | `markdown.plugins` | `[]` | 受信任的构建期 Markdown 插件，按数组顺序执行 |
 
 独立使用 `<Markdown>` 时，HTML 默认值是 `strip`，与 Canofold 站点配置的 `sanitize` 不同。接入方法见 [Markdown](/markdown/)，插件配置见[官方插件](/guide/site/plugins/)。
+
+单个代码围栏可用独立的 `wrap` 或 `scroll` 元数据覆盖站点默认值，例如 ```` ```ts scroll ````。它可以与 `title="file.ts"`、行高亮和 diff 标记同时使用。
 
 ## 组件示例
 
