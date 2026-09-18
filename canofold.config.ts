@@ -7,7 +7,7 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.2.1',
+  requiredVersion: '^0.3.0',
   theme: {
     logo: '/logo-light.webp',
     logoDark: '/logo-dark.webp',

@@ -12,7 +12,7 @@ order: 36
 
 ## Logo 与基础外观
 
-把图片放入 `docs/public/`，再使用站点绝对路径：
+未配置时，Canofold 使用内置的正式明暗 Logo 和 favicon。只有需要替换为自己的品牌时，才把图片放入 `docs/public/` 并使用站点绝对路径：
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'

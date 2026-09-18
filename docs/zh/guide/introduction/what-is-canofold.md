@@ -38,15 +38,16 @@ Canofold 是一个静态优先、低侵入、可扩展的知识文档平台。�
 
 具体写法见 [Markdown SDK](/markdown/)，建站流程见[快速开始](/guide/introduction/getting-started/)，配置字段见[参考](/reference/)。
 
-## 三个包怎样选择
+## 四个包怎样选择
 
 | 包 | 职责 |
 |---|---|
 | `canofold` | 构建完整文档站点 |
 | `@canofold/markdown` | 在现有 React、SSR 或静态生成项目中渲染 Markdown 和 MDX |
+| `@canofold/vite` | 在 Vite 组件项目中运行实时示例、HMR 与生产 Demo 构建 |
 | `@canofold/plugins` | 提供数学、图表、链接处理、阅读时长和 Pagefind 插件 |
 
-构建站点只需安装 `canofold`。另外两个包用于单独渲染内容或按需加入插件。
+普通文档站只需安装 `canofold`。其余包分别用于独立渲染 Markdown、接入 Vite 组件示例或按需加入插件。
 
 ## 适用范围
 
