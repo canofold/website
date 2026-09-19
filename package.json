@@ -23,8 +23,8 @@
     "test:ci": "pnpm test && pnpm test:e2e"
   },
   "dependencies": {
-    "@canofold/plugins": "^0.3.0",
-    "canofold": "^0.3.0",
+    "@canofold/plugins": "^0.3.1",
+    "canofold": "^0.3.1",
     "mermaid": "^11.17.2",
     "pagefind": "^1.5.2"
   },
