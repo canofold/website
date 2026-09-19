@@ -15,7 +15,7 @@
     "jsx": "react-jsx",
     "ignoreDeprecations": "6.0",
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node", "react", "react-dom"]
   },
-  "include": ["canofold.config.ts"]
+  "include": ["canofold.config.ts", "docs/examples/**/*.ts", "docs/examples/**/*.tsx"]
 }

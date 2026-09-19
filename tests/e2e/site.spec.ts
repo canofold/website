@@ -188,6 +188,39 @@ test('Playground 实时预览不闪空白并保持双向滚动同步', async ({ 
   expectNoRuntimeErrors()
 })
 
+test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', async ({ page }) => {
+  const expectNoRuntimeErrors = captureRuntimeErrors(page)
+  await page.goto('/guide/writing/component-demos/')
+
+  const demos = page.locator('[data-cf-component="demo"]')
+  await expect(demos).toHaveCount(2)
+
+  const inlineDemo = demos.nth(0)
+  await expect(inlineDemo.getByText('Stable channel')).toBeVisible()
+  await inlineDemo.getByRole('button', { name: 'Preview' }).click()
+  await expect(inlineDemo.getByText('Preview channel')).toBeVisible()
+  await expect(inlineDemo.getByRole('button', { name: 'Preview' })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  )
+
+  const source = inlineDemo.locator('[data-cf-demo-source]')
+  const sourceToggle = inlineDemo.locator('[data-cf-demo-source-toggle]')
+  await expect(source).toBeHidden()
+  await expect(sourceToggle).toHaveAttribute('aria-label', '查看代码')
+  await sourceToggle.click()
+  await expect(sourceToggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(sourceToggle).toHaveAttribute('aria-label', '收起代码')
+  await expect(source).toBeVisible()
+  await expect(source).toContainText("from './ReleaseChannel'")
+
+  const isolatedDemo = demos.nth(1)
+  const frame = isolatedDemo.locator('iframe.cf-demo-frame')
+  await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin')
+  await expect(isolatedDemo.frameLocator('iframe').getByRole('button', { name: 'Stable' })).toBeVisible()
+  expectNoRuntimeErrors()
+})
+
 test.describe('移动端 Playground', () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
