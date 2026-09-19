@@ -1,6 +1,6 @@
 import { gzipSync } from 'node:zlib'
 import { access, readFile, stat } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { dirname, join, relative, resolve, sep } from 'node:path'
 import { filesUnder } from './lib/files.mjs'
 
 const root = resolve(import.meta.dirname, '..')
@@ -8,7 +8,6 @@ const outputRoot = join(root, '.canofold/dist')
 const budgets = {
   'assets/canofold.css': 24 * 1024,
   'assets/canofold-search.js': 4 * 1024,
-  'assets/canofold-markdown/index.js': 5 * 1024,
   'assets/canofold-plugins/kroki.js': 3 * 1024,
   'assets/canofold-plugins/mermaid.js': 6 * 1024,
   'assets/canofold-plugins/plantuml.js': 3 * 1024,
@@ -17,6 +16,10 @@ const budgets = {
   'pagefind/pagefind.js': 16 * 1024,
   'pagefind/pagefind-worker.js': 20 * 1024
 }
+const entryBudgets = {
+  'assets/canofold-demos/markdown.js': 8 * 1024,
+  'assets/canofold-demos/index.js': 80 * 1024
+}
 const optionalPluginBudgets = new Set(
   Object.keys(budgets).filter((relativePath) => relativePath.startsWith('assets/canofold-plugins/'))
 )
@@ -24,6 +27,32 @@ const pagefindTotalBudget = 4 * 1024 * 1024
 const pluginRuntimeBudget = 4 * 1024 * 1024
 const failures = []
 const rows = []
+
+function outputRelativePath(path) {
+  return relative(outputRoot, path).split(sep).join('/')
+}
+
+async function staticJavaScriptFiles(entryPath) {
+  const visited = new Set()
+
+  async function visit(path) {
+    const absolutePath = resolve(outputRoot, path)
+    const relativePath = outputRelativePath(absolutePath)
+    if (relativePath === '..' || relativePath.startsWith('../')) {
+      throw new Error(`Static entry import escapes the generated site: ${path}`)
+    }
+    if (visited.has(relativePath)) return
+    visited.add(relativePath)
+    const source = await readFile(absolutePath, 'utf8')
+    const importPattern = /\b(?:from|import)\s*["'](\.[^"']+)["']/g
+    for (const match of source.matchAll(importPattern)) {
+      await visit(outputRelativePath(resolve(dirname(absolutePath), match[1])))
+    }
+  }
+
+  await visit(entryPath)
+  return [...visited]
+}
 
 for (const [relativePath, budget] of Object.entries(budgets)) {
   let source
@@ -36,6 +65,17 @@ for (const [relativePath, budget] of Object.entries(budgets)) {
   const gzipBytes = gzipSync(source).byteLength
   rows.push({ file: relativePath, rawBytes: source.byteLength, gzipBytes, budget })
   if (gzipBytes > budget) failures.push(`${relativePath}: ${gzipBytes} gzip bytes exceeds ${budget}`)
+}
+
+for (const [entryPath, budget] of Object.entries(entryBudgets)) {
+  const files = await staticJavaScriptFiles(entryPath)
+  const sources = await Promise.all(files.map((path) => readFile(join(outputRoot, path))))
+  const rawBytes = sources.reduce((total, source) => total + source.byteLength, 0)
+  const gzipBytes = sources.reduce((total, source) => total + gzipSync(source).byteLength, 0)
+  rows.push({ file: `${entryPath} (static graph)`, rawBytes, gzipBytes, budget })
+  if (gzipBytes > budget) {
+    failures.push(`${entryPath} static graph: ${gzipBytes} gzip bytes exceeds ${budget}`)
+  }
 }
 
 const pagefindRoot = join(outputRoot, 'pagefind')

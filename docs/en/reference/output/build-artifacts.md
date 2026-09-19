@@ -44,7 +44,8 @@ Every built page has static HTML and adjacent Markdown source. Native DOM owns b
 | Page `index.html` | Always | Static page containing the complete rendered body |
 | Page `index.md` | Always | Markdown or MDX source used by the build after source extensions run |
 | `assets/canofold.css` | Always | Site shell, semantic tokens, and configured styles |
-| `assets/canofold-markdown/*` | A page needs browser behavior | Native enhancer and lazy rich interactions |
+| `assets/canofold-markdown/*` | A page needs browser behavior and no Demo engine is configured | Built-in native enhancer and lazy rich interactions |
+| `assets/canofold-demos/*` | A Demo engine is configured | Shared Vite graph for the native enhancer, component Demos, their chunks, and imported CSS |
 | `assets/fonts/*` | The math plugin is enabled and at least one page contains math | Complete KaTeX WOFF2 font set |
 | `search/*` | The default compact provider is enabled | Version- and locale-scoped single-file indexes |
 | `pagefind/*` | `pagefind()` is configured | Chunked locale/version-aware index |

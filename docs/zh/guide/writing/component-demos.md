@@ -55,6 +55,14 @@ export default function BasicButtonDemo() {
 
 iframe 模式运行的是仓库内可信代码。它会限制嵌入预览的导航、表单提交和弹窗等浏览器能力，但不是运行第三方不可信代码的安全边界。“在新窗口打开”会打开独立预览页，不继承 iframe 限制。
 
+### 本页实际运行的 Demo
+
+下面两张卡片由 Website 仓库中的同一个 React Demo 文件生成。第一张直接挂载在页面中，第二张使用 iframe 隔离；预览与展开后的源码始终来自同一个文件。
+
+::demo[内联交互]{src="/docs/examples/release-channel/basic.tsx" description="切换发布通道，验证 React 状态、组件 CSS 与页面内预览。"}
+
+::demo[iframe 隔离]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="在隔离文档中运行同一个 Demo，验证 iframe 加载与自适应高度。"}
+
 ### Demo 语法
 
 | 部分 | 是否必填 | 说明 |
@@ -68,7 +76,7 @@ iframe 模式运行的是仓库内可信代码。它会限制嵌入预览的导�
 
 ## 包入口与源码解析
 
-Canofold 不要求额外的组件 alias 或 library entry。`@canofold/vite` 直接复用项目现有的 Vite 解析规则。Demo 若使用 `@acme/ui` 这类公共包名，项目本身需要把它解析到开发源码：多包项目通常沿用 workspace；已有 TypeScript paths 的项目可在 Vite 8 中启用 `resolve.tsconfigPaths`；单包组件库若以自己的包名引用自己、正式 `exports` 又指向 `dist`，则应使用 Vite alias 指向源码。alias 负责开发期源码解析，`build.lib.entry` 负责组件库产物构建，两者职责不同，都不属于 Canofold 配置；可以让它们共用同一个入口路径常量，避免重复维护。
+Canofold 不要求文档专用的 alias 或 library entry。`@canofold/vite` 直接复用项目现有的 Vite 解析规则。对于 `package.json` 有包名、Vite 只有一个 `build.lib.entry`、并且没有显式声明同名 alias 的标准单包组件库，0.3.3 会自动把这个包名精确解析到该源码入口，因此入口路径只需声明一次。多入口组件库和多包 workspace 不做推断，继续使用项目已有的 workspace、exports、TypeScript paths 或 Vite alias；Canofold 不覆盖项目主动配置的同名 alias。
 
 `vite()` 默认从 Canofold 项目根目录发现 `vite.config`。只有 Vite 根目录不同或需要指定配置文件时，才使用 `vite({ root: './packages/ui' })`、`vite({ configFile: './vite.docs.config.ts' })`；传入 `configFile: false` 可关闭配置发现。
 

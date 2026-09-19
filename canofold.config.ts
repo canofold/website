@@ -1,4 +1,5 @@
 import { externalLinks, kroki, linkCard, math, mermaid, pagefind, plantUml } from '@canofold/plugins'
+import { vite } from '@canofold/vite'
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
@@ -7,7 +8,10 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.3.1',
+  requiredVersion: '^0.3.3',
+  demos: {
+    engine: vite()
+  },
   theme: {
     logo: '/logo-light.webp',
     logoDark: '/logo-dark.webp',
