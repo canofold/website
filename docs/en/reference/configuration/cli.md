@@ -14,7 +14,7 @@ This page uses bare `canofold` to show command signatures. Project scripts can u
 canofold --help
 ```
 
-Canofold 0.2 provides seven commands. `dev`, `check`, `build`, `clean`, `preview`, and `deploy` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
+Canofold currently provides seven commands. `dev`, `check`, `build`, `clean`, `preview`, and `deploy` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
 
 | Command | Purpose | Default output |
 |---|---|---|

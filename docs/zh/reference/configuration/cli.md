@@ -14,7 +14,7 @@ order: 53
 canofold --help
 ```
 
-Canofold 0.2 提供七个命令。`dev`、`check`、`build`、`clean`、`preview` 和 `deploy` 从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
+当前 Canofold 提供七个命令。`dev`、`check`、`build`、`clean`、`preview` 和 `deploy` 从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
 
 | 命令 | 用途 | 默认输出 |
 |---|---|---|

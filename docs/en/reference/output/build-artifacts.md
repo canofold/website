@@ -59,3 +59,5 @@ The built-in compact provider writes `search/`; the optional Pagefind plugin wri
 `siteUrl`; search indexes, redirects, the remaining compatibility AI files, and `llms*.txt` follow
 their corresponding configuration. `ai/manifest.json` and bounded content shards are always
 generated for included AI pages.
+
+`robots.txt` writes `Allow: /` by default. With `seo: { robots: 'disallow' }`, it writes `Disallow: /` and omits the Sitemap declaration. This file only expresses crawler preference; private sites still need hosting-level protection for every artifact.

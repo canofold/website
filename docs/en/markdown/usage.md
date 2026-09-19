@@ -69,7 +69,8 @@ Use `options` to configure HTML, code themes, and content features:
     html: 'sanitize',
     code: {
       themes: { light: 'github-light', dark: 'github-dark' },
-      fallbackLanguage: 'text'
+      fallbackLanguage: 'text',
+      overflow: 'wrap'
     },
     features: { tables: false, terminals: false }
   }}
@@ -77,6 +78,14 @@ Use `options` to configure HTML, code themes, and content features:
 ```
 
 `html` accepts `trusted`, `sanitize`, or `strip`. MDX executes JSX and should only render trusted content.
+
+`overflow` accepts `wrap` (the default) or `scroll`. An individual fence can override the global option with `scroll` or `wrap` metadata:
+
+````markdown
+```ts scroll title="wide-example.ts"
+const longLine = createVeryLongConfigurationValue()
+```
+````
 
 ## Math
 

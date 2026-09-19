@@ -28,8 +28,10 @@ Canofold 在构建期执行仓库配置、扩展、MDX 和本地 TSX。构建必
 
 Canofold 不提供 SSO/RBAC。身份层必须保护整个静态站点，包括 Markdown 原文、搜索、AI 文件、资源和重定向页面。
 
+`seo.robots: 'disallow'` 只能请求遵守规范的爬虫不要抓取，不能阻止访问、下载或索引泄漏。它不能替代登录、网关策略或私有对象存储权限。
+
 ## HTML 与链接
 
 `sanitize` 会删除脚本、事件属性和危险 URL，但不是 JavaScript 沙箱。外部链接、iframe、PlantUML 服务和 Mermaid 模块仍应通过 CSP、域名白名单和托管策略约束。
 
-`mermaid()` 默认执行插件内置的固定版本运行时，不发起远程模块请求。`mermaid({ moduleUrl })` 可显式覆盖为自托管模块或 CDN；此时必须把该地址视为远程代码供应链，并只在 CSP 中放行确实需要的来源。`plantUml({ server })` 同样应只指向可信且受控的服务。
+`mermaid()` 默认执行插件内置的固定版本运行时，不发起远程模块请求。`mermaid({ moduleUrl })` 可显式覆盖为自托管模块或 CDN；此时必须把该地址视为远程代码供应链，并只在 CSP 中放行确实需要的来源。`kroki()` 和 `plantUml({ server })` 会把图示源码发送到配置的服务；构建提示用于暴露这项行为，但服务仍应只指向可信且受控的地址。

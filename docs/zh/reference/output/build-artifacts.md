@@ -56,3 +56,5 @@ order: 71
 | 其他 `ai/*` / `llms*.txt` | 对应 AI 开关启用 | AI 与 RAG 消费 |
 
 标题、段落和普通列表不依赖客户端 JavaScript。复制、Tabs、Details 和文件树等基础行为使用原生 DOM；可排序表格、图片预览和画廊按需加载 React，图表客户端由对应插件按页加载。未配置 math 插件或没有数学内容的站点不输出 KaTeX CSS 或字体。
+
+`robots.txt` 默认写入 `Allow: /`，配置 `seo: { robots: 'disallow' }` 后改写为 `Disallow: /` 且不声明 Sitemap。该文件只表达爬虫偏好；私有站点仍必须在托管层保护所有产物。

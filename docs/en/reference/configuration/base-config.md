@@ -39,6 +39,7 @@ export default defineConfig({
 | `outputDir` | `.canofold/dist` | Static site output directory |
 | `styles` | `[]` | Site-wide project CSS loaded after the default stylesheet; demo CSS should be imported by components |
 | `layout.header` | `true` | Render brand, top navigation, search entry, and locale/version controls |
+| `seo.robots` | `allow` | Write `Allow: /` or `Disallow: /` to `robots.txt`; this is a crawler hint, not access control |
 
 Keep `siteUrl` as the origin and express a deployment subdirectory with `basePath`. Omit unresolved `editUrl` and `github` values. Disabling `layout.header` leaves the content sidebar, page outline, and search shortcut available.
 
@@ -49,12 +50,15 @@ Keep `siteUrl` as the origin and express a deployment subdirectory with `basePat
 | `markdown.html` | `sanitize` | Raw HTML policy: `trusted`, `sanitize`, or `strip`; MDX remains trusted executable code |
 | `markdown.code.themes` | built-in light/dark themes | Replace the Shiki theme names |
 | `markdown.code.fallbackLanguage` | `text` | Fence label used when no language is declared |
+| `markdown.code.overflow` | `wrap` | Wrap long lines by default; `scroll` preserves each line and enables horizontal scrolling |
 | `markdown.code.unknownLanguage` | `warn` | Handle an unknown fence language with `warn`, `error`, or `plain-text` |
 | `markdown.features` | all enabled | Disable callouts, tabs, code groups, steps, terminals, document blocks, tables, or code blocks independently |
 | `markdown.labels` | built-in by locale | Override accessible labels for Markdown interactions |
 | `markdown.plugins` | `[]` | Trusted build-time Markdown plugins, applied in array order |
 
 The standalone `<Markdown>` component defaults to `html: 'strip'`, unlike the Canofold site default. See [Markdown](/en/markdown/) for integration and [Official plugins](/en/guide/site/plugins/) for plugin setup.
+
+One fence can override the site default with the standalone `wrap` or `scroll` metadata token, for example ```` ```ts scroll ````. It composes with `title="file.ts"`, line highlights, and diff annotations.
 
 ## Component demos
 

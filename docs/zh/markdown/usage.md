@@ -69,7 +69,8 @@ export function Article({ source }: { source: string }) {
     html: 'sanitize',
     code: {
       themes: { light: 'github-light', dark: 'github-dark' },
-      fallbackLanguage: 'text'
+      fallbackLanguage: 'text',
+      overflow: 'wrap'
     },
     features: { tables: false, terminals: false }
   }}
@@ -77,6 +78,14 @@ export function Article({ source }: { source: string }) {
 ```
 
 `html` 支持 `trusted`、`sanitize` 和 `strip`。MDX 会执行 JSX，只应渲染可信内容。
+
+`overflow` 使用 `wrap`（默认）或 `scroll`。单个代码围栏可以用 `scroll` / `wrap` 元数据覆盖全局选项：
+
+````markdown
+```ts scroll title="wide-example.ts"
+const longLine = createVeryLongConfigurationValue()
+```
+````
 
 ## 数学公式
 
