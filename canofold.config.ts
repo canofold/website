@@ -8,7 +8,7 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.3.3',
+  requiredVersion: '^0.3.5',
   demos: {
     engine: vite()
   },

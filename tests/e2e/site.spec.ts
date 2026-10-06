@@ -221,6 +221,41 @@ test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', asyn
   expectNoRuntimeErrors()
 })
 
+test('长代码块行号在三位数时保留独立槽位', async ({ page }) => {
+  await page.goto('/markdown/playground/')
+  const source = page.locator('[data-canofold-playground-source]')
+  const preview = page.locator('[data-canofold-playground-preview]')
+  const lines = Array.from({ length: 120 }, (_, index) => `const line${index + 1} = ${index + 1}`)
+  await source.fill(['```ts', ...lines, '```'].join('\n'))
+
+  const renderedLines = preview.locator('.cf-code .line')
+  await expect(renderedLines).toHaveCount(120)
+  const gutter = await renderedLines.last().evaluate((line) => {
+    const before = getComputedStyle(line, '::before')
+    return { width: Number.parseFloat(before.width), padding: Number.parseFloat(getComputedStyle(line).paddingLeft) }
+  })
+  expect(gutter.width).toBeGreaterThan(30)
+  expect(gutter.padding).toBeGreaterThan(gutter.width)
+})
+
+test('图片放大后可点击空白区域或按 Escape 关闭', async ({ page }) => {
+  await page.goto('/markdown/playground/')
+  const trigger = page.locator('[data-canofold-playground-preview]').getByRole('button', { name: '放大图片' }).first()
+  const dialog = page.getByRole('dialog', { name: '放大图片' })
+
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByRole('img', { name: '桌面上的文档工作区' })).toBeVisible()
+  await dialog.locator('.cf-image-lightbox-backdrop').click({ position: { x: 10, y: 10 } })
+  await expect(dialog).toHaveCount(0)
+
+  await trigger.click()
+  await expect(dialog).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+})
+
 test.describe('移动端 Playground', () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
@@ -248,7 +283,15 @@ test.describe('移动端 Playground', () => {
 })
 
 test.describe('移动端导航', () => {
-  test.use({ viewport: { width: 390, height: 844 } })
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
+
+  test('触屏设备上的标题锚点无需悬停即可发现', async ({ page }) => {
+    await page.goto('/markdown/syntax/')
+    const anchor = page.locator('.cf-content .cf-anchor-island').first()
+    await anchor.scrollIntoViewIfNeeded()
+    await expect(anchor.getByRole('button', { name: '复制章节链接' })).toBeVisible()
+    await expect.poll(() => anchor.evaluate((element) => getComputedStyle(element).opacity)).toBe('1')
+  })
 
   test('GitHub 入口保持在视口内且页面不横向溢出', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 844 })
