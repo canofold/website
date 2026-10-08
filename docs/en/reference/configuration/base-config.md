@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.3.5'
+  requiredVersion: '^0.4.0'
 })
 ```
 
@@ -37,6 +37,7 @@ export default defineConfig({
 | `requiredVersion` | unset | Semver range that the running CLI must satisfy |
 | `docsDir` | `docs` | Content directory for a single-version site; cannot be combined with `versions` |
 | `outputDir` | `.canofold/dist` | Static site output directory |
+| `markdownMirror` | `true` | Emit Markdown source beside each HTML page; `ai/index.md` links to HTML when disabled |
 | `styles` | `[]` | Site-wide project CSS loaded after the default stylesheet; demo CSS should be imported by components |
 | `layout.header` | `true` | Render brand, top navigation, search entry, and locale/version controls |
 | `seo.robots` | `allow` | Write `Allow: /` or `Disallow: /` to `robots.txt`; this is a crawler hint, not access control |
@@ -109,6 +110,8 @@ See [navigation](/en/guide/site/navigation/), [versions](/en/guide/site/versions
 | `i18n.messages` | `{}` | Site and Markdown UI overrides by locale |
 | `ai.llmsTxt` | `true` | Emit `llms.txt` |
 | `ai.llmsFullTxt` | `true` | Emit `llms-full.txt` or its Manifest pointer |
+| `ai.pageIndex` | `true` | Emit `ai/pages.json` |
+| `ai.fullContent` | `true` | Emit `ai/manifest.json` and `ai/content/*` shards |
 | `ai.markdownIndex` | `true` | Emit `ai/index.md` |
 | `ai.pageSummaries` | `true` | Emit `ai/summaries.json` |
 | `ai.codeExamples` | `true` | Emit `ai/code-examples.json` |
@@ -118,3 +121,5 @@ See [navigation](/en/guide/site/navigation/), [versions](/en/guide/site/versions
 | `ai.versions` | `current` | Publish only the current version, or use `all` for every version |
 
 See [Internationalization](/en/guide/site/internationalization/) and [AI-friendly output](/en/reference/output/ai-output/) for setup and artifact details.
+
+These switches are independent. If `ai.fullContent` is disabled while `llms-full.txt` exceeds its budget under the `manifest` overflow policy, the build fails rather than pointing to a missing Manifest. Increase the budget, disable `ai.llmsFullTxt`, or enable shards.

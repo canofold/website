@@ -109,6 +109,8 @@ Canofold 在 `.canofold/cache` 保存版本化 Manifest。缓存命中前会同�
 
 使用 `--no-cache` 可以强制完整构建，并写入新的 Manifest。
 
+每次成功构建还会输出终端摘要，并在 `.canofold/cache/build-report.json` 写入机器可读的[构建报告](/reference/output/build-artifacts/)。报告位于部署目录之外，可用于核对实际生成、缺失和移除的文件。
+
 ## `canofold clean`
 
 ```bash

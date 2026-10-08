@@ -103,6 +103,8 @@ atomically. Corrupt or incompatible cache state automatically falls back to a cl
 
 Use `--no-cache` to force a clean build while writing a fresh manifest.
 
+Every successful build also prints a summary and writes a machine-readable [build report](/en/reference/output/build-artifacts/) to `.canofold/cache/build-report.json`. The report stays outside the deployable directory and records actual, missing, and removed files.
+
 ## `canofold clean`
 
 ```bash
