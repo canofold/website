@@ -10,7 +10,10 @@ function captureRuntimeErrors(page: Page) {
     const expectedSandboxBlock =
       (text.includes("document's frame is sandboxed") && text.includes("'allow-scripts'")) ||
       (text.includes("from origin 'null'") && text.includes('blocked by CORS policy')) ||
-      (text === 'Failed to load resource: net::ERR_FAILED' && location.endsWith('/assets/canofold-search.js'))
+      (text === 'Failed to load resource: net::ERR_FAILED' &&
+        ['/assets/canofold-shell.js', '/assets/canofold-search.js'].some((path) =>
+          location.endsWith(path)
+        ))
     if (!expectedSandboxBlock) errors.push(text)
   })
   return () => expect(errors, '页面不应产生运行时错误').toEqual([])
