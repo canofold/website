@@ -44,11 +44,11 @@ Canofold generates machine-readable files together with the site. The build does
 | `llms-full.txt` | Full Markdown while within budget; otherwise a pointer to the shard manifest | Compatible entry point for small and large sites |
 | `ai/manifest.json` | Schema version, budgets, totals, partitions, shard paths, sizes, record counts, and SHA-256 fingerprints | Stable discovery for complete corpora |
 | `ai/content/{version}/{locale}/*.jsonl` | Size-bounded content records with `part` / `parts` | Streaming RAG ingestion without a monolithic download |
-| `ai/index.md` | Title-to-Markdown-source list | Generic Markdown index |
+| `ai/index.md` | Page links; HTML routes when Markdown mirrors are disabled | Generic Markdown index |
 | `ai/pages.json` | Routes, locales, heading trees, tags, owners, frontmatter, and timestamps | Metadata before RAG chunking |
 | `ai/summaries.json` | Deterministic page summaries | Result previews and route filtering |
 | `ai/code-examples.json` | Routes, locales, and fenced code | Code-example search |
-| Per-page `index.md` | Markdown or MDX source used by the build | Page-level retrieval and citation |
+| Per-page `index.md` | Markdown or MDX source emitted when `markdownMirror` is enabled | Page-level retrieval and citation |
 
 ## Summary generation
 
@@ -80,7 +80,10 @@ ai: false
 
 ```ts
 export default {
+  markdownMirror: true,
   ai: {
+    pageIndex: true,
+    fullContent: true,
     llmsTxt: true,
     llmsFullTxt: true,
     markdownIndex: true,
@@ -94,12 +97,13 @@ export default {
 }
 ```
 
-`pages.json` and the versioned shard manifest are always generated. The other files follow their
-switches. A content record never exceeds `chunkSizeBytes`; an unusually large page is split on
+Per-page Markdown mirrors, `pages.json`, and versioned full-content shards have independent switches and are enabled by default. Other files follow their own switches. With Markdown mirrors disabled, `ai/index.md` links to HTML routes and AI records omit `markdownPath`. A content record never exceeds `chunkSizeBytes`; an unusually large page is split on
 Unicode code-point boundaries and reconstructed in `part` order. When the full corpus exceeds
 `llmsFullMaxBytes`, `manifest` keeps `llms-full.txt` small and points to the lossless shards, while
 `error` fails the atomic build. `versions: 'all'` includes historical snapshots in isolated
 version/locale partitions; `current` remains the safer default.
+
+If `ai.fullContent` is disabled and `llms-full.txt` exceeds its budget, the `manifest` overflow policy also fails the build rather than linking to a nonexistent shard manifest.
 
 ## Private documentation
 

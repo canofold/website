@@ -37,12 +37,12 @@ order: 71
         - index.md
 :::
 
-Every built page has static HTML and adjacent Markdown source. Native DOM owns basic interactions. React loads on demand for sortable tables, image previews, and galleries, while diagram clients are loaded by their plugins. KaTeX CSS and fonts are emitted only when the math plugin is enabled and a page contains math.
+Every built page has static HTML; adjacent Markdown source is emitted by default and can be disabled with `markdownMirror: false`. Native DOM owns basic interactions. React loads on demand for sortable tables, image previews, and galleries, while diagram clients are loaded by their plugins. KaTeX CSS and fonts are emitted only when the math plugin is enabled and a page contains math.
 
 | Artifact | Condition | Purpose |
 |---|---|---|
 | Page `index.html` | Always | Static page containing the complete rendered body |
-| Page `index.md` | Always | Markdown or MDX source used by the build after source extensions run |
+| Page `index.md` | `markdownMirror` enabled | Markdown or MDX source used by the build after source extensions run |
 | `assets/canofold.css` | Always | Site shell, semantic tokens, and configured styles |
 | `assets/canofold-markdown/*` | A page needs browser behavior and no Demo engine is configured | Built-in native enhancer and lazy rich interactions |
 | `assets/canofold-demos/*` | A Demo engine is configured | Shared Vite graph for the native enhancer, component Demos, their chunks, and imported CSS |
@@ -52,13 +52,12 @@ Every built page has static HTML and adjacent Markdown source. Native DOM owns b
 | `robots.txt` | Always | Search crawler policy |
 | `sitemap.xml` | `siteUrl` is configured | Absolute public URL list |
 | `redirects.json` | Redirects are configured | Hosting-platform redirect manifest |
-| `ai/pages.json` | Always | Basic AI page index scoped by `ai.versions` |
-| `ai/manifest.json`, `ai/content/*` | Always for AI-included pages | Versioned and bounded AI corpus shards |
+| `ai/pages.json` | `ai.pageIndex` enabled | Basic AI page index scoped by `ai.versions` |
+| `ai/manifest.json`, `ai/content/*` | `ai.fullContent` enabled | Versioned and bounded AI corpus shards |
 | Other `ai/*`, `llms*.txt` | Corresponding AI option is enabled | Optional AI and retrieval formats |
 
-The built-in compact provider writes `search/`; the optional Pagefind plugin writes `pagefind/` instead. `robots.txt` and `ai/pages.json` are always generated. `sitemap.xml` requires
-`siteUrl`; search indexes, redirects, the remaining compatibility AI files, and `llms*.txt` follow
-their corresponding configuration. `ai/manifest.json` and bounded content shards are always
-generated for included AI pages.
+The built-in compact provider writes `search/`; the optional Pagefind plugin writes `pagefind/` instead. `robots.txt` is always generated. `sitemap.xml` requires `siteUrl`; search indexes, redirects, Markdown mirrors, AI files, and `llms*.txt` follow their corresponding configuration.
 
 `robots.txt` writes `Allow: /` by default. With `seo: { robots: 'disallow' }`, it writes `Disallow: /` and omits the Sitemap declaration. This file only expresses crawler preference; private sites still need hosting-level protection for every artifact.
+
+Each build also writes `.canofold/cache/build-report.json` outside the deployable directory. It records page, locale and version counts; build mode, cache hit, changed pages and duration; each built-in output's enabled state, planned and actual paths, file count, bytes and missing paths; additional outputs; and paths removed since the previous valid build. `removalBaseline: false` means there was no previous manifest to compare. The report contains no document bodies and is not deployed as a public page.

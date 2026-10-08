@@ -8,7 +8,7 @@ order: 71
 
 # 构建产物参考
 
-`canofold build` 把文档编译成可以直接部署的静态站点，默认写入 `.canofold/dist`。每个页面都有包含完整正文的 HTML 和相邻的 Markdown 原文；目录中还包括主题样式、交互资源、搜索索引以及按配置生成的 SEO 和 AI 文件。
+`canofold build` 把文档编译成可以直接部署的静态站点，默认写入 `.canofold/dist`。每个页面都有包含完整正文的 HTML；默认还会在旁边生成 Markdown 原文，关闭 `markdownMirror` 后则不生成。目录中还包括主题样式、交互资源、搜索索引以及按配置生成的 SEO 和 AI 文件。
 
 完整重建先在临时目录生成产物，成功后再原子替换现有输出；构建失败时保留上一次成功结果。
 
@@ -42,7 +42,7 @@ order: 71
 | 产物 | 条件 | 用途 |
 |---|---|---|
 | 页面 `index.html` | 始终 | 包含完整正文的静态页面 |
-| 页面 `index.md` | 始终 | 构建时使用的页面 Markdown/MDX 源文 |
+| 页面 `index.md` | `markdownMirror` 启用 | 构建时使用的页面 Markdown/MDX 源文 |
 | `assets/canofold.css` | 始终 | 默认主题、Token 和用户样式 |
 | `assets/canofold-markdown/*` | 页面存在交互 behavior 且未配置 Demo Engine | 内置原生增强入口与按需富交互代码 |
 | `assets/canofold-demos/*` | 配置 Demo Engine | 原生增强器、组件 Demo、按需 chunk 与组件 CSS 共用的 Vite 构建图 |
@@ -52,10 +52,12 @@ order: 71
 | `robots.txt` | 始终 | 搜索引擎抓取策略 |
 | `sitemap.xml` | 配置 `siteUrl` | 站点绝对 URL 清单 |
 | `redirects.json` | 配置重定向 | 托管平台规则清单 |
-| `ai/pages.json` | 始终 | 按 `ai.versions` 范围生成的基础 AI 页面索引 |
-| `ai/manifest.json` / `ai/content/*` | 始终 | 有版本、有语言分区且单分片有大小上限的完整 AI 语料 |
+| `ai/pages.json` | `ai.pageIndex` 启用 | 按 `ai.versions` 范围生成的基础 AI 页面索引 |
+| `ai/manifest.json` / `ai/content/*` | `ai.fullContent` 启用 | 有版本、有语言分区且单分片有大小上限的完整 AI 语料 |
 | 其他 `ai/*` / `llms*.txt` | 对应 AI 开关启用 | AI 与 RAG 消费 |
 
 标题、段落和普通列表不依赖客户端 JavaScript。复制、Tabs、Details 和文件树等基础行为使用原生 DOM；可排序表格、图片预览和画廊按需加载 React，图表客户端由对应插件按页加载。未配置 math 插件或没有数学内容的站点不输出 KaTeX CSS 或字体。
 
 `robots.txt` 默认写入 `Allow: /`，配置 `seo: { robots: 'disallow' }` 后改写为 `Disallow: /` 且不声明 Sitemap。该文件只表达爬虫偏好；私有站点仍必须在托管层保护所有产物。
+
+每次构建还会在部署目录之外写入 `.canofold/cache/build-report.json`。报告记录页面、语言、版本、构建模式、缓存命中、变更页面和耗时；每类内置产物的启用状态、计划与实际路径、文件数、字节数和缺失路径；以及额外产物与相对上一次有效构建的移除路径。`removalBaseline: false` 表示没有可比较的旧清单。报告不含文档正文，也不会被部署为公开页面。

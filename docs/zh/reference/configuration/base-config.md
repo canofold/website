@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.3.5'
+  requiredVersion: '^0.4.0'
 })
 ```
 
@@ -37,6 +37,7 @@ export default defineConfig({
 | `requiredVersion` | 未设置 | 当前 CLI 必须满足的 semver 范围 |
 | `docsDir` | `docs` | 单版本内容目录；不能与 `versions` 同时配置 |
 | `outputDir` | `.canofold/dist` | 静态站点输出目录 |
+| `markdownMirror` | `true` | 是否在每个 HTML 页面旁生成 Markdown 原文；关闭后 `ai/index.md` 改用 HTML 链接 |
 | `styles` | `[]` | 在默认样式之后加载的站点级项目 CSS；组件 Demo 的 CSS 应由组件入口导入 |
 | `layout.header` | `true` | 是否渲染品牌、顶部导航、搜索入口和语言/版本控件 |
 | `seo.robots` | `allow` | `robots.txt` 使用 `Allow: /` 或 `Disallow: /`；这只是抓取提示，不是访问控制 |
@@ -109,6 +110,8 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | `i18n.messages` | `{}` | 按 locale 覆盖站点和 Markdown 界面文案 |
 | `ai.llmsTxt` | `true` | 生成 `llms.txt` |
 | `ai.llmsFullTxt` | `true` | 生成 `llms-full.txt` 或 Manifest 指针 |
+| `ai.pageIndex` | `true` | 生成 `ai/pages.json` |
+| `ai.fullContent` | `true` | 生成 `ai/manifest.json` 与 `ai/content/*` 分片 |
 | `ai.markdownIndex` | `true` | 生成 `ai/index.md` |
 | `ai.pageSummaries` | `true` | 生成 `ai/summaries.json` |
 | `ai.codeExamples` | `true` | 生成 `ai/code-examples.json` |
@@ -118,3 +121,5 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | `ai.versions` | `current` | 只发布当前版本，或使用 `all` 发布全部版本 |
 
 添加语言见[配置多语言](/guide/site/internationalization/)，文件结构与收录规则见 [AI 友好输出](/reference/output/ai-output/)。
+
+这些开关互不依赖；如果关闭 `ai.fullContent`，但 `llms-full.txt` 超过容量上限且使用 `manifest` 策略，构建会失败，因为不能指向不存在的 Manifest。可提高上限、关闭 `ai.llmsFullTxt`，或重新开启分片。

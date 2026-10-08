@@ -1,8 +1,8 @@
 allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
-  - '@canofold/markdown@0.3.5'
-  - '@canofold/plugins@0.3.5'
-  - '@canofold/vite@0.3.5'
-  - canofold@0.3.5
+  - '@canofold/markdown@0.4.0'
+  - '@canofold/plugins@0.4.0'
+  - '@canofold/vite@0.4.0'
+  - canofold@0.4.0
 verifyDepsBeforeRun: false

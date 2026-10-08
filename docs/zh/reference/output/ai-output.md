@@ -44,11 +44,11 @@ Canofold 在构建站点时同时生成机器可读文件。这些文件不会�
 | `llms-full.txt` | 预算内为完整 Markdown，超预算后指向分片 Manifest | 大小站点通用的兼容入口 |
 | `ai/manifest.json` | Schema 版本、预算、总量、分区、分片路径、大小、记录数和 SHA-256 | 完整语料的稳定发现入口 |
 | `ai/content/{version}/{locale}/*.jsonl` | 带 `part` / `parts` 的有界内容记录 | 无需下载巨型单文件的流式 RAG 导入 |
-| `ai/index.md` | 标题到 Markdown 原文地址的列表 | 通用 Markdown 索引 |
+| `ai/index.md` | 标题到页面地址的列表；关闭 Markdown Mirror 时链接 HTML | 通用 Markdown 索引 |
 | `ai/pages.json` | 路由、语言、标题树、tags、owner、Frontmatter 和更新时间 | RAG 切分前的页面元数据 |
 | `ai/summaries.json` | 每个页面的确定性摘要 | 结果预览与路由筛选 |
 | `ai/code-examples.json` | 路由、语言和代码块内容 | 代码示例搜索 |
-| 页面旁的 `index.md` | 构建时使用的 Markdown/MDX 源文 | 按页抓取和引用 |
+| 页面旁的 `index.md` | 启用 `markdownMirror` 时生成的 Markdown/MDX 源文 | 按页抓取和引用 |
 
 ## 摘要如何生成
 
@@ -80,7 +80,10 @@ ai: false
 
 ```ts
 export default {
+  markdownMirror: true,
   ai: {
+    pageIndex: true,
+    fullContent: true,
     llmsTxt: true,
     llmsFullTxt: true,
     markdownIndex: true,
@@ -94,11 +97,13 @@ export default {
 }
 ```
 
-`pages.json` 和版本化分片 Manifest 始终生成；其他文件按开关生成。每条内容记录都不超过
+页面 Markdown Mirror、`pages.json` 和版本化完整内容分片各有独立开关，默认均启用；其他文件也按对应开关生成。关闭 Markdown Mirror 后，`ai/index.md` 使用 HTML 链接，AI 记录不再包含 `markdownPath`。每条内容记录都不超过
 `chunkSizeBytes`，单页过大时按 Unicode code point 切分并按 `part` 重组。完整语料超过
 `llmsFullMaxBytes` 时，`manifest` 策略让 `llms-full.txt` 保持很小并指向无损分片；`error`
 策略则让原子构建失败。`versions: 'all'` 会把历史快照写入独立的版本/语言分区，默认
 `current` 可避免过时答案重复出现。
+
+如果关闭 `ai.fullContent`，同时 `llms-full.txt` 超过容量上限，`manifest` 策略也会让构建失败，而不会写入指向不存在的分片清单的链接。
 
 ## 私有文档注意事项
 
