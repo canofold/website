@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.4.0'
+  requiredVersion: '^0.4.1'
 })
 ```
 
