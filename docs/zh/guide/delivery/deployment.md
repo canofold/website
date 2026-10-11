@@ -8,7 +8,7 @@ order: 42
 
 # 部署静态站点
 
-Canofold 不绑定托管平台。构建命令是 `pnpm docs:build`，发布目录默认是 `.canofold/dist/`。
+Canofold 不绑定托管平台。发布前依次运行 `pnpm exec canofold check` 与 `pnpm exec canofold build`，发布目录默认是 `.canofold/dist/`。
 
 ## 生成平台提示
 
@@ -22,10 +22,10 @@ pnpm exec canofold deploy
 
 | 平台 | Build command | Output directory |
 |---|---|---|
-| GitHub Pages | `pnpm docs:build` | `.canofold/dist` |
-| Cloudflare Pages | `pnpm docs:build` | `.canofold/dist` |
-| Vercel | `pnpm docs:build` | `.canofold/dist` |
-| Netlify | `pnpm docs:build` | `.canofold/dist` |
+| GitHub Pages | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Cloudflare Pages | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Vercel | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Netlify | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
 | Nginx / 对象存储 | CI 构建后上传 | `.canofold/dist` |
 
 托管服务必须按目录提供 `index.html`，不能把站点配置为 SPA fallback。部署到子路径时设置 `basePath`，例如 `/project/`，并确保 CDN/反向代理使用相同前缀。

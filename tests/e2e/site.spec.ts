@@ -48,6 +48,45 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
   expectNoRuntimeErrors()
 })
 
+test('多词搜索保留正文命中的正确页面，并按语言隔离结果', async ({ page }) => {
+  const expectNoRuntimeErrors = captureRuntimeErrors(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: '搜索文档' }).click()
+  const search = page.getByRole('searchbox', { name: '搜索文档' })
+  await search.fill('Cloudflare Pages 部署')
+  await expect(page.locator('[data-canofold-search-results] a[href^="/guide/delivery/deployment/"]')).toBeVisible()
+  await expect(page.locator('[data-canofold-search-results] a[href^="/en/"]')).toHaveCount(0)
+  await search.fill('zzqxyvnotapage93821')
+  await expect(page.locator('[data-canofold-search-results]')).toContainText('没有找到匹配文档')
+  expectNoRuntimeErrors()
+
+  await page.goto('/en/')
+  await page.getByRole('button', { name: 'Search docs' }).click()
+  const englishSearch = page.getByRole('searchbox', { name: 'Search docs' })
+  await englishSearch.fill('keep older docs versions')
+  await expect(page.locator('[data-canofold-search-results] a[href^="/en/guide/site/versions/"]')).toBeVisible()
+  await expect(page.locator('[data-canofold-search-results] a[href^="/guide/"]')).toHaveCount(0)
+  expectNoRuntimeErrors()
+})
+
+test('搜索对话框可用键盘打开、保持焦点并在关闭后返回触发位置', async ({ page }) => {
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: '搜索文档' })
+  await trigger.focus()
+  await trigger.press('Enter')
+  const dialog = page.getByRole('dialog', { name: '搜索文档' })
+  await expect(dialog).toBeVisible()
+  await expect(page.getByRole('searchbox', { name: '搜索文档' })).toBeFocused()
+
+  await page.keyboard.press('Shift+Tab')
+  expect(await page.evaluate(() => Boolean(document.activeElement?.closest('[role="dialog"]')))).toBe(true)
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('searchbox', { name: '搜索文档' })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
 test('指南侧栏在站内导航后保留位置且不整页刷新', async ({ page }) => {
   test.setTimeout(30_000)
   const expectNoRuntimeErrors = captureRuntimeErrors(page)
@@ -135,7 +174,7 @@ test('点击后续目录标题时阅读进度不会倒退', async ({ page }) => 
 test('Playground 实时预览不闪空白并保持双向滚动同步', async ({ page }) => {
   test.setTimeout(30_000)
   const expectNoRuntimeErrors = captureRuntimeErrors(page)
-  await page.goto('/markdown/playground/')
+  await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
 
   const playground = page.locator('[data-canofold-playground]')
   const source = page.locator('[data-canofold-playground-source]')
@@ -225,7 +264,7 @@ test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', asyn
 })
 
 test('长代码块行号在三位数时保留独立槽位', async ({ page }) => {
-  await page.goto('/markdown/playground/')
+  await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
   const source = page.locator('[data-canofold-playground-source]')
   const preview = page.locator('[data-canofold-playground-preview]')
   const lines = Array.from({ length: 120 }, (_, index) => `const line${index + 1} = ${index + 1}`)
@@ -242,7 +281,7 @@ test('长代码块行号在三位数时保留独立槽位', async ({ page }) => 
 })
 
 test('图片放大后可点击空白区域或按 Escape 关闭', async ({ page }) => {
-  await page.goto('/markdown/playground/')
+  await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
   const trigger = page.locator('[data-canofold-playground-preview]').getByRole('button', { name: '放大图片' }).first()
   const dialog = page.getByRole('dialog', { name: '放大图片' })
 
@@ -264,7 +303,8 @@ test.describe('移动端 Playground', () => {
 
   test('右上角图标在源码和预览之间切换', async ({ page }) => {
     const expectNoRuntimeErrors = captureRuntimeErrors(page)
-    await page.goto('/markdown/playground/')
+    // Ready locators below gate our UI; external media must not gate navigation.
+    await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
 
     const playground = page.locator('[data-canofold-playground]')
     const toggle = page.locator('[data-canofold-playground-toggle]')
@@ -296,8 +336,12 @@ test.describe('移动端导航', () => {
     await expect.poll(() => anchor.evaluate((element) => getComputedStyle(element).opacity)).toBe('1')
   })
 
+})
+
+test.describe('320px 窄屏导航', () => {
+  test.use({ viewport: { width: 320, height: 844 }, hasTouch: true, isMobile: true })
+
   test('GitHub 入口保持在视口内且页面不横向溢出', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/guide/introduction/what-is-canofold/')
 
     const github = page.getByRole('link', { name: 'GitHub 仓库' })

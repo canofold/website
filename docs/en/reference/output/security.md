@@ -34,4 +34,6 @@ Canofold does not provide SSO/RBAC. A hosting identity layer must protect HTML, 
 
 Sanitization removes scripts, event attributes, and unsafe URLs from Markdown HTML; it is not a JavaScript sandbox. MDX remains executable trusted code.
 
-`mermaid()` executes the plugin's pinned bundled runtime and does not request a remote module. An explicit `mermaid({ moduleUrl })` override executes that module in the reader's browser; treat it as a remote-code supply-chain dependency and allow its origin in CSP only when needed. `kroki()` and `plantUml({ server })` send diagram source to the configured service. Build warnings make that behavior visible, but the endpoints still require explicit trust and domain allowlists.
+Starting in 0.5.0, `mermaid()` builds its local runtime from the project's installed Mermaid and locked dependencies without requesting remote modules. Audit the site's own production dependencies, then rebuild and deploy after dependency updates so browser assets use the new versions.
+
+An explicit `mermaid({ moduleUrl })` override can point to a self-hosted module or CDN. That module executes in the reader's browser, so use trusted sources and allow only the required origins in CSP. `kroki()` and `plantUml({ server })` send diagram source to the configured service; use trusted, controlled endpoints and avoid sending sensitive content.

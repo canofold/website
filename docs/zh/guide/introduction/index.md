@@ -13,3 +13,4 @@ sidebar: false
 - [为什么选择 Canofold](/guide/introduction/why-canofold/)：了解静态交付、仓库接入、统一内容模型和扩展边界上的取舍。
 - [安装](/guide/introduction/installation/)：使用 pnpm、npm 或 Yarn 安装项目依赖。
 - [快速开始](/guide/introduction/getting-started/)：从空目录构建并预览第一个站点。
+- [迁入已有文档](/guide/introduction/migrating/)：迁移 Markdown、VitePress 或 Docusaurus 内容。

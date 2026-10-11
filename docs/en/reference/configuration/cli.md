@@ -14,7 +14,7 @@ This page uses bare `canofold` to show command signatures. Project scripts can u
 canofold --help
 ```
 
-Canofold currently provides seven commands. `dev`, `check`, `build`, `clean`, `preview`, and `deploy` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
+Canofold currently provides eight commands. All except `init` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
 
 | Command | Purpose | Default output |
 |---|---|---|
@@ -24,6 +24,7 @@ Canofold currently provides seven commands. `dev`, `check`, `build`, `clean`, `p
 | `canofold build [--no-cache]` | Generate the static site | `.canofold/dist` |
 | `canofold clean` | Remove generated output and build state | — |
 | `canofold preview [--port]` | Serve an existing build | Local HTTP server |
+| `canofold snapshot <id>` | Copy current docs for historical version maintenance | `versions/<id>/` |
 | `canofold deploy` | Generate hosting templates | `.canofold/deploy` |
 
 ## `canofold init [dir] [options]`
@@ -69,18 +70,21 @@ A Markdown or MDX edit can use a single-page rebuild when navigation metadata is
 
 ```bash
 canofold check
+canofold check --json
 ```
+
+`--json` emits `diagnostics` with stable rule IDs, source locations, and suggestions, plus per-version/locale `translationCoverage` and per-page `translationStatus`. Confirmed errors make the command exit nonzero for CI.
 
 Example output:
 
 ```txt
-WARNING: en/guide/install.md Frontmatter description is missing
-ERROR: docs/en/guide/install.md Link target does not exist: /en/reference/missing/
+WARNING [frontmatter-description]: docs/en/guide/install.md Frontmatter description is missing
+ERROR [broken-link]: docs/en/guide/install.md:12:1 Link target does not exist: /en/reference/missing/
 ```
 
 The command reports undeclared code languages, missing titles or descriptions, broken internal links and relative assets, duplicate headings, and locale gaps.
 
-`check` rejects invalid configuration and routes while loading the content graph, but it does not replace a complete compilation. The production build remains the final gate for MDX, local components, and extension output. Add a team-specific CI rule if warnings must fail the pipeline.
+`check` also validates drafts, while production builds omit them. When checks complete, `--json` emits `{ schemaVersion: 1, diagnostics: [...] }`; each diagnostic includes a stable `ruleId`, severity, project-relative path, and line/column when known. Configuration errors or a missing published home page prevent the content graph from loading, so the command exits with an error instead of a JSON report. Use `checks.rules` to set a rule to `off`, `warning`, or `error`. Any final `error` causes a nonzero exit code. A production build remains the final gate for MDX, components, and extension output; run `check` before `build` in release workflows.
 
 ## `canofold build [--no-cache]`
 
@@ -122,6 +126,15 @@ canofold preview --port 4174
 ```
 
 `--port` must be an integer from 1 through 65535. The command serves `outputDir` and does not watch source files.
+
+## `canofold snapshot <id>`
+
+```bash
+canofold check
+canofold snapshot v1
+```
+
+Copies the current version's complete docs directory to `versions/v1/` without rewriting configuration or overwriting a target. Drafts, symlinks, or historical Demo/MDX code that still points to current source cause an error. Add the historical entry to `versions.items` yourself; see [versions](/en/guide/site/versions/).
 
 ## `canofold deploy`
 

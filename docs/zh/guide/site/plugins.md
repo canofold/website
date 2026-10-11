@@ -125,7 +125,7 @@ pnpm docs:preview
 |  | `trust` | `false` | 是否允许 KaTeX 生成 URL 或 HTML 的受信命令 |
 |  | `strict` | `'warn'` | KaTeX 严格模式 |
 |  | `macros` | `{}` | 自定义 KaTeX 宏 |
-| `mermaid` | `moduleUrl` | 内置资源 | 覆盖浏览器端 Mermaid ESM 地址 |
+| `mermaid` | `moduleUrl` | 本地依赖构建产物 | 覆盖浏览器端 Mermaid ESM 地址 |
 | `plantUml` | `server` | `false` | PlantUML 服务地址；未配置时只展示源码 |
 | `kroki` | `server` | `https://kroki.io` | Kroki 服务地址 |
 |  | `languages` | Graphviz、Dot、GV、D2 | Markdown 语言名到 Kroki 类型的映射 |
@@ -135,6 +135,8 @@ pnpm docs:preview
 |  | `writePlayground` | `false` | 是否生成 Pagefind 调试 Playground |
 
 ## 插件、Provider 和 Extension
+
+从 0.5.0 起，`mermaid()` 默认使用项目安装的 `mermaid` 构建浏览器资源。更新依赖后需要重新构建并部署站点。设置 `moduleUrl` 后改用指定模块，其版本和可用性由你维护；详见[安全边界](/reference/output/security/)。
 
 | 类型 | 适合解决的问题 | 配置位置 |
 |---|---|---|
@@ -195,3 +197,7 @@ h2[data-section] {
 运行 `pnpm docs:dev` 后，二级标题左侧应出现边线。再运行 `pnpm docs:build`，确认生成的二级标题带有 `data-section` 属性。前者验证项目 CSS，后者验证插件转换。
 
 `name` 是同一编译器中的唯一标识；转换行为变化时要提升 `version`，配置数据放进 `cacheKey`。插件如果拥有自定义指令或代码围栏，还要分别声明 `directiveNames` 或 `fenceLanguages`，否则拼写错误和未知语言检查无法区分这些语法。
+
+### 浏览器资源
+
+`assets.clients[].resources` 的每一项用 `module` 指定可从客户端所属包解析的入口，`output` 指定客户端资源目录内的相对文件名。默认复制该文件；预先构建的分块可用 `directories` 声明。对于仍含 npm 导入的浏览器模块，设置 `bundle: true`，由 Canofold 使用已安装的依赖构建 ESM 并保留动态加载分块；输出名必须以 `.js` 或 `.mjs` 结尾，不能同时配置 `directories`。这不执行资源入口，也不是任意代码沙箱：插件和依赖仍须可信。

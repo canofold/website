@@ -64,7 +64,7 @@ Write a precise `description` for every public page instead of a promotional slo
 
 - Published pages in the current version are included by default.
 - Historical versions are excluded to avoid multiple outdated answers for the same topic.
-- Pages with `status: draft` are not built.
+- Pages with `status: draft` can be previewed and checked locally, but are omitted from production builds.
 - `ai: false` excludes a page.
 - `tags` and `owner` are preserved in `pages.json`.
 

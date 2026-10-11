@@ -125,7 +125,7 @@ Every option is optional. The table lists the behavior used when an option is om
 |  | `trust` | `false` | Allow trusted KaTeX commands that emit URLs or HTML |
 |  | `strict` | `'warn'` | KaTeX strictness policy |
 |  | `macros` | `{}` | Custom KaTeX macros |
-| `mermaid` | `moduleUrl` | Bundled resource | Override the browser Mermaid ESM URL |
+| `mermaid` | `moduleUrl` | Build of the local dependency | Override the browser Mermaid ESM URL |
 | `plantUml` | `server` | `false` | PlantUML server; source-only output when omitted |
 | `kroki` | `server` | `https://kroki.io` | Kroki service URL |
 |  | `languages` | Graphviz, Dot, GV, D2 | Markdown language to Kroki type mapping |
@@ -135,6 +135,8 @@ Every option is optional. The table lists the behavior used when an option is om
 |  | `writePlayground` | `false` | Generate Pagefind's debugging playground |
 
 ## Plugins, providers, and extensions
+
+Starting in 0.5.0, `mermaid()` builds browser resources from the project's installed `mermaid` by default. Rebuild and deploy after dependency updates. Setting `moduleUrl` uses that module instead; you manage its version and availability. See [security boundaries](/en/reference/output/security/).
 
 | Type | Use it for | Configuration |
 |---|---|---|
@@ -195,3 +197,7 @@ h2[data-section] {
 Run `pnpm docs:dev` and verify that level-two headings have a leading rule. Then run `pnpm docs:build` and confirm that generated level-two headings have a `data-section` attribute. The first result verifies the project CSS; the second verifies the plugin transform.
 
 `name` is unique within one compiler. Bump `version` when transform behavior changes and put resolved options in `cacheKey`. A plugin that owns custom directives or code fences must also declare `directiveNames` or `fenceLanguages`, so typo and unknown-language checks can distinguish valid plugin syntax.
+
+### Browser resources
+
+Each `assets.clients[].resources` item declares a `module` resolvable from the client package and an `output` filename relative to its resource directory. Files are copied by default; prebuilt chunk directories can be declared with `directories`. For browser modules with npm imports, set `bundle: true` so the Canofold host bundles installed dependencies into ESM while preserving lazy chunks. Output must end in `.js` or `.mjs`, and `directories` cannot be combined with bundling. Bundling does not execute the entry and is not a security sandbox: plugins and dependencies must remain trusted.

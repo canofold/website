@@ -31,18 +31,21 @@ order: 20
 | `seoTitle` | `string` | Built from `title` and the site title | Override only the browser and search-result title without changing the page title, sidebar, search, or AI data |
 | `description` | `string` | Empty | SEO, search result, and deterministic summary |
 | `createdAt` | ISO 8601 date | None | Preserve the content creation time in public page metadata |
-| `updatedAt` | ISO 8601 date | File modification time | Pin the footer's last-updated time and publish it in page metadata |
+| `updatedAt` | ISO 8601 date | Known Git content commit time; otherwise hidden | Pin the footer's last-updated time and publish it in page metadata |
 | `group` | `string` | First directory name | Compatibility/display override for the top-level section |
 | `subgroup` | `string` | Second directory name | Compatibility/display override for the first nested group |
 | `order` | `number` | Last | Page, sidebar, and pagination order |
 | `collapsed` | `boolean` | `false` | Initial subgroup state from its `index.md` |
 | `layout` | `document \| playground` | `document` | Use the standard document layout or the editable source/preview Playground layout |
-| `status` | `published \| draft` | `published` | `draft` pages are not built |
+| `status` | `published \| draft` | `published` | Preview drafts with `dev` and validate with `check`; production builds omit them |
 | `sidebar` | `boolean` | `true` | Exclude the page from the sidebar without removing its route |
 | `search` | `boolean` | `true` | Include in search |
 | `ai` | `boolean` | `true` | Include in AI outputs |
 | `tags` | `string[]` | Empty | Preserve classification metadata in `ai/pages.json` |
 | `owner` | `string` | Empty | Preserve ownership metadata in `ai/pages.json` |
+| `translation.sourceHash` | `sha256:<64 hexadecimal digits>` | None | Default-locale source fingerprint recorded when reviewing a translation; used only by `check` |
+
+Local `dev` can preview a draft home page, but every version and locale still needs a published home page before release. If its only home has `status: draft`, both `check` and the production build fail.
 
 ### Navigation fields
 
@@ -52,7 +55,11 @@ Directory `index.md` files are authoritative for group labels and collapsed stat
 
 ### Date fields
 
-Add `createdAt` or `updatedAt` only when those dates must remain stable across machines. Use `YYYY-MM-DD`, or include `Z` or an offset such as `+08:00` when a time is present. Without `updatedAt`, Canofold falls back to the source file modification time, which may change after checkout, file copies, or CI builds.
+Set `updatedAt` when you need an explicit update date. Use `YYYY-MM-DD`, or include `Z` or an offset such as `+08:00` when a time is present. Without it, Canofold uses the file's latest content commit from complete Git history. Uncommitted files, shallow clones, or unavailable Git history have no displayed last-updated date; checkout time and shallow-boundary commits are never presented as content history. For Git-derived dates in CI, fetch the complete history (for example, `fetch-depth: 0` with GitHub Actions `actions/checkout`) or set `updatedAt` explicitly.
+
+### Translation review fingerprint
+
+After reviewing a translation against its default-locale source, run `canofold check --json` and copy the target page's `sourceHash` from `translationStatus` into its `translation.sourceHash` frontmatter field. A subsequent source title, description, or body change makes `check` report that translation as stale. An unstamped translation or a missing source has `unknown` status; file timestamps are not used to guess freshness. Review the translation again before replacing the hash rather than copying it only to silence a warning.
 
 ## Home-page fields
 

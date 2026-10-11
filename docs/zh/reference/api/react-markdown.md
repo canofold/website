@@ -74,6 +74,10 @@ interface MarkdownProps extends MarkdownRootProps {
 
 ```ts
 interface MarkdownRenderer {
+  analyze(
+    source: string,
+    options?: { markdown?: RenderMarkdownOptions; mode?: 'markdown' | 'mdx' }
+  ): Promise<MarkdownContentAnalysis>
   render(source: string, options?: MarkdownRenderOptions): Promise<RenderedMarkdown>
   renderMdx(source: string, options?: MdxRenderOptions): Promise<RenderedMarkdown>
   clear(): void
@@ -87,7 +91,17 @@ interface RenderedMarkdown {
 function createMarkdownRenderer(options?: { maxEntries?: number }): MarkdownRenderer
 ```
 
-`maxEntries` 限制单个 renderer 保留的编译缓存条目，默认为 64。`renderMdx()` 只接受可信 MDX；传入 `sanitize` 或 `strip` 会失败。
+`maxEntries` 分别限制 Markdown 和 MDX 的编译缓存条目，默认各为 64。`analyze()` 与对应渲染方法复用编译缓存，`clear()` 同时清空两者。MDX 只接受可信内容；传入 `sanitize` 或 `strip` 会失败。
+
+`renderMdx()` 的 `urlTransform` 也用于 MDX 中直接编写的原生 `<a>`、`<img>`、`<video>` 等元素，在表达式和 spread 得到最终属性后转换 URL；不会改写传给自定义组件的属性，也不递归拦截外部组件内部的 JSX。动态属性可在渲染时转换，但仍不属于下述静态检查范围。
+
+`analyze()` 等待 remark/rehype 插件完成后返回标题、锚点、正文、首个正文块摘要以及链接和图片引用，已有源位置会保留，插件生成的节点不会伪造行列号。`codeExamples` 取自 remark 转换后的代码围栏，在高亮和交互组件转换前提取。Canofold 的目录、链接检查、资源复制、搜索和 AI 元数据使用这些编译事实。
+
+MDX 分析只编译静态内容，不执行作者组件或表达式。原生 JSX 标签的静态 `id`、`href`、`src`，图片和 `<source>` 的静态 `srcSet` 候选路径，以及默认 `Image` / `MarkdownImage` 的静态图片路径会进入分析；直接的字符串字面量表达式也可识别。动态表达式和自定义组件运行时生成的内容无法静态预测。Markdown 镜像和 AI 全文保留作者源码，不把编译后的 HTML 反向转换为 Markdown。
+
+属性按 JSX 的覆盖顺序分析：后写属性优先；如果后面的 `{...props}` 可能覆盖某个属性，就不把前面的值当成确定的资源或链接。需要静态检查的路径应直接写在 spread 之后，或使用普通 Markdown 链接和图片。
+
+`MarkdownContentAnalysis` 包含 `text`、`excerpt`、`headings`、`codeExamples`、`anchors`、`links`、`images` 及对应的 `linkLocations` / `imageLocations`；后两者在原始节点有源码位置时返回行列，插件生成的节点使用 `null`。
 
 `@canofold/markdown/server/analyze` 公开不执行渲染的源码分析：
 
@@ -97,19 +111,24 @@ interface MarkdownAnalysis {
   headings: MarkdownHeading[]
   codeExamples: MarkdownCodeExample[]
   links: string[]
+  linkLocations: Array<{ line: number; column: number } | undefined>
   images: string[]
+  imageLocations: Array<{ line: number; column: number } | undefined>
   missingCodeBlockLanguages: number
+  missingCodeBlockLanguageLocations: Array<{ line: number; column: number } | undefined>
+  directives: MarkdownDirective[]
   directiveIssues: Array<{ message: string; line?: number; column?: number }>
 }
 
 interface AnalyzeMarkdownOptions {
   plugins?: readonly MarkdownPlugin[]
+  mode?: 'markdown' | 'mdx'
 }
 
 function analyzeMarkdown(source: string, options?: AnalyzeMarkdownOptions): MarkdownAnalysis
 ```
 
-它适合搜索索引、链接检查和编辑器诊断。传入 `plugins` 后，分析器会接受当前文档中已激活插件声明的 `directiveNames`；其他未知指令会出现在 `directiveIssues` 中。
+它适合源码语法诊断和指令定位，不执行编译插件。传入 `plugins` 后，只接受对应 `mode` 中已激活插件声明的 `directiveNames`；其他未知指令出现在 `directiveIssues` 中。需要与发布页面一致的搜索、目录或链接事实时，应使用 `renderer.analyze()`，不能用源码分析结果代替编译结果。
 
 ## 客户端增强接口
 
