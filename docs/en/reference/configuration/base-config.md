@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.4.1'
+  requiredVersion: '^0.5.0'
 })
 ```
 
@@ -85,6 +85,7 @@ The demo engine is a replaceable Canofold capability and does not replace the pr
 | `theme.tokens` | `{}` | Semantic color, typography, layout, geometry, and motion overrides |
 | `search.enabled` | `true` | Generate a search index and browser entry |
 | `search.provider` | `compact` | Built-in `compact` or a `SearchProvider` object such as `pagefind()` |
+| `checks.rules` | `{}` | Override a check rule with `off`, `warning`, or `error`; omitted rules keep their default level |
 
 See [Theme customization](/en/guide/site/customization/) and [Search](/en/guide/site/search/) for task workflows.
 

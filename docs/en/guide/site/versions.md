@@ -8,9 +8,20 @@ order: 34
 
 # Manage documentation versions
 
-Each version has its own source directory and URL prefix. The current version usually uses `/`, while historical versions use prefixes such as `/v1/` or `/v2/`. Switching versions does not rewrite one document at runtime.
+To keep older docs versions available, give each version its own source directory and URL prefix. The current version usually uses `/`, while historical versions use prefixes such as `/v1/` or `/v2/`. Switching versions does not rewrite one document at runtime.
 
 ## Prepare a historical snapshot
+
+While the current docs still represent the release you are archiving, run:
+
+```bash
+pnpm exec canofold check
+pnpm exec canofold snapshot v1
+```
+
+`snapshot` copies the whole current documentation directory—pages, relative assets, `public/`, and version-local MDX and Demo source—into `versions/v1/`. It does not rewrite or overwrite `canofold.config.ts`, nor overwrite an existing directory. It stops on drafts, symbolic links, MDX/Demo dependencies outside the docs directory, or global `demos.setup`. Add the historical item to `versions.items` yourself, then continue editing current docs. To revise history, edit `versions/v1/` and rerun `check` and `build`.
+
+A component library's usual `::demo{src="/src/..."}` points at current source and is not a historical snapshot. Before archiving, place the Demo and its project-local dependencies in the current docs directory and use a relative `src`. Historical builds reject local source outside their version directory. Pin third-party packages to exact versions and commit the lockfile so a reinstall does not silently change old examples. `snapshot` does not automatically freeze npm packages, Vite configuration, or a global provider; maintain these inputs separately.
 
 This example uses English as the default locale, keeps current documentation in `docs/`, and stores the old release in `versions/v1/`:
 
@@ -46,7 +57,8 @@ export default defineConfig({
         id: 'v1',
         label: '1.x',
         docsDir: 'versions/v1',
-        base: '/v1/'
+        base: '/v1/',
+        status: 'archived'
       }
     ]
   }
@@ -54,10 +66,11 @@ export default defineConfig({
 ```
 
 Keep `docsDir` and `base` boundaries clear across versions so that two pages cannot write to the same output path.
+Omit `status` for a maintained historical release. `status: 'archived'` keeps pages readable and searchable while visibly marking them as no longer maintained. The current version cannot be archived.
 
 ## Switch pages
 
-When a reader switches versions, Canofold looks for the same page-relative path in the target version. If it does not exist, the link falls back to that version's home page for the current locale. Redirects can preserve common entry points after an old version removes or moves a page.
+When a reader switches versions, Canofold looks for the same page-relative path in the target version. If it does not exist, the menu explicitly says that the page is unavailable and its link opens that version's home page for the current locale. Redirects can preserve common entry points after an old version removes or moves a page.
 
 ## Search and AI output
 

@@ -87,6 +87,6 @@ export default defineConfig({
 
 ## 检查翻译页面
 
-运行 `canofold check` 后，Canofold 会按相对路径比较各语言的页面并报告缺失项。页面标题、正文、侧边栏文案和截图不会自动翻译，需要在每种语言中分别维护。
+运行 `canofold check` 后，Canofold 会按相对路径比较各语言的已发布页面并报告缺失项。`canofold check --json` 提供每个版本、每种语言的覆盖率及逐页 `translationStatus`：`current` 表示记录的源页内容指纹仍匹配，`stale` 表示源页已改动，`unknown` 表示没有足够依据，`missing` 表示缺页。译文复核流程见 [Frontmatter 参考](/reference/configuration/frontmatter/)。切换到缺页语言时，菜单会标明“此页不存在，前往首页”，不会把原文误标为译文。页面标题、正文、侧边栏文案和截图不会自动翻译，需要在每种语言中分别维护。
 
 生成的根级 `404.html` 会根据 URL 中的语言前缀选择提示文案和返回首页的链接。

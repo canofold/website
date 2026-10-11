@@ -14,7 +14,7 @@ Search is enabled by default with the built-in `compact` provider. Small and med
 
 `compact` lowercases contiguous Latin letters and digits into word tokens. For contiguous Han text, it emits each character and every adjacent two-character token. For example, `组件文档` yields `组`, `件`, `文`, `档`, `组件`, `件文`, and `文档`. Queries use the same tokenizer.
 
-The current ranking adds one point for every matched token and two more when the complete query occurs in the title, description, tags, or excerpt, then returns the first eight results. The index also includes searchable body text and bounded code samples, while the displayed excerpt remains the beginning of the body. This keeps the index small and dependency-free in the browser, but it does not provide field weighting, fuzzy matching, match-position snippets, or result highlighting. Use Pagefind when a large site needs more mature tokenization and chunked loading.
+The index includes titles, descriptions, tags, the full searchable body text, and bounded code samples. Ranking favors complete phrases and tokens in titles, followed by descriptions, tags, and route paths; a body-only mention can still find a page without outranking a stronger title match. Results display the page description rather than a snippet from the matching body position. The UI highlights complete queries and useful matching tokens in titles and descriptions. This keeps the index small and browser-side dependency-free, but it does not provide fuzzy matching or match-position snippets. Use Pagefind when a large site needs more mature tokenization and chunked loading.
 
 ## Use Pagefind
 

@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.4.1'
+  requiredVersion: '^0.5.0'
 })
 ```
 
@@ -85,6 +85,7 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | `theme.tokens` | `{}` | 亮暗色、排版、阅读宽度、圆角和动效的语义 Token 覆盖 |
 | `search.enabled` | `true` | 生成搜索索引和客户端入口 |
 | `search.provider` | `compact` | 内置 `compact` 或实现 `SearchProvider` 的对象，如 `pagefind()` |
+| `checks.rules` | `{}` | 按规则覆盖检查级别：`off`、`warning` 或 `error`；未配置时使用内置级别 |
 
 主题覆盖示例见[定制主题](/guide/site/customization/)，搜索选择见[配置搜索](/guide/site/search/)。
 

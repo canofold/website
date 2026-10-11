@@ -31,18 +31,21 @@ order: 20
 | `seoTitle` | `string` | 由 `title` 和站点标题生成 | 仅覆盖浏览器与搜索结果标题，不改变页面标题、侧栏、搜索或 AI 数据 |
 | `description` | `string` | 空 | SEO、搜索结果和确定性摘要 |
 | `createdAt` | ISO 8601 日期 | 无 | 保存内容创建时间并写入公开页面元数据 |
-| `updatedAt` | ISO 8601 日期 | 文件修改时间 | 固定页脚“最后更新”时间并写入公开页面元数据 |
+| `updatedAt` | ISO 8601 日期 | 可确认的 Git 内容提交时间；否则不显示 | 固定页脚“最后更新”时间并写入公开页面元数据 |
 | `group` | `string` | 一级目录名 | 顶级分区的兼容/显示覆盖字段 |
 | `subgroup` | `string` | 二级目录名 | 第一层嵌套分组的兼容/显示覆盖字段 |
 | `order` | `number` | 最后 | 页面、侧栏和上下篇顺序 |
 | `collapsed` | `boolean` | `false` | 目录 `index.md` 对应分组的初始折叠状态 |
 | `layout` | `document \| playground` | `document` | 使用标准文档布局，或为可编辑源码/预览页启用 Playground 布局 |
-| `status` | `published \| draft` | `published` | `draft` 页面不进入构建 |
+| `status` | `published \| draft` | `published` | 草稿可在 `dev` 预览和 `check` 检查，不进入生产构建 |
 | `sidebar` | `boolean` | `true` | 是否出现在侧栏，不影响路由生成 |
 | `search` | `boolean` | `true` | 是否进入搜索索引 |
 | `ai` | `boolean` | `true` | 是否进入 AI 输出 |
 | `tags` | `string[]` | 空 | 写入 `ai/pages.json` |
 | `owner` | `string` | 空 | 写入 `ai/pages.json` |
+| `translation.sourceHash` | `sha256:<64 位十六进制>` | 无 | 译文复核时对应的默认语言源页内容指纹，仅用于 `check`；未填写时状态为“未知” |
+
+本地 `dev` 可以预览草稿首页；发布前，每个版本和语言仍必须有已发布的首页。若首页仅有 `status: draft`，`check` 和正式构建都会失败。
 
 ### 导航字段
 
@@ -52,7 +55,11 @@ order: 20
 
 ### 日期字段
 
-只有在创建时间或更新时间必须在不同机器上保持一致时，才需要显式填写 `createdAt` 或 `updatedAt`。日期使用 `YYYY-MM-DD`，带时间时必须包含 `Z` 或 `+08:00` 这样的时区偏移。未填写 `updatedAt` 时，Canofold 回退到源文件的本地修改时间；该值可能因重新检出、复制文件或 CI 构建而变化。
+需要明确指定更新时间时填写 `updatedAt`。日期使用 `YYYY-MM-DD`，带时间时必须包含 `Z` 或 `+08:00` 这样的时区偏移。未填写时，Canofold 使用完整 Git 历史中该文件最近一次内容提交的时间；工作区文件未提交、仓库为浅克隆或无法获取 Git 历史时，不显示“最后更新”，不会以检出时间或浅克隆边界提交的时间冒充内容更新时间。需要在 CI 中显示 Git 日期时，应检出完整历史（例如 GitHub Actions 的 `actions/checkout` 配置 `fetch-depth: 0`），或显式填写 `updatedAt`。
+
+### 译文复核指纹
+
+翻译完成并与默认语言源页核对后，运行 `canofold check --json`，从 `translationStatus` 中找到目标语言页面的 `sourceHash`，将它写入该译文的 `translation.sourceHash`。之后源页标题、描述或正文改变，`check` 会报告译文过期。未记录指纹或缺少源页时显示 `unknown`，不会根据文件时间推断译文是否过期。重新复核译文后再更新指纹；不要只为消除告警而复制新值。
 
 ## 首页字段
 

@@ -74,6 +74,10 @@ A custom plugin that uses directives must list them in `MarkdownPlugin.directive
 
 ```ts
 interface MarkdownRenderer {
+  analyze(
+    source: string,
+    options?: { markdown?: RenderMarkdownOptions; mode?: 'markdown' | 'mdx' }
+  ): Promise<MarkdownContentAnalysis>
   render(source: string, options?: MarkdownRenderOptions): Promise<RenderedMarkdown>
   renderMdx(source: string, options?: MdxRenderOptions): Promise<RenderedMarkdown>
   clear(): void
@@ -87,7 +91,17 @@ interface RenderedMarkdown {
 function createMarkdownRenderer(options?: { maxEntries?: number }): MarkdownRenderer
 ```
 
-`maxEntries` bounds the prepared-document cache retained by one renderer and defaults to 64. `renderMdx()` accepts trusted MDX only and rejects `sanitize` or `strip`.
+`maxEntries` bounds the Markdown and MDX compilation caches separately, with 64 entries each by default. `analyze()` shares the cache with the corresponding render method, and `clear()` clears both. MDX accepts trusted content only and rejects `sanitize` or `strip`.
+
+`analyze()` waits for remark/rehype plugins and returns headings, anchors, text, a first-content-block excerpt, and link/image references. Existing source positions are preserved; generated nodes do not receive invented locations. `codeExamples` captures fences after remark transforms, before highlighting and interactive presentation. Canofold uses these compiled facts for navigation, link validation, resource copying, search, and AI metadata.
+
+MDX analysis compiles static content without executing author components or expressions. Literal `id`, `href`, and `src` attributes on native JSX tags, static `srcSet` image and `<source>` candidates, plus static image paths on the default `Image` / `MarkdownImage` components, are included; direct string-literal expressions are recognized too. Dynamic expressions and output produced by custom components at runtime cannot be predicted statically. Markdown mirrors and AI full-content exports retain authored source rather than reverse-converting compiled HTML to Markdown.
+
+Analysis follows JSX override order: later attributes win. A later `{...props}` makes earlier values uncertain, so they are not reported as definite resources or links. Put statically checked paths after spreads, or use ordinary Markdown links and images.
+
+`renderMdx()` also applies `urlTransform` to native `<a>`, `<img>`, `<video>`, and similar elements authored directly in MDX, after expressions and spreads resolve their final props. It does not rewrite custom-component props or intercept JSX inside imported components. Dynamic URLs can be transformed during rendering but remain outside static analysis.
+
+`MarkdownContentAnalysis` contains `text`, `excerpt`, `headings`, `codeExamples`, `anchors`, `links`, `images`, and their `linkLocations` / `imageLocations`. The latter contain line and column when available in the source and `null` for generated nodes.
 
 `@canofold/markdown/server/analyze` inspects source without rendering it:
 
@@ -97,19 +111,24 @@ interface MarkdownAnalysis {
   headings: MarkdownHeading[]
   codeExamples: MarkdownCodeExample[]
   links: string[]
+  linkLocations: Array<{ line: number; column: number } | undefined>
   images: string[]
+  imageLocations: Array<{ line: number; column: number } | undefined>
   missingCodeBlockLanguages: number
+  missingCodeBlockLanguageLocations: Array<{ line: number; column: number } | undefined>
+  directives: MarkdownDirective[]
   directiveIssues: Array<{ message: string; line?: number; column?: number }>
 }
 
 interface AnalyzeMarkdownOptions {
   plugins?: readonly MarkdownPlugin[]
+  mode?: 'markdown' | 'mdx'
 }
 
 function analyzeMarkdown(source: string, options?: AnalyzeMarkdownOptions): MarkdownAnalysis
 ```
 
-Use it for search indexing, link checks, and editor diagnostics. When `plugins` is supplied, the analyzer accepts `directiveNames` declared by plugins active for this source. Other unknown directives are returned in `directiveIssues`.
+Use it for source syntax diagnostics and directive locations; it does not execute compiler plugins. The `plugins` option only accepts `directiveNames` declared by plugins active in the selected `mode`. Other unknown directives appear in `directiveIssues`. Use `renderer.analyze()` for search, navigation, or references that must match the published page.
 
 ## Client enhancement interface
 

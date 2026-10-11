@@ -12,6 +12,17 @@ order: 34
 
 ## 准备历史快照
 
+在当前文档仍对应即将归档的版本时运行：
+
+```bash
+pnpm exec canofold check
+pnpm exec canofold snapshot v1
+```
+
+`snapshot` 将当前版本的整个文档目录（页面、相对资源、`public/`、目录内的 MDX 组件和 Demo 源码）复制到 `versions/v1/`。它不会改写或覆盖 `canofold.config.ts`，也不会覆盖已有目录；复制前发现草稿、符号链接、目录外的 MDX/Demo 依赖或全局 `demos.setup` 时会停止。完成后，手工把历史项加入 `versions.items`，再继续编辑当前目录。要修订历史内容，直接编辑 `versions/v1/` 并重新运行 `check` 和 `build`。
+
+组件库常用的 `::demo{src="/src/..."}` 指向当前源码，不适合作为历史快照。归档前把所需 Demo 与其项目内依赖放在当前文档目录，并改用相对 `src`；历史版本构建会拒绝指向版本目录外的项目源码。第三方依赖也应固定到确切版本并提交锁文件，避免重新安装时改变旧示例。`snapshot` 不会自动冻结 npm 包、Vite 配置或全站 Provider，这些输入需要单独维护。
+
 下面的示例把中文作为默认语言，当前文档放在 `docs/`，旧版放在 `versions/v1/`：
 
 :::file-tree
@@ -46,7 +57,8 @@ export default defineConfig({
         id: 'v1',
         label: '1.x',
         docsDir: 'versions/v1',
-        base: '/v1/'
+        base: '/v1/',
+        status: 'archived'
       }
     ]
   }
@@ -54,10 +66,11 @@ export default defineConfig({
 ```
 
 `docsDir` 和 `base` 必须在各版本之间保持清晰边界，避免两个页面写入同一输出路径。
+仍在维护的历史版可以省略 `status`；设置 `status: 'archived'` 后页面保留阅读和检索能力，但会向读者标明不再维护。当前版不能设为 archived。
 
 ## 页面切换
 
-切换版本时，Canofold 先查找目标版本中相同相对路径的页面。如果不存在，则返回目标版本当前语言的首页。历史版本删除页面或调整目录后，可以通过 redirects 保留常用入口。
+切换版本时，Canofold 先查找目标版本中相同相对路径的页面。如果不存在，切换菜单会标注“此页不存在，前往首页”，链接指向目标版本当前语言的首页。历史版本删除页面或调整目录后，可以通过 redirects 保留常用入口。
 
 ## 搜索和 AI 输出
 

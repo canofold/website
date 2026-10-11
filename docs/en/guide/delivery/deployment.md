@@ -8,7 +8,7 @@ order: 42
 
 # Deploy the static site
 
-Canofold is host-independent. The build command is `pnpm docs:build` and the default publish directory is `.canofold/dist/`.
+Canofold is host-independent. Run `pnpm exec canofold check` and then `pnpm exec canofold build` before publishing. The default publish directory is `.canofold/dist/`.
 
 ## Generate host guidance
 
@@ -22,10 +22,10 @@ This writes platform examples and instructions under `.canofold/deploy/`. It doe
 
 | Platform | Build command | Output directory |
 |---|---|---|
-| GitHub Pages | `pnpm docs:build` | `.canofold/dist` |
-| Cloudflare Pages | `pnpm docs:build` | `.canofold/dist` |
-| Vercel | `pnpm docs:build` | `.canofold/dist` |
-| Netlify | `pnpm docs:build` | `.canofold/dist` |
+| GitHub Pages | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Cloudflare Pages | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Vercel | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
+| Netlify | `pnpm exec canofold check && pnpm exec canofold build` | `.canofold/dist` |
 | Nginx / object storage | Upload after CI build | `.canofold/dist` |
 
 The host must serve directory `index.html` files and must not use an SPA fallback. For a subpath deployment, set a matching `basePath`, such as `/project/`, in both Canofold and the CDN or reverse proxy.

@@ -1,6 +1,6 @@
 ---
 title: CLI 命令参考
-description: 查看 canofold init、dev、check、build、preview 和 deploy 的输入、输出与失败条件
+description: 查看 Canofold 各命令的输入、输出与失败条件
 group: 参考
 subgroup: 配置与命令
 order: 53
@@ -14,7 +14,7 @@ order: 53
 canofold --help
 ```
 
-当前 Canofold 提供七个命令。`dev`、`check`、`build`、`clean`、`preview` 和 `deploy` 从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
+当前 Canofold 提供八个命令。除 `init` 外，命令从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
 
 | 命令 | 用途 | 默认输出 |
 |---|---|---|
@@ -24,6 +24,7 @@ canofold --help
 | `canofold build [--no-cache]` | 生成静态站点 | `.canofold/dist` |
 | `canofold clean` | 删除生成产物和构建状态 | — |
 | `canofold preview [--port]` | 预览已构建产物 | 本地 HTTP 服务 |
+| `canofold snapshot <id>` | 复制当前文档供历史版本维护 | `versions/<id>/` |
 | `canofold deploy` | 生成托管平台配置示例 | `.canofold/deploy` |
 
 ## `canofold init [dir] [options]`
@@ -69,13 +70,16 @@ canofold dev --port 3334
 
 ```bash
 canofold check
+canofold check --json
 ```
+
+`--json` 输出带规则 ID、位置和建议的 `diagnostics`，以及按版本/语言统计的 `translationCoverage` 和逐页 `translationStatus`。有可确认的错误时命令以非零状态退出，适合 CI 使用。
 
 报告格式：
 
 ```txt
-WARNING: guide/install.md Frontmatter description is missing
-ERROR: guide/install.md Link target does not exist: /reference/missing/
+WARNING [frontmatter-description]: docs/guide/install.md Frontmatter description is missing
+ERROR [broken-link]: docs/guide/install.md:12:1 Link target does not exist: /reference/missing/
 ```
 
 检查内容包括：
@@ -86,7 +90,7 @@ ERROR: guide/install.md Link target does not exist: /reference/missing/
 - 同页标题是否重复。
 - 各语言是否存在对应文件。
 
-`check` 会在加载内容图时拒绝非法配置和路由，但不会替代完整编译。生产构建仍是 MDX、本地组件和扩展产物的最终门禁。CI 如果要将警告升级为失败，应根据终端输出添加团队自己的规则。
+`check` 同时检查草稿，但发布构建不会收录草稿。检查完成时，`--json` 输出 `{ schemaVersion: 1, diagnostics: [...] }`，每条诊断含稳定的 `ruleId`、严重级别、项目相对路径，以及能够确定时的行列。配置错误、缺少已发布首页等导致内容图无法建立时，命令会报错退出，不会生成 JSON 报告。可用 `checks.rules` 对单条规则设置 `off`、`warning` 或 `error`；只要最终诊断有 `error`，命令就以非零状态退出。生产构建仍是 MDX、本地组件和扩展产物的最终门禁，发布流程应先运行 `check` 再运行 `build`。
 
 ## `canofold build [--no-cache]`
 
@@ -128,6 +132,15 @@ canofold preview --port 4174
 ```
 
 `--port` 必须是 1–65535 之间的整数。命令只服务 `outputDir`，不监听源文件。
+
+## `canofold snapshot <id>`
+
+```bash
+canofold check
+canofold snapshot v1
+```
+
+复制当前版本的完整文档目录到 `versions/v1/`，不会改写配置或覆盖目标。草稿、符号链接、历史 Demo/MDX 引用当前源码等不安全情况会报错。复制后手工在 `versions.items` 登记历史版本；详见[版本管理](/guide/site/versions/)。
 
 ## `canofold deploy`
 

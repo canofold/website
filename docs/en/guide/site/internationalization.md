@@ -87,6 +87,6 @@ export default defineConfig({
 
 ## Check translation coverage
 
-`canofold check` compares page-relative paths across locales and reports missing pages. Titles, body text, sidebar labels, and screenshots are not translated automatically and must be maintained for each locale.
+`canofold check` compares published page-relative paths across locales and reports gaps. `canofold check --json` reports per-version and per-locale coverage and a per-page `translationStatus`: `current` means the recorded source fingerprint still matches, `stale` means the source changed, `unknown` means there is insufficient evidence, and `missing` means there is no target page. See the [Frontmatter reference](/en/reference/configuration/frontmatter/) for the review workflow. When the target locale lacks the current page, the menu states that the page is unavailable and its link opens the locale home; source text is not mislabelled as a translation. Titles, body text, sidebar labels, and screenshots are not translated automatically and must be maintained for each locale.
 
 The generated root `404.html` selects its message and home link from the locale prefix in the requested URL.
