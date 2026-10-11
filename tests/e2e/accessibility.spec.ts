@@ -6,7 +6,12 @@ const wcagTags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 function summarizeViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>['violations']) {
   return violations.map(({ id, nodes }) => ({
     id,
-    targets: nodes.map(({ target }) => target.join(' '))
+    count: nodes.length,
+    examples: nodes.slice(0, 5).map(({ target, any, failureSummary }) => ({
+      target: target.join(' '),
+      failureSummary,
+      checks: any.map(({ id: checkId, data }) => ({ id: checkId, data }))
+    }))
   }))
 }
 
