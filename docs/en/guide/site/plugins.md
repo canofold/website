@@ -40,7 +40,7 @@ yarn add --dev @canofold/plugins
 | `math()` | `markdown.plugins` | Render mathematical notation | Import `@canofold/plugins/math.css` when using the Markdown package directly |
 | `mermaid()` | `markdown.plugins` | Render Mermaid diagrams | Install `mermaid` |
 | `plantUml()` | `markdown.plugins` | Render PlantUML diagrams | Configure a trusted `server` |
-| `kroki()` | `markdown.plugins` | Render Graphviz and D2 through Kroki | Uses `https://kroki.io` by default; self-hosting is supported |
+| `kroki()` | `markdown.plugins` | Render Graphviz and D2 through Kroki | Configure a trusted `server` or a host renderer |
 | `pagefind()` | `search.provider` | Build a Pagefind search index | Install `pagefind` |
 
 ## Configure and use plugins
@@ -84,7 +84,27 @@ flowchart LR
 
 `canofold check` loads the config and uses plugin declarations to validate directives and code fences; it does not render complete pages. `canofold build` and `canofold dev` execute plugin transforms. Removing a plugin stops its syntax from being transformed, and fences not claimed by another plugin remain subject to the unknown-language policy.
 
-Kroki sends diagram source to its configured service. PlantUML does so only when `server` is configured. Canofold emits one explicit warning when a document actually activates either external renderer. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint. The warning does not replace network, CSP, or data-governance review.
+Kroki and PlantUML send diagram source to an external service only when `server` is configured. Canofold emits one explicit warning when a document actually activates either external renderer. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint. The warning does not replace network, CSP, or data-governance review.
+
+## Host-provided diagram rendering
+
+Editor, React, and webview hosts can keep diagram source local by selecting `renderer: 'client'` and passing a renderer to the matching client enhancer:
+
+```ts
+import { kroki } from '@canofold/plugins/kroki'
+import { enhance, type DiagramRenderer } from '@canofold/plugins/client/kroki'
+
+const plugin = kroki({ renderer: 'client' })
+const renderer: DiagramRenderer = async ({ diagramType, source, signal }) => ({
+  svg: await renderLocally({ diagramType, source, signal })
+})
+
+const diagrams = enhance(markdownRoot, { renderer })
+await diagrams.ready
+diagrams.dispose()
+```
+
+The host owns workers, native processes, and editor message bridges. The renderer receives the plugin kind, authored language, mapped diagram type, source, and an `AbortSignal`, and returns a non-empty SVG string. Dispose the enhancer before replacing or unmounting the Markdown DOM. A restrictive CSP must allow `blob:` in `img-src`. `server` and `renderer: 'client'` are mutually exclusive; client rendering supports SVG only.
 
 ## Run and verify
 
@@ -126,8 +146,10 @@ Every option is optional. The table lists the behavior used when an option is om
 |  | `strict` | `'warn'` | KaTeX strictness policy |
 |  | `macros` | `{}` | Custom KaTeX macros |
 | `mermaid` | `moduleUrl` | Build of the local dependency | Override the browser Mermaid ESM URL |
-| `plantUml` | `server` | `false` | PlantUML server; source-only output when omitted |
-| `kroki` | `server` | `https://kroki.io` | Kroki service URL |
+| `plantUml` | `server` | omitted | Trusted PlantUML HTTP(S) base URL; source-only output when omitted |
+|  | `renderer` | unset | Use `'client'` to delegate SVG rendering to the host |
+| `kroki` | `server` | omitted | Trusted Kroki HTTP(S) base URL; source-only output when omitted |
+|  | `renderer` | unset | Use `'client'` to delegate SVG rendering to the host |
 |  | `languages` | Graphviz, Dot, GV, D2 | Markdown language to Kroki type mapping |
 |  | `format` | `'svg'` | Emit `svg` or `png` |
 | `pagefind` | `includeCharacters` | `'._-'` | Characters retained during Pagefind tokenization |

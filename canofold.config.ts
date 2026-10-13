@@ -8,15 +8,14 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.5.0',
+  requiredVersion: '^0.6.2',
   demos: {
     engine: vite()
   },
-  theme: {
+  branding: {
     logo: '/logo-light.webp',
     logoDark: '/logo-dark.webp',
-    favicon: '/favicon.webp',
-    darkMode: true
+    favicon: '/favicon.webp'
   },
   search: {
     provider: pagefind()
@@ -29,7 +28,7 @@ export default defineConfig({
       math(),
       mermaid(),
       plantUml({ server: 'https://www.plantuml.com/plantuml/svg' }),
-      kroki(),
+      kroki({ server: 'https://kroki.io' }),
       externalLinks({ internalHosts: ['canofold.dev'] }),
       linkCard({ internalHosts: ['canofold.dev'] })
     ]

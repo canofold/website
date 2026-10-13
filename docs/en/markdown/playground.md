@@ -89,7 +89,7 @@ export default {
   title: 'Canofold',
   i18n: { defaultLocale: 'en', locales: ['en'] },
   search: { enabled: true },
-  theme: { darkMode: true }
+  layout: { header: true }
 }
 ```
 

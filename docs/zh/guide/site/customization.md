@@ -1,6 +1,6 @@
 ---
 title: 定制主题
-description: 配置 Canofold 的 Logo、配色、排版和项目样式
+description: 选择视觉主题并配置 Canofold 的品牌资源、布局和项目样式
 group: 指南
 subgroup: 站点能力
 order: 36
@@ -8,108 +8,82 @@ order: 36
 
 # 定制主题
 
-先使用主题配置完成品牌定制；只有配置项不够时，再加载项目 CSS。字段和默认值见[站点配置参考](/reference/configuration/base-config/#主题与搜索)。
+Canofold 把视觉主题、品牌资源和布局几何分开管理。主题包负责本地化名称、颜色、字体、圆角、边框、阴影和纯视觉动效；Core 负责 DOM 结构、尺寸、响应式规则、交互状态、焦点和无障碍。
 
-## Logo 与基础外观
+## 选择视觉主题
 
-未配置时，Canofold 使用内置的正式明暗 Logo 和 favicon。只有需要替换为自己的品牌时，才把图片放入 `docs/public/` 并使用站点绝对路径：
+配置文件直接导入官方主题时，应显式安装 `@canofold/themes`：
+
+```bash
+pnpm add -D @canofold/themes
+```
+
+只把读者需要选择的主题放入配置：
+
+```ts title="canofold.config.ts"
+import { canofold, neoBrutalist, neumorphism } from '@canofold/themes'
+import { defineConfig } from 'canofold'
+
+export default defineConfig({
+  themes: [canofold, neoBrutalist, neumorphism]
+})
+```
+
+数组第一项的第一个外观是默认值。`canofold` 提供浅色和深色两种外观；其余官方主题各提供一个固定外观。读者选择会跨页面保留，并同步到隔离的 Vite Demo frame。不配置 `themes` 时只使用 `canofold`。
+
+官方主题包括 Canofold、玻璃拟态、素描风格、手绘涂鸦、极简扁平、包豪斯、新粗野主义、新拟态、孟菲斯、赛博中国、像素动漫、多巴胺设计、少女漫画和 Outrun 复古未来。导入名和稳定 ID 由 `@canofold/themes` 直接导出，Core 不维护主题注册表。
+
+## 品牌资源
+
+品牌资源由所有主题共用。Canofold 默认使用官方明暗 Logo 和 favicon；替换时把文件放入 `docs/public/`，并使用站点绝对路径：
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  theme: {
+  branding: {
     logo: '/logo-light.svg',
     logoDark: '/logo-dark.svg',
-    favicon: '/favicon.svg',
-    baseColor: 'paper',
-    accentColor: 'canofold',
-    darkMode: true,
-    radius: 8
+    favicon: '/favicon.svg'
   }
 })
 ```
 
-`logo` 用于亮色主题，`logoDark` 用于暗色主题。两张图片应保持相同尺寸和轮廓，只调整暗色背景下需要变化的颜色。
+两张 Logo 应保持相同尺寸和轮廓，主题会根据自己的明暗外观选择对应资源。
 
-## 配色
+## 布局几何
 
-`baseColor` 控制页面和内容面的中性色，支持 `paper`、`neutral`、`slate`、`zinc` 和 `stone`。
-
-`accentColor` 控制链接、按钮和焦点等主交互颜色，可以使用内置预设，也可以传入合法 CSS 颜色：
+站点几何尺寸属于 `layout`，不属于视觉主题：
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  theme: {
-    baseColor: 'slate',
-    accentColor: '#7c3aed'
-  }
-})
-```
-
-站点 Shell 与 `@canofold/markdown` 共用以下语义色：
-
-| 角色 | Theme Token | 用途 |
-|---|---|---|
-| 主色 | `primary`、`primarySoft`、`primaryDeep` | 链接、按钮、焦点和当前状态 |
-| 强调色 | `accent` | Badge 等次级强调内容 |
-| 信息 | `info`、`infoDeep` | `info` 提示块和说明图标 |
-| 成功 | `success`、`successDeep` | `tip` 提示块和成功状态 |
-| 警告 | `warning`、`warningDeep` | `warning` 提示块和待确认状态 |
-| 危险 | `danger`、`dangerDeep` | `danger` 提示块、错误和破坏性状态 |
-
-默认信息色与 Canofold 主色使用同一蓝色锚点。`accentColor` 只改变主交互颜色；状态色保持固定，避免不同语义随品牌色变化。需要调整时再单独覆盖对应 Token。
-
-需要覆盖具体语义色时，只写与预设不同的值：
-
-```ts title="canofold.config.ts"
-import { defineConfig } from 'canofold'
-
-export default defineConfig({
-  theme: {
-    tokens: {
-      colors: {
-        light: {
-          canvas: '#fafafa',
-          primary: '#7c3aed'
-        },
-        dark: {
-          canvas: '#18181b',
-          primary: '#a78bfa'
-        }
-      }
-    }
-  }
-})
-```
-
-## 排版与布局
-
-```ts title="canofold.config.ts"
-import { defineConfig } from 'canofold'
-
-export default defineConfig({
-  theme: {
+  layout: {
+    header: true,
     sidebarWidth: '18rem',
-    outlineWidth: '16rem',
-    tokens: {
-      typography: {
-        sansFont: 'Inter, sans-serif',
-        monoFont: 'JetBrains Mono, monospace',
-        bodyLineHeight: '1.65'
-      },
-      layout: {
-        readingWidth: '72ch',
-        gutter: '2rem'
-      }
-    }
+    outlineWidth: '16rem'
   }
 })
 ```
 
-建议使用 `rem` 设置字号和主要布局尺寸，正文行高使用无单位数值。系统会自动遵循 `prefers-reduced-motion`。
+布局由 Core 统一管理，确保所有主题保持一致的对齐、点击区域、键盘行为和响应式断点。
+
+## 第三方主题
+
+第三方包分别导出由 `defineTheme` 创建的定义和公开 CSS 入口：
+
+```ts title="canofold.config.ts"
+import { canofold } from '@canofold/themes'
+import { defineConfig } from 'canofold'
+import aurora from '@acme/canofold-theme'
+
+export default defineConfig({
+  themes: [canofold, aurora]
+})
+```
+
+主题和外观 ID 使用小写 kebab-case。本地化 `name` 属于主题定义，不应放进 `i18n.messages`。CSS 必须以 `html[data-cf-theme='theme-id']` 限定作用域，也不能重定义布局、显隐、滚动、点击区域、焦点行为或无障碍。
 
 ## 项目 CSS
 
@@ -121,4 +95,4 @@ export default defineConfig({
 })
 ```
 
-项目 CSS 在默认样式和主题变量之后加载。优先使用主题 Token、`classNames` 和项目自己的 class。只有公共 API 明确说明的语义属性才能作为选择器；不要依赖内部 `.cf-*` 类名或精确布局结构。
+项目 CSS 在选中主题的样式之后加载。优先使用公共语义 Token 和项目自己的 class；只有公共 API 明确说明的语义属性才能作为选择器，不要依赖内部 `.cf-*` 类名或精确布局结构。字段默认值见[站点配置参考](/reference/configuration/base-config/#主题品牌布局与搜索)。

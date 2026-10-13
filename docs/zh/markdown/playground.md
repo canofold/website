@@ -97,7 +97,7 @@ export default {
   title: 'Canofold',
   i18n: { defaultLocale: 'zh', locales: ['zh'] },
   search: { enabled: true },
-  theme: { darkMode: true }
+  layout: { header: true }
 }
 ```
 
@@ -133,7 +133,7 @@ pnpm docs:preview
 {
   "title": "Canofold",
   "search": { "enabled": true },
-  "theme": { "baseColor": "paper" }
+  "layout": { "header": true }
 }
 ```
 

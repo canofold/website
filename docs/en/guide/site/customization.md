@@ -1,6 +1,6 @@
 ---
 title: Theme customization
-description: Configure Canofold logos, colors, typography, and project styles
+description: Select visual themes and configure Canofold branding, layout, and project styles
 group: Guide
 subgroup: Site capabilities
 order: 36
@@ -8,108 +8,82 @@ order: 36
 
 # Theme customization
 
-Start with theme configuration. Load project CSS only when the configuration does not cover a requirement. See the [site configuration reference](/en/reference/configuration/base-config/#theme-and-search) for fields and defaults.
+Canofold separates visual themes, brand assets, and layout geometry. Theme packages own localized names, colors, typography, radii, borders, shadows, and visual motion. Core owns DOM structure, dimensions, responsive behavior, interaction states, focus, and accessibility.
 
-## Logo and base appearance
+## Select visual themes
 
-Canofold uses its official light/dark logos and favicon by default. Only put images in `docs/public/` and reference them with site-absolute paths when replacing them with your own brand:
+Install `@canofold/themes` directly when the config imports official definitions:
+
+```bash
+pnpm add -D @canofold/themes
+```
+
+Then list only the themes readers should be able to select:
+
+```ts title="canofold.config.ts"
+import { canofold, neoBrutalist, neumorphism } from '@canofold/themes'
+import { defineConfig } from 'canofold'
+
+export default defineConfig({
+  themes: [canofold, neoBrutalist, neumorphism]
+})
+```
+
+The first appearance of the first entry is the default. `canofold` provides light and dark appearances; every other official theme provides one fixed appearance. The reader's selection persists across pages and is also applied inside isolated Vite Demo frames. Omitting `themes` uses only `canofold`.
+
+Official themes include Canofold, Glassmorphism, Sketch Style, Hand-drawn Doodle, Minimalist Flat, Bauhaus, Neo-Brutalist, Neumorphism, Memphis, Cyber Chinese, Pixel Anime, Dopamine Design, Shoujo Manga, and Outrun. Import names and stable ids are exported by `@canofold/themes` rather than kept in a Core registry.
+
+## Brand assets
+
+Brand assets are shared by every theme. Canofold uses its official light/dark logos and favicon by default. Put replacements in `docs/public/` and reference them with site-absolute paths:
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  theme: {
+  branding: {
     logo: '/logo-light.svg',
     logoDark: '/logo-dark.svg',
-    favicon: '/favicon.svg',
-    baseColor: 'paper',
-    accentColor: 'canofold',
-    darkMode: true,
-    radius: 8
+    favicon: '/favicon.svg'
   }
 })
 ```
 
-`logo` is used in the light theme and `logoDark` in the dark theme. Keep both files the same size and shape, changing only colors that need more contrast on a dark background.
+Keep both logos the same size and silhouette. Themes choose the asset that matches their color scheme.
 
-## Colors
+## Layout geometry
 
-`baseColor` controls neutral page and surface colors. It supports `paper`, `neutral`, `slate`, `zinc`, and `stone`.
-
-`accentColor` controls links, buttons, focus states, and other primary interactions. Use a preset or any valid CSS color:
+Site geometry belongs to `layout`, not to a visual theme:
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  theme: {
-    baseColor: 'slate',
-    accentColor: '#7c3aed'
-  }
-})
-```
-
-The site shell and `@canofold/markdown` share these semantic colors:
-
-| Role | Theme tokens | Used for |
-|---|---|---|
-| Primary | `primary`, `primarySoft`, `primaryDeep` | Links, buttons, focus, and current states |
-| Accent | `accent` | Secondary emphasis such as badges |
-| Info | `info`, `infoDeep` | `info` callouts and explanatory icons |
-| Success | `success`, `successDeep` | `tip` callouts and success states |
-| Warning | `warning`, `warningDeep` | `warning` callouts and states that need review |
-| Danger | `danger`, `dangerDeep` | `danger` callouts, errors, and destructive states |
-
-The default info color uses the same blue anchor as Canofold's default primary color. `accentColor` changes primary interactions only; status colors stay stable so their meaning does not shift with the brand color. Override a status token only when needed.
-
-Override only semantic colors that need to differ from the preset:
-
-```ts title="canofold.config.ts"
-import { defineConfig } from 'canofold'
-
-export default defineConfig({
-  theme: {
-    tokens: {
-      colors: {
-        light: {
-          canvas: '#fafafa',
-          primary: '#7c3aed'
-        },
-        dark: {
-          canvas: '#18181b',
-          primary: '#a78bfa'
-        }
-      }
-    }
-  }
-})
-```
-
-## Typography and layout
-
-```ts title="canofold.config.ts"
-import { defineConfig } from 'canofold'
-
-export default defineConfig({
-  theme: {
+  layout: {
+    header: true,
     sidebarWidth: '18rem',
-    outlineWidth: '16rem',
-    tokens: {
-      typography: {
-        sansFont: 'Inter, sans-serif',
-        monoFont: 'JetBrains Mono, monospace',
-        bodyLineHeight: '1.65'
-      },
-      layout: {
-        readingWidth: '72ch',
-        gutter: '2rem'
-      }
-    }
+    outlineWidth: '16rem'
   }
 })
 ```
 
-Use `rem` for font sizes and major layout dimensions, and unitless values for body line height. Canofold respects `prefers-reduced-motion`.
+Keeping geometry in Core ensures every theme preserves the same alignment, hit areas, keyboard behavior, and responsive breakpoints.
+
+## Third-party themes
+
+A third-party package exports a definition created with `defineTheme` and its CSS as separate public entries:
+
+```ts title="canofold.config.ts"
+import { canofold } from '@canofold/themes'
+import { defineConfig } from 'canofold'
+import aurora from '@acme/canofold-theme'
+
+export default defineConfig({
+  themes: [canofold, aurora]
+})
+```
+
+Theme and appearance ids use lowercase kebab-case. Localized `name` values live in the theme definition, not in `i18n.messages`. CSS must be scoped with `html[data-cf-theme='theme-id']` and must not redefine layout, visibility, scrolling, hit areas, focus behavior, or accessibility.
 
 ## Project CSS
 
@@ -121,4 +95,4 @@ export default defineConfig({
 })
 ```
 
-Project CSS loads after defaults and theme variables. Prefer theme tokens, `classNames`, and project-owned classes. Use a semantic attribute as a selector only when the public API documents it; do not depend on internal `.cf-*` classes or exact layout structure.
+Project CSS loads after selected theme styles. Prefer public semantic tokens and project-owned classes. Use a semantic attribute only when the public API documents it; do not depend on internal `.cf-*` classes or exact layout markup. See the [site configuration reference](/en/reference/configuration/base-config/#themes-branding-layout-and-search) for field defaults.

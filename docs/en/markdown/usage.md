@@ -12,15 +12,15 @@ order: 81
 :::code-group[Package manager]
 
 ```bash title="pnpm"
-pnpm add @canofold/markdown react react-dom
+pnpm add @canofold/markdown @canofold/themes react react-dom
 ```
 
 ```bash title="npm"
-npm install @canofold/markdown react react-dom
+npm install @canofold/markdown @canofold/themes react react-dom
 ```
 
 ```bash title="yarn"
-yarn add @canofold/markdown react react-dom
+yarn add @canofold/markdown @canofold/themes react react-dom
 ```
 
 :::
@@ -53,7 +53,7 @@ MDX can still use the matching React components when project-local content needs
 ```tsx
 import { Markdown } from '@canofold/markdown'
 import '@canofold/markdown/base.css'
-import '@canofold/markdown/theme.css'
+import '@canofold/themes/canofold.css'
 
 export function Article({ source }: { source: string }) {
   return <Markdown source={source} fallback={<p>Rendering…</p>} />

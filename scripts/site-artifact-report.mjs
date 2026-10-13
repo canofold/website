@@ -8,9 +8,9 @@ const outputRoot = join(root, '.canofold/dist')
 const budgets = {
   'assets/canofold.css': 24 * 1024,
   'assets/canofold-search.js': 4 * 1024,
-  'assets/canofold-plugins/kroki.js': 3 * 1024,
+  'assets/canofold-plugins/kroki.js': 3.5 * 1024,
   'assets/canofold-plugins/mermaid.js': 6 * 1024,
-  'assets/canofold-plugins/plantuml.js': 3 * 1024,
+  'assets/canofold-plugins/plantuml.js': 3.5 * 1024,
   'assets/canofold-plugins/diagrams.css': 4 * 1024,
   'assets/canofold-plugins/mermaid/mermaid.esm.min.mjs': 16 * 1024,
   'pagefind/pagefind.js': 16 * 1024,

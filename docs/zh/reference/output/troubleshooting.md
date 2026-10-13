@@ -47,11 +47,11 @@ order: 73
 
 ## PlantUML 只显示源码
 
-`plantUml({ server: false })` 时这是预期行为。需要图像时通过 `plantUml({ server: '...' })` 配置可用的 PlantUML SVG 服务，并确认 CSP 和网络允许访问。
+未配置 `server` 时这是预期行为。需要图像时配置可信的 PlantUML HTTP(S) 基础地址，或使用 `renderer: 'client'` 接入宿主 renderer；同时确认 CSP 已允许所需网络来源或 `blob:` 图片。
 
-## Kroki 图表无法加载
+## Kroki 只显示源码
 
-`kroki()` 默认请求 `https://kroki.io`。确认浏览器网络和 CSP 允许访问；私有环境应通过 `server` 改用可信的自托管 Kroki 服务。
+`kroki()` 默认把源码留在本地。远程渲染时配置可信的 Kroki HTTP(S) 基础地址；本地渲染时使用 `renderer: 'client'` 接入宿主 renderer。不要把私有图表源码发送到未经评估的服务。
 
 ## 搜索没有结果
 

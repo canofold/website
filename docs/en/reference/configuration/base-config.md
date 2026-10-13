@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.5.0'
+  requiredVersion: '^0.6.2'
 })
 ```
 
@@ -39,7 +39,6 @@ export default defineConfig({
 | `outputDir` | `.canofold/dist` | Static site output directory |
 | `markdownMirror` | `true` | Emit Markdown source beside each HTML page; `ai/index.md` links to HTML when disabled |
 | `styles` | `[]` | Site-wide project CSS loaded after the default stylesheet; demo CSS should be imported by components |
-| `layout.header` | `true` | Render brand, top navigation, search entry, and locale/version controls |
 | `seo.robots` | `allow` | Write `Allow: /` or `Disallow: /` to `robots.txt`; this is a crawler hint, not access control |
 
 Keep `siteUrl` as the origin and express a deployment subdirectory with `basePath`. Omit unresolved `editUrl` and `github` values. Disabling `layout.header` leaves the content sidebar, page outline, and search shortcut available.
@@ -70,24 +69,21 @@ One fence can override the site default with the standalone `wrap` or `scroll` m
 
 The demo engine is a replaceable Canofold capability and does not replace the project's build tool. `@canofold/vite` reads the existing `vite.config` and mounts Vite middleware and HMR on the same Canofold development server. See [Component demos](/en/guide/writing/component-demos/) for the complete workflow.
 
-## Theme and search
+## Themes, branding, layout, and search
 
 | Field | Default | Purpose |
 |---|---|---|
-| `theme.logo` / `logoDark` | Canofold light/dark logo | Brand images; a custom `logoDark` requires `logo` and `darkMode: true` |
-| `theme.favicon` | Canofold favicon | Site favicon |
-| `theme.accentColor` | `canofold` | Preset name or valid CSS color |
-| `theme.baseColor` | `paper` | `paper`, `neutral`, `slate`, `zinc`, or `stone` |
-| `theme.darkMode` | `false` | Generate the dark theme and its switch |
-| `theme.radius` | `8` | Site shortcut for small, medium, and large radii |
-| `theme.sidebarWidth` | `17.5rem` | Desktop sidebar width |
-| `theme.outlineWidth` | `18.75rem` | Desktop page-outline width |
-| `theme.tokens` | `{}` | Semantic color, typography, layout, geometry, and motion overrides |
+| `themes` | `[canofold]` | Ordered `ThemeDefinition[]`; the first appearance of the first theme is the default |
+| `branding.logo` / `logoDark` | Canofold light/dark logo | Brand images shared by every configured theme |
+| `branding.favicon` | Canofold favicon | Site favicon |
+| `layout.header` | `true` | Render brand, top navigation, search entry, and locale/version controls |
+| `layout.sidebarWidth` | `17.5rem` | Desktop sidebar width |
+| `layout.outlineWidth` | `18.75rem` | Desktop page-outline width |
 | `search.enabled` | `true` | Generate a search index and browser entry |
 | `search.provider` | `compact` | Built-in `compact` or a `SearchProvider` object such as `pagefind()` |
 | `checks.rules` | `{}` | Override a check rule with `off`, `warning`, or `error`; omitted rules keep their default level |
 
-See [Theme customization](/en/guide/site/customization/) and [Search](/en/guide/site/search/) for task workflows.
+Theme definitions come from `@canofold/themes` or a third-party package and own localized names, CSS entries, and appearances. Core owns layout, behavior, persistence, and accessibility. See [Theme customization](/en/guide/site/customization/) and [Search](/en/guide/site/search/) for task workflows.
 
 ## Site capabilities
 
