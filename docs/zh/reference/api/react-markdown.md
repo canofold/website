@@ -18,9 +18,9 @@ order: 61
 | `@canofold/markdown/server` | 构建与 SSR renderer |
 | `@canofold/markdown/client` | 静态 HTML 交互增强 |
 | `@canofold/markdown/server/analyze` | 服务端资源分析 |
-| `@canofold/markdown/theme` | 主题类型、预设与 CSS 变量契约 |
 | `@canofold/markdown/base.css` | 必需的结构样式 |
-| `@canofold/markdown/theme.css` | 默认主题 |
+| `@canofold/themes` | 主题定义和 `ThemeDefinition` 契约 |
+| `@canofold/themes/<theme>.css` | 在 `base.css` 之后引入的视觉主题样式 |
 
 深层 `dist/` Chunk、内部组件、Unified/HAST 处理器、Islands、React root 和缓存文件都不是公共 API。
 

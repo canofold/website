@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.5.0'
+  requiredVersion: '^0.6.2'
 })
 ```
 
@@ -39,7 +39,6 @@ export default defineConfig({
 | `outputDir` | `.canofold/dist` | 静态站点输出目录 |
 | `markdownMirror` | `true` | 是否在每个 HTML 页面旁生成 Markdown 原文；关闭后 `ai/index.md` 改用 HTML 链接 |
 | `styles` | `[]` | 在默认样式之后加载的站点级项目 CSS；组件 Demo 的 CSS 应由组件入口导入 |
-| `layout.header` | `true` | 是否渲染品牌、顶部导航、搜索入口和语言/版本控件 |
 | `seo.robots` | `allow` | `robots.txt` 使用 `Allow: /` 或 `Disallow: /`；这只是抓取提示，不是访问控制 |
 
 `siteUrl` 只写 origin，子目录由 `basePath` 表达。`editUrl` 和 `github` 未确定时直接省略。关闭 `layout.header` 不会移除正文侧栏、页内导航或搜索快捷键。
@@ -70,24 +69,21 @@ export default defineConfig({
 
 Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具。`@canofold/vite` 会读取已有 `vite.config`，并把 Vite 中间件和 HMR 接到 Canofold 的同一个开发服务器。完整用法见[组件示例](/guide/writing/component-demos/)。
 
-## 主题与搜索
+## 主题、品牌、布局与搜索
 
 | 字段 | 默认值 | 说明 |
 |---|---|---|
-| `theme.logo` / `logoDark` | Canofold 明暗 Logo | 亮色和暗色品牌图片；自定义 `logoDark` 需要同时设置 `logo` 和 `darkMode: true` |
-| `theme.favicon` | Canofold favicon | 站点 favicon |
-| `theme.accentColor` | `canofold` | 预设名或合法 CSS 颜色 |
-| `theme.baseColor` | `paper` | `paper`、`neutral`、`slate`、`zinc` 或 `stone` |
-| `theme.darkMode` | `false` | 生成暗色主题和切换控件 |
-| `theme.radius` | `8` | 小、中、大圆角的站点快捷值 |
-| `theme.sidebarWidth` | `17.5rem` | 桌面端侧栏宽度 |
-| `theme.outlineWidth` | `18.75rem` | 桌面端页内导航宽度 |
-| `theme.tokens` | `{}` | 亮暗色、排版、阅读宽度、圆角和动效的语义 Token 覆盖 |
+| `themes` | `[canofold]` | 按顺序排列的 `ThemeDefinition[]`；第一项的第一个外观是默认值 |
+| `branding.logo` / `logoDark` | Canofold 明暗 Logo | 所有主题共用的品牌图片 |
+| `branding.favicon` | Canofold favicon | 站点 favicon |
+| `layout.header` | `true` | 是否渲染品牌、顶部导航、搜索入口和语言/版本控件 |
+| `layout.sidebarWidth` | `17.5rem` | 桌面端侧栏宽度 |
+| `layout.outlineWidth` | `18.75rem` | 桌面端页内导航宽度 |
 | `search.enabled` | `true` | 生成搜索索引和客户端入口 |
 | `search.provider` | `compact` | 内置 `compact` 或实现 `SearchProvider` 的对象，如 `pagefind()` |
 | `checks.rules` | `{}` | 按规则覆盖检查级别：`off`、`warning` 或 `error`；未配置时使用内置级别 |
 
-主题覆盖示例见[定制主题](/guide/site/customization/)，搜索选择见[配置搜索](/guide/site/search/)。
+主题定义来自 `@canofold/themes` 或第三方包，负责本地化名称、CSS 入口和外观；Core 负责布局、行为、持久化和无障碍。主题配置见[定制主题](/guide/site/customization/)，搜索选择见[配置搜索](/guide/site/search/)。
 
 ## 站点能力
 

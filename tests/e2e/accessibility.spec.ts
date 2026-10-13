@@ -33,7 +33,8 @@ test('搜索对话框符合自动无障碍规则', async ({ page }) => {
 test('深色阅读和代码示例符合自动无障碍规则', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/markdown/syntax/')
-  await page.locator('[data-canofold-theme-toggle]').click()
+  await page.locator('.cf-theme-menu > summary').click()
+  await page.locator('[data-canofold-theme-option="canofold:dark"]').click()
   await expect(page.locator('html')).toHaveClass(/dark/)
   await expect.poll(() => page.locator('body').evaluate((element) => getComputedStyle(element).color)).toBe('rgb(227, 227, 232)')
   await expect.poll(() => page.locator('p[data-cf-element="paragraph"]').first().evaluate((element) => getComputedStyle(element).color)).toBe('rgb(227, 227, 232)')

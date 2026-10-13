@@ -18,9 +18,9 @@ This page contains code contracts only. See [Use the Markdown package](/en/markd
 | `@canofold/markdown/server` | Build and SSR renderer |
 | `@canofold/markdown/client` | Static HTML behavior enhancement |
 | `@canofold/markdown/server/analyze` | Server-side resource analysis |
-| `@canofold/markdown/theme` | Theme types, presets, and CSS variable contract |
 | `@canofold/markdown/base.css` | Required structural styles |
-| `@canofold/markdown/theme.css` | Default theme |
+| `@canofold/themes` | Theme definitions and the `ThemeDefinition` contract |
+| `@canofold/themes/<theme>.css` | Selected visual theme styles, imported after `base.css` |
 
 Deep `dist/` chunks, internal components, Unified/HAST processors, Islands, React roots, and cache files are not public API.
 

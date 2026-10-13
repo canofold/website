@@ -8,7 +8,7 @@ order: 45
 
 # Upgrading Canofold
 
-Before upgrading, read the compatibility changes and upgrade steps for the target version in the [Changelog](https://github.com/canofold/canofold/blob/main/CHANGELOG.md). If your project directly depends on `@canofold/markdown` or `@canofold/plugins`, review their versions and public entries as well.
+Before upgrading, read the compatibility changes and upgrade steps for the target version in the [Changelog](https://github.com/canofold/canofold/blob/main/CHANGELOG.md). Upgrade every directly used Canofold package together rather than mixing package generations.
 
 Install an explicit project-local CLI release, commit the lockfile, and make sure `requiredVersion` includes that release:
 
@@ -20,6 +20,18 @@ pnpm exec canofold build
 ```
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
+
+## From 0.5.0 to 0.6.2
+
+Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.2, and commit the updated lockfile.
+
+- Replace the former `theme` object with explicit responsibilities: `themes` lists imported `ThemeDefinition` values, `branding` contains only logo and favicon paths, and `layout` contains header and sidebar geometry. Theme names belong to each definition, not `i18n.messages`. Omitting `themes` uses the Canofold light and dark appearances.
+- Standalone Markdown consumers must import `@canofold/markdown/base.css` followed by a selected `@canofold/themes/<theme>.css` entry. The former Markdown-owned theme entry no longer exists.
+- `kroki()` and `plantUml()` keep source local when `server` is omitted. Remove `server: false`; configure an explicit trusted HTTP(S) base URL for remote rendering or select `renderer: 'client'` and provide the matching host renderer. A server URL cannot contain a query or fragment.
+- A third-party theme package should peer-depend on `@canofold/themes`, export a `ThemeDefinition`, and expose its CSS separately. Theme CSS owns visual treatment only; Core continues to own layout, interaction state, and accessibility.
+- Navigation entries may use `activePaths` when related pages do not live below the entry's route.
+
+Run a clean build, then verify every configured theme and appearance, locale switching, diagram source/preview behavior, Vite Demo frames, keyboard focus, mobile layout, and CSP rules in the production preview.
 
 ## From 0.4.1 to 0.5.0
 

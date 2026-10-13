@@ -47,11 +47,11 @@ Inspect the source and verify that the bundled Mermaid version supports the synt
 
 ## PlantUML shows source only
 
-This is expected with `plantUml({ server: false })`. Configure a trusted PlantUML SVG service through `server`, then allow it in the network and CSP policy.
+This is expected when `server` is omitted. Configure a trusted PlantUML HTTP(S) base URL, or use `renderer: 'client'` with a host renderer, then allow any required network or `blob:` image source in the CSP policy.
 
-## Kroki diagrams do not load
+## Kroki shows source only
 
-`kroki()` requests `https://kroki.io` by default. Allow that origin in the browser network and CSP policy, or configure `server` to use a trusted self-hosted Kroki service.
+`kroki()` keeps source local by default. Configure a trusted Kroki HTTP(S) base URL for remote rendering, or use `renderer: 'client'` with a host renderer. Do not send private diagram source to an unreviewed service.
 
 ## Search has no results
 

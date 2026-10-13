@@ -8,7 +8,7 @@ order: 45
 
 # 升级 Canofold
 
-升级前先查看 [Changelog](https://github.com/canofold/canofold/blob/main/CHANGELOG.md) 中当前版本的兼容变化和升级步骤。如果项目直接使用 `@canofold/markdown` 或 `@canofold/plugins`，也要一起核对它们的版本和公开入口。
+升级前先查看 [Changelog](https://github.com/canofold/canofold/blob/main/CHANGELOG.md) 中当前版本的兼容变化和升级步骤。项目直接使用的全部 Canofold 包必须整套升级，不能混用不同代的包。
 
 将 CLI 更新为明确版本，提交锁文件，并让 `requiredVersion` 包含该版本：
 
@@ -20,6 +20,18 @@ pnpm exec canofold build
 ```
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
+
+## 从 0.5.0 升级到 0.6.2
+
+将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.2，并提交更新后的锁文件。
+
+- 把原来的 `theme` 对象拆到明确职责中：`themes` 放导入的 `ThemeDefinition`，`branding` 只放 Logo 与 favicon 路径，`layout` 放页头和侧栏几何尺寸。主题名称属于主题定义，不应放在 `i18n.messages`。省略 `themes` 时使用 Canofold 的浅色和深色外观。
+- 独立 Markdown 消费方需要先引入 `@canofold/markdown/base.css`，再引入选中主题对应的 `@canofold/themes/<theme>.css`；原先由 Markdown 包拥有的主题入口已经删除。
+- `kroki()` 和 `plantUml()` 在省略 `server` 时把源码留在本地。删除 `server: false`；远程渲染需要配置明确且可信的 HTTP(S) 基础地址，本地渲染使用 `renderer: 'client'` 并接入对应宿主 renderer。服务地址不能带查询参数或片段。
+- 第三方主题包应把 `@canofold/themes` 声明为 peer dependency，分别导出 `ThemeDefinition` 与 CSS。主题 CSS 只负责视觉处理；布局、交互状态和无障碍继续由 Core 负责。
+- 相关页面不在导航入口的目录路由下时，可以使用 `activePaths` 声明选中范围。
+
+完成干净构建后，在生产预览中逐个检查已配置的主题和外观、语言切换、图表源码与预览、Vite Demo frame、键盘焦点、移动布局和 CSP。
 
 ## 从 0.4.1 升级到 0.5.0
 

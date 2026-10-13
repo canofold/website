@@ -40,7 +40,7 @@ yarn add --dev @canofold/plugins
 | `math()` | `markdown.plugins` | 渲染数学公式 | 独立使用 Markdown 包时导入 `@canofold/plugins/math.css` |
 | `mermaid()` | `markdown.plugins` | 渲染 Mermaid 图表 | 安装 `mermaid` |
 | `plantUml()` | `markdown.plugins` | 渲染 PlantUML 图表 | 配置可信的 `server` |
-| `kroki()` | `markdown.plugins` | 通过 Kroki 渲染 Graphviz 和 D2 | 默认使用 `https://kroki.io`，也可自托管 |
+| `kroki()` | `markdown.plugins` | 通过 Kroki 渲染 Graphviz 和 D2 | 配置可信 `server` 或宿主 renderer |
 | `pagefind()` | `search.provider` | 生成 Pagefind 搜索索引 | 安装 `pagefind` |
 
 ## 配置并使用插件
@@ -84,7 +84,27 @@ flowchart LR
 
 `canofold check` 会加载配置，并根据插件声明校验指令和代码围栏；它不会执行完整的页面渲染。`canofold build` 和 `canofold dev` 才会执行插件转换。删除配置后，对应语法不再转换，未被其他插件声明的围栏仍受未知语言策略检查。
 
-Kroki 会把图示源码发送到配置的服务；PlantUML 只有配置 `server` 时才会发送。Canofold 在文档实际使用对应围栏时输出一次明确警告。公开内容可评估服务条款后使用，私有或受限内容应改用可信的自托管地址；警告不会代替网络、CSP 或数据合规检查。
+Kroki 和 PlantUML 只有配置 `server` 时才会把图示源码发送到外部服务。Canofold 在文档实际使用对应围栏时输出一次明确警告。公开内容可评估服务条款后使用，私有或受限内容应改用可信的自托管地址；警告不会代替网络、CSP 或数据合规检查。
+
+## 由宿主提供图表渲染
+
+编辑器、React 或 Webview 宿主可以使用 `renderer: 'client'` 把源码留在本地，并向对应的客户端增强器传入 renderer：
+
+```ts
+import { kroki } from '@canofold/plugins/kroki'
+import { enhance, type DiagramRenderer } from '@canofold/plugins/client/kroki'
+
+const plugin = kroki({ renderer: 'client' })
+const renderer: DiagramRenderer = async ({ diagramType, source, signal }) => ({
+  svg: await renderLocally({ diagramType, source, signal })
+})
+
+const diagrams = enhance(markdownRoot, { renderer })
+await diagrams.ready
+diagrams.dispose()
+```
+
+Worker、本地进程和编辑器消息桥由宿主负责。renderer 会收到插件类型、原始语言、映射后的图表类型、源码和 `AbortSignal`，并返回非空 SVG 字符串。替换或卸载 Markdown DOM 前必须销毁增强器；严格 CSP 还需在 `img-src` 中允许 `blob:`。`server` 与 `renderer: 'client'` 互斥，客户端渲染只支持 SVG。
 
 ## 运行并验证
 
@@ -126,8 +146,10 @@ pnpm docs:preview
 |  | `strict` | `'warn'` | KaTeX 严格模式 |
 |  | `macros` | `{}` | 自定义 KaTeX 宏 |
 | `mermaid` | `moduleUrl` | 本地依赖构建产物 | 覆盖浏览器端 Mermaid ESM 地址 |
-| `plantUml` | `server` | `false` | PlantUML 服务地址；未配置时只展示源码 |
-| `kroki` | `server` | `https://kroki.io` | Kroki 服务地址 |
+| `plantUml` | `server` | 未配置 | 可信 PlantUML HTTP(S) 基础地址；未配置时只展示源码 |
+|  | `renderer` | 未设置 | 使用 `'client'` 把 SVG 渲染交给宿主 |
+| `kroki` | `server` | 未配置 | 可信 Kroki HTTP(S) 基础地址；未配置时只展示源码 |
+|  | `renderer` | 未设置 | 使用 `'client'` 把 SVG 渲染交给宿主 |
 |  | `languages` | Graphviz、Dot、GV、D2 | Markdown 语言名到 Kroki 类型的映射 |
 |  | `format` | `'svg'` | 输出 `svg` 或 `png` |
 | `pagefind` | `includeCharacters` | `'._-'` | Pagefind 分词时保留的字符 |

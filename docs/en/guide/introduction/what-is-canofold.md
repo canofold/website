@@ -44,10 +44,11 @@ See the [Markdown SDK](/en/markdown/) for content syntax, [Quick start](/en/guid
 |---|---|
 | `canofold` | Build a complete documentation site |
 | `@canofold/markdown` | Render Markdown and MDX in an existing React, SSR, or static generation project |
+| `@canofold/themes` | Provide the theme contract and official visual themes |
 | `@canofold/vite` | Run live examples, HMR, and production demo builds in a Vite component project |
 | `@canofold/plugins` | Provide math, diagrams, link handling, reading time, and Pagefind plugins |
 
-A regular documentation site only requires `canofold`. The other packages render Markdown independently, integrate Vite component demos, or add optional plugins.
+A regular documentation site only requires `canofold`. Install `@canofold/themes` directly when the config imports theme definitions; the other packages render Markdown independently, integrate Vite component demos, or add optional plugins.
 
 ## Scope
 
