@@ -48,8 +48,10 @@ yarn add --dev @canofold/plugins
 这些包只在本地开发和站点构建时使用，因此安装为开发依赖。只安装并配置站点需要的能力；启用 Mermaid 或 Pagefind 时，再补充对应依赖：
 
 ```bash
-pnpm add -D mermaid pagefind
+pnpm add -D mermaid@^12.2.0 pagefind
 ```
+
+Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认使用 Dagre 布局和 Classic 外观，图表自己的配置仍可选择 ELK 等布局。Mermaid 的运行时从站点安装的包构建，不内置于 `@canofold/plugins`；仅升级插件包不会升级它。Mermaid 11 的 API 仍受支持，但保留旧 KaTeX 的低危告警，新项目应使用 12.2.0 或更新的受支持版本，不能用跨版本依赖覆盖代替升级。
 
 ```ts title="canofold.config.ts"
 import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'

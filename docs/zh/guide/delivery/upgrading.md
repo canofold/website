@@ -21,13 +21,15 @@ pnpm exec canofold build
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
 
-## 从 0.6.2 升级到 0.6.4
+## 从 0.6.2 升级到 0.6.5
 
 整套更新项目直接使用的 Canofold 包。这些补丁不改变配置或主题契约：0.6.3 修复图表的原始尺寸、容器适配、缩放和放大弹框；0.6.4 修复玻璃拟态、铅笔手绘、包豪斯与新拟物主题的按钮对比度。重新构建后，检查图表的首次加载、源码/预览切换、缩放、弹框与窄屏显示，以及全部已启用主题的按钮默认与 hover 状态。使用宿主 renderer 的编辑器或 Webview 也应验证取消、错误恢复与关闭重开。
 
+0.6.5 新增 Mermaid 12 支持并修复 WebKit 中图表尺寸回写的 ResizeObserver 循环。Mermaid 是站点单独安装的可选 Peer，升级 Canofold 不会自动替换它。使用 `pnpm add -D mermaid@^12.2.0` 升级；Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认保留 Dagre 布局和 Classic 外观；需要 ELK 时在图表 Frontmatter 的 `config` 中指定 `layout: elk`。旧的 `defaultRenderer` 应迁移为 `layout`。完整运行时包含按需加载的 ELK，部署时需一起保留生成的资源分块。
+
 ## 从 0.5.0 升级到 0.6.x
 
-将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.3，并提交更新后的锁文件。
+将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.5，并提交更新后的锁文件。
 
 - 把原来的 `theme` 对象拆到明确职责中：`themes` 放导入的 `ThemeDefinition`，`branding` 只放 Logo 与 favicon 路径，`layout` 放页头和侧栏几何尺寸。主题名称属于主题定义，不应放在 `i18n.messages`。省略 `themes` 时使用 Canofold 的浅色和深色外观。
 - 独立 Markdown 消费方需要先引入 `@canofold/markdown/base.css`，再引入选中主题对应的 `@canofold/themes/<theme>.css`；原先由 Markdown 包拥有的主题入口已经删除。

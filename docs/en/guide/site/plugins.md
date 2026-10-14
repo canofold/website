@@ -48,8 +48,10 @@ yarn add --dev @canofold/plugins
 These packages run during local development and site builds, so install them as development dependencies. Add only the capabilities the site needs; when enabling Mermaid or Pagefind, install the corresponding dependency as well:
 
 ```bash
-pnpm add -D mermaid pagefind
+pnpm add -D mermaid@^12.2.0 pagefind
 ```
+
+Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold defaults to Dagre layout and the Classic look; authored diagram configuration can still select ELK or another layout. Its runtime is built from the site's installed package, not bundled inside `@canofold/plugins`; upgrading the plugin alone does not upgrade Mermaid. Mermaid 11 remains API-supported but retains a low-severity advisory in its old KaTeX dependency. New projects should use 12.2.0 or a newer supported release rather than a cross-version dependency override.
 
 ```ts title="canofold.config.ts"
 import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'

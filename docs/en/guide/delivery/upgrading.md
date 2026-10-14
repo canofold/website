@@ -21,13 +21,15 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
-## From 0.6.2 to 0.6.4
+## From 0.6.2 to 0.6.5
 
 Upgrade all directly used Canofold packages together. These patches leave configuration and theme contracts unchanged: 0.6.3 fixes intrinsic diagram sizing, container fitting, zoom, and expanded dialogs; 0.6.4 fixes button contrast in Glassmorphism, Sketch Style, Bauhaus, and Neumorphism. Rebuild and check diagram loading, source/preview switching, zoom, dialogs, and narrow layouts, plus default and hover button states in every enabled theme. Editors and Webviews with host renderers should also verify cancellation, error recovery, and closing and reopening previews.
 
+0.6.5 adds Mermaid 12 support and fixes a WebKit ResizeObserver loop during diagram resizing. Mermaid is a separately installed optional peer; upgrading Canofold does not replace it. Upgrade with `pnpm add -D mermaid@^12.2.0`. Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold retains Dagre layout and the Classic look by default; set `layout: elk` under `config` in diagram front matter to use ELK. Migrate the former `defaultRenderer` option to `layout`. The full runtime includes a lazy-loaded ELK chunk; deploy all generated resource chunks together.
+
 ## From 0.5.0 to 0.6.x
 
-Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.3, and commit the updated lockfile.
+Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.5, and commit the updated lockfile.
 
 - Replace the former `theme` object with explicit responsibilities: `themes` lists imported `ThemeDefinition` values, `branding` contains only logo and favicon paths, and `layout` contains header and sidebar geometry. Theme names belong to each definition, not `i18n.messages`. Omitting `themes` uses the Canofold light and dark appearances.
 - Standalone Markdown consumers must import `@canofold/markdown/base.css` followed by a selected `@canofold/themes/<theme>.css` entry. The former Markdown-owned theme entry no longer exists.
