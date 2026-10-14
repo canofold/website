@@ -19,7 +19,7 @@ docs/zh/index.md                               → /zh/
 docs/zh/guide/getting-started.md               → /zh/guide/getting-started/
 ```
 
-Each page produces a directory-style `index.html` and a Markdown mirror. The default locale has no prefix; other locales keep one. `basePath` prefixes every internal route.
+Each page produces a directory-style `index.html`, plus a Markdown mirror when `markdownMirror` is enabled. The default locale has no prefix; other locales keep one. `basePath` prefixes every internal route.
 
 ## Top navigation
 
@@ -48,6 +48,8 @@ This example assumes English is the default locale. If `zh` is the default, remo
 A `link` is either an absolute site route or an HTTP(S) URL. When a locale has no explicit navigation, Canofold derives it from first-level content sections. A missing internal target fails checks or builds.
 
 ## Recursive sidebar
+
+A navigation item may also set `activePaths: ['/notice/', '/progress/']` to associate related pages outside its `link` directory with the same active entry. Use absolute internal routes and the matching locale prefix. This extends selection only; it does not create routes or move sidebar content.
 
 The first directory below a locale maps to a top navigation section; later directories recursively become groups. Any directory `index.md` can provide its title and initial `collapsed` state. Ancestors of the current page open automatically. The content tree has no depth limit; only visual indentation is capped.
 

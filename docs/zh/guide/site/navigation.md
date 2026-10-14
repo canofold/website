@@ -19,7 +19,7 @@ docs/en/index.md                               → /en/
 docs/en/guide/getting-started.md               → /en/guide/getting-started/
 ```
 
-每个页面同时生成目录式 `index.html` 和 Markdown 镜像。默认语言没有 locale 前缀，其他语言保留前缀；`basePath` 会统一加在站内路由前。
+每个页面生成目录式 `index.html`；启用 `markdownMirror` 时还会生成 Markdown 镜像。默认语言没有 locale 前缀，其他语言保留前缀；`basePath` 会统一加在站内路由前。
 
 ## 顶部导航
 
@@ -45,6 +45,8 @@ export default defineConfig({
 `link` 可以是站内绝对路由或 HTTP(S) 外链。缺少某语言配置时，Canofold 从一级内容分区生成导航；不存在的站内目标会在检查或构建时失败。
 
 ## 递归侧栏
+
+导航项还可设置 `activePaths: ['/notice/', '/progress/']`，把不在 `link` 目录下面的相关页面归到同一个选中入口。路径使用站内绝对路由；多语言配置中填写对应语言的前缀。它只扩展选中范围，不生成新路由或移动侧栏内容。
 
 locale 下第一层目录对应顶部导航分区，后续目录递归成为分组。任意目录的 `index.md` 可提供标题与 `collapsed` 初始状态；当前页的祖先分组自动展开。内容树没有深度上限，只有视觉缩进封顶。
 

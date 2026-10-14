@@ -31,7 +31,24 @@ export default defineConfig({
 
 数组第一项的第一个外观是默认值。`canofold` 提供浅色和深色两种外观；其余官方主题各提供一个固定外观。读者选择会跨页面保留，并同步到隔离的 Vite Demo frame。不配置 `themes` 时只使用 `canofold`。
 
-官方主题包括 Canofold、玻璃拟态、素描风格、手绘涂鸦、极简扁平、包豪斯、新粗野主义、新拟态、孟菲斯、赛博中国、像素动漫、多巴胺设计、少女漫画和 Outrun 复古未来。导入名和稳定 ID 由 `@canofold/themes` 直接导出，Core 不维护主题注册表。
+官方主题的导入名与外观如下。名称由主题定义本地化，Core 不维护主题注册表。
+
+| 导出名 | 中文名称 | 外观 |
+|---|---|---|
+| `canofold` | Canofold | 浅色、深色 |
+| `glassmorphism` | 玻璃拟态 | 深色 |
+| `sketchStyle` | 铅笔手绘风 | 浅色 |
+| `handDrawnDoodle` | 手绘涂鸦风 | 浅色 |
+| `minimalistFlat` | 极简扁平风 | 浅色 |
+| `bauhaus` | 包豪斯风格 | 浅色 |
+| `neoBrutalist` | 新野兽派 | 浅色 |
+| `neumorphism` | 新拟物派 | 浅色 |
+| `memphis` | 孟菲斯 | 浅色 |
+| `cyberChinese` | 赛博中华 | 深色 |
+| `pixelAnime` | 像素动漫 | 深色 |
+| `dopamineDesign` | 多巴胺设计 | 浅色 |
+| `shoujoManga` | 少女漫画 | 浅色 |
+| `outrun` | Outrun 复古未来 | 深色 |
 
 ## 品牌资源
 
@@ -84,6 +101,8 @@ export default defineConfig({
 ```
 
 主题和外观 ID 使用小写 kebab-case。本地化 `name` 属于主题定义，不应放进 `i18n.messages`。CSS 必须以 `html[data-cf-theme='theme-id']` 限定作用域，也不能重定义布局、显隐、滚动、点击区域、焦点行为或无障碍。
+
+从零创建定义、CSS、类型声明和 npm 包的完整步骤见[开发主题包](/guide/site/theme-development/)。
 
 ## 项目 CSS
 

@@ -43,7 +43,7 @@ Extension errors include the extension name, hook, and related page when applica
 
 ## Mermaid reports a syntax error
 
-Inspect the source and verify that the bundled Mermaid version supports the syntax. `mermaid()` uses its bundled browser runtime and makes no remote module request. CSP module access matters only when `moduleUrl` overrides that runtime.
+Inspect the source and verify that the project's installed Mermaid version supports the syntax. `mermaid()` builds a local browser runtime from that dependency and makes no remote module request. Configure CSP module access when `moduleUrl` overrides it with a CDN or self-hosted module.
 
 ## PlantUML shows source only
 

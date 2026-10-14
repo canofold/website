@@ -43,7 +43,8 @@ Use the `canofold` CLI for a complete knowledge site. Use the `@canofold/markdow
 | Add Markdown syntax, math, or diagrams | Markdown plugin |
 | Change repository-wide build rules or emit extra files | Extension |
 | Replace indexing and querying | Search Provider |
-| Change presentation only | Theme tokens, CSS, and component slots |
+| Change site presentation | Official or third-party theme packages and project CSS |
+| Customize standalone Markdown rendering | React components, classNames, and slots |
 
 Each entry point owns content, builds, search, or presentation instead of letting one plugin control the complete pipeline.
 

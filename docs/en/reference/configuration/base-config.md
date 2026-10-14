@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.6.2'
+  requiredVersion: '^0.6.3'
 })
 ```
 
@@ -90,7 +90,7 @@ Theme definitions come from `@canofold/themes` or a third-party package and own 
 | Field | Default | Purpose |
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` entries; `resolve` starts with `./` and options are JSON-serializable |
-| `navigation` | `{}` | Locale-keyed `{ text, link }[]`; derived from top-level content sections when omitted |
+| `navigation` | `{}` | Locale-keyed `{ text, link, activePaths? }[]`; derived from top-level content sections when omitted |
 | `versions` | current version `current` | `{ current, items }`; current uses `/`, and every id and base is unique |
 | `redirects` | `{}` | Old-to-current route map; chains, cycles, and real-page collisions fail validation |
 | `advertising` | unset | `{ image, href, alt, label? }` image slot beside the page outline |

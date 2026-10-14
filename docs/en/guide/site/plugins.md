@@ -39,7 +39,7 @@ yarn add --dev @canofold/plugins
 | `readingTime()` | `markdown.plugins` | Show reading time below the title | None |
 | `math()` | `markdown.plugins` | Render mathematical notation | Import `@canofold/plugins/math.css` when using the Markdown package directly |
 | `mermaid()` | `markdown.plugins` | Render Mermaid diagrams | Install `mermaid` |
-| `plantUml()` | `markdown.plugins` | Render PlantUML diagrams | Configure a trusted `server` |
+| `plantUml()` | `markdown.plugins` | Render PlantUML diagrams | Configure a trusted `server` or host renderer |
 | `kroki()` | `markdown.plugins` | Render Graphviz and D2 through Kroki | Configure a trusted `server` or a host renderer |
 | `pagefind()` | `search.provider` | Build a Pagefind search index | Install `pagefind` |
 
@@ -105,6 +105,8 @@ diagrams.dispose()
 ```
 
 The host owns workers, native processes, and editor message bridges. The renderer receives the plugin kind, authored language, mapped diagram type, source, and an `AbortSignal`, and returns a non-empty SVG string. Dispose the enhancer before replacing or unmounting the Markdown DOM. A restrictive CSP must allow `blob:` in `img-src`. `server` and `renderer: 'client'` are mutually exclusive; client rendering supports SVG only.
+
+The host implements `renderLocally`; it is not a runtime exported by the plugin package. PlantUML uses the matching `@canofold/plugins/client/plantuml` enhancement entry.
 
 ## Run and verify
 

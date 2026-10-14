@@ -14,6 +14,7 @@ sidebar: false
 - [Internationalization](/en/guide/site/internationalization/): locale directories, UI messages, and translation gaps.
 - [Documentation versions](/en/guide/site/versions/): independent content snapshots and version switching.
 - [Redirects](/en/guide/site/redirects/): migrate public URLs and reject loops or chains.
-- [Theme customization](/en/guide/site/customization/): base palettes, logos, and semantic token overrides.
+- [Theme customization](/en/guide/site/customization/): select official or third-party themes and configure branding and layout.
+- [Develop a theme package](/en/guide/site/theme-development/): definitions, visual contracts, CSS exports, packaging, and verification.
 - [Build extensions](/en/guide/site/extensions/): transform source, add page information, or generate project files during a site build.
 - [Official plugins](/en/guide/site/plugins/): enable math, diagrams, link handling, and reading time in Markdown, or switch search to Pagefind.

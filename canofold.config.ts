@@ -1,14 +1,46 @@
 import { externalLinks, kroki, linkCard, math, mermaid, pagefind, plantUml } from '@canofold/plugins'
+import {
+  bauhaus,
+  canofold,
+  cyberChinese,
+  dopamineDesign,
+  glassmorphism,
+  handDrawnDoodle,
+  memphis,
+  minimalistFlat,
+  neoBrutalist,
+  neumorphism,
+  outrun,
+  pixelAnime,
+  sketchStyle,
+  shoujoManga
+} from '@canofold/themes'
 import { vite } from '@canofold/vite'
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
   title: 'Canofold',
-  description: '静态优先、低侵入、可扩展的知识文档平台',
+  description: '以 Markdown 和 MDX 构建文档站、搜索与 AI 可读内容',
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.6.2',
+  requiredVersion: '^0.6.3',
+  themes: [
+    canofold,
+    glassmorphism,
+    sketchStyle,
+    handDrawnDoodle,
+    minimalistFlat,
+    bauhaus,
+    neoBrutalist,
+    neumorphism,
+    memphis,
+    cyberChinese,
+    pixelAnime,
+    dopamineDesign,
+    shoujoManga,
+    outrun
+  ],
   demos: {
     engine: vite()
   },
@@ -49,7 +81,7 @@ export default defineConfig({
     locales: ['zh', 'en'],
     messages: {
       en: {
-        brandTagline: 'A static-first knowledge and documentation platform'
+        brandTagline: 'Documentation, search, and AI-readable content from Markdown and MDX'
       }
     }
   }

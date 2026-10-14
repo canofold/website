@@ -1,11 +1,11 @@
 ---
 title: Canofold
 seoTitle: 'Canofold | Static-first knowledge and documentation platform'
-description: Build multilingual, versioned websites, search indexes, and AI-ready knowledge outputs from one Markdown and MDX content model
+description: Build static documentation, search indexes, and AI-readable content from Markdown and MDX, with optional React rendering, component demos, and theme packages
 order: 0
 hero:
-  accent: One canonical source, Unfolded
-  tagline: Canofold is a static-first, minimally invasive, and extensible knowledge and documentation platform. It treats one Markdown and MDX tree as the canonical source, then unfolds it into multilingual, versioned websites, search indexes, and AI-ready knowledge outputs.
+  accent: Markdown to documentation and knowledge outputs
+  tagline: Canofold builds static documentation, search indexes, and AI-readable content from Markdown and MDX. Manage locales and versions, use the standalone React renderer, run Vite component demos, and extend the site with theme packages.
   image: /banner.webp
   imageAlt: Documentation content flowing through Canofold into a static site
   actions:
@@ -21,18 +21,18 @@ features:
     title: Add docs without a separate frontend
     details: Keep docs, configuration, and commands in the existing repository without changing application source.
   - image: /feature/ai.svg
-    title: One source, unfolded into every output
-    details: One build emits static pages, Markdown mirrors, llms.txt, and bounded content shards.
+    title: Shared content, multiple outputs
+    details: Configure static pages, search indexes, Markdown mirrors, llms.txt, and content shards without calling an AI model.
   - image: /feature/md.svg
     title: Rich content needs no handwritten HTML
     details: Code groups, file trees, tabs, media, math, and diagrams have dedicated Markdown syntax.
   - image: /feature/load.svg
-    title: Static delivery needs no runtime service
-    details: Host the generated files directly while diagrams, search, and interactions load only where used.
+    title: Choose a theme or develop your own
+    details: 14 official themes offer 15 appearances. Third-party packages share a visual contract without taking over layout or behavior.
   - image: /feature/find.svg
-    title: Local search separates locales and versions
-    details: Indexes ship with the site, so results never mix another locale or version.
+    title: Separate locales and versions
+    details: Maintain translations and historical snapshots separately. Navigation and search respect both boundaries; deploy the output as static files.
   - image: /feature/pkg.svg
-    title: Use the renderer without the CLI
-    details: Use @canofold/markdown directly in React, SSR, and static generation pipelines.
+    title: React rendering and real component demos
+    details: Use @canofold/markdown independently in React and SSR, or run component source directly in documentation with @canofold/vite.
 ---

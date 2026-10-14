@@ -76,7 +76,7 @@ Both `src` and `demos.setup` must resolve to local source inside the project roo
 
 ## Package entry and source resolution
 
-Canofold does not require a documentation-only alias or library entry. `@canofold/vite` reuses the project's existing Vite resolution. For a standard single-package component library with a package name, exactly one `build.lib.entry`, and no explicit same-name alias, 0.3.3 resolves that package name precisely to the source entry, so the entry path is declared only once. Multi-entry libraries and multi-package workspaces are not inferred; they keep using the project's workspace, exports, TypeScript paths, or Vite aliases, and Canofold never overrides a same-name alias configured by the project.
+Canofold does not require a documentation-only alias or library entry. `@canofold/vite` reuses the project's existing Vite resolution. For a standard single-package component library with a package name, exactly one `build.lib.entry`, and no explicit same-name alias, the engine resolves that package name precisely to the source entry, so the entry path is declared only once. Multi-entry libraries and multi-package workspaces are not inferred; they keep using the project's workspace, exports, TypeScript paths, or Vite aliases, and Canofold never overrides a same-name alias configured by the project.
 
 `vite()` discovers `vite.config` from the Canofold project root by default. Use `vite({ root: './packages/ui' })` or `vite({ configFile: './vite.docs.config.ts' })` only when the Vite root differs or a specific config is required. Pass `configFile: false` to disable config discovery.
 

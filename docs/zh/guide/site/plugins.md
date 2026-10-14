@@ -39,7 +39,7 @@ yarn add --dev @canofold/plugins
 | `readingTime()` | `markdown.plugins` | 在标题后显示阅读时长 | 无 |
 | `math()` | `markdown.plugins` | 渲染数学公式 | 独立使用 Markdown 包时导入 `@canofold/plugins/math.css` |
 | `mermaid()` | `markdown.plugins` | 渲染 Mermaid 图表 | 安装 `mermaid` |
-| `plantUml()` | `markdown.plugins` | 渲染 PlantUML 图表 | 配置可信的 `server` |
+| `plantUml()` | `markdown.plugins` | 渲染 PlantUML 图表 | 配置可信 `server` 或宿主 renderer |
 | `kroki()` | `markdown.plugins` | 通过 Kroki 渲染 Graphviz 和 D2 | 配置可信 `server` 或宿主 renderer |
 | `pagefind()` | `search.provider` | 生成 Pagefind 搜索索引 | 安装 `pagefind` |
 
@@ -105,6 +105,8 @@ diagrams.dispose()
 ```
 
 Worker、本地进程和编辑器消息桥由宿主负责。renderer 会收到插件类型、原始语言、映射后的图表类型、源码和 `AbortSignal`，并返回非空 SVG 字符串。替换或卸载 Markdown DOM 前必须销毁增强器；严格 CSP 还需在 `img-src` 中允许 `blob:`。`server` 与 `renderer: 'client'` 互斥，客户端渲染只支持 SVG。
+
+示例中的 `renderLocally` 由宿主实现，不是插件包导出的运行时；PlantUML 使用对应的 `@canofold/plugins/client/plantuml` 增强入口。
 
 ## 运行并验证
 
