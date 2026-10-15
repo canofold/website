@@ -21,6 +21,16 @@ pnpm exec canofold build
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
 
+## 从 0.6.6 升级到 0.6.7
+
+整套更新项目直接使用的 Canofold 包并重新构建，无需迁移配置。此补丁修复同页目录跳转和片段历史导航时多余请求并重建当前文档的问题，保留阅读进度与页面交互状态。升级后检查目录定位、浏览器前进／后退及跨页返回后的滚动位置。
+
+## 从 0.6.5 升级到 0.6.6
+
+整套更新项目直接使用的 Canofold 包并重新构建，无需迁移现有配置。升级后检查首页导航的滚动透明度、减少动画偏好、文档侧栏连续切换，以及 Mermaid 在不同主题间的配色更新。含中文、空格或百分号的版本路由也应检查 HTML 与 Markdown 镜像链接。
+
+正式构建仍默认严格校验富文本指令。编辑器或 Webview 宿主如需局部容错，可显式设置 `directives.invalid: 'literal'`，将无效指令显示为原文；不要用它替代发布前的内容检查。详见 [React Markdown API](/reference/api/react-markdown/#rendermarkdownoptions)。
+
 ## 从 0.6.2 升级到 0.6.5
 
 整套更新项目直接使用的 Canofold 包。这些补丁不改变配置或主题契约：0.6.3 修复图表的原始尺寸、容器适配、缩放和放大弹框；0.6.4 修复玻璃拟态、铅笔手绘、包豪斯与新拟物主题的按钮对比度。重新构建后，检查图表的首次加载、源码/预览切换、缩放、弹框与窄屏显示，以及全部已启用主题的按钮默认与 hover 状态。使用宿主 renderer 的编辑器或 Webview 也应验证取消、错误恢复与关闭重开。
@@ -29,7 +39,7 @@ pnpm exec canofold build
 
 ## 从 0.5.0 升级到 0.6.x
 
-将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.5，并提交更新后的锁文件。
+将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.7，并提交更新后的锁文件。
 
 - 把原来的 `theme` 对象拆到明确职责中：`themes` 放导入的 `ThemeDefinition`，`branding` 只放 Logo 与 favicon 路径，`layout` 放页头和侧栏几何尺寸。主题名称属于主题定义，不应放在 `i18n.messages`。省略 `themes` 时使用 Canofold 的浅色和深色外观。
 - 独立 Markdown 消费方需要先引入 `@canofold/markdown/base.css`，再引入选中主题对应的 `@canofold/themes/<theme>.css`；原先由 Markdown 包拥有的主题入口已经删除。

@@ -249,6 +249,8 @@ Inline math $E = mc^2$.
 
 Native HTML remains an escape hatch for trusted content. A site chooses `trusted`, `sanitize`, or `strip` through `markdown.html`; standalone `<Markdown>` rendering defaults to `strip`.
 
-Canofold validates directive names, form, required attributes, and nesting. Invalid syntax stops rendering, and `canofold check` reports the file and source position. A custom plugin must declare its directives through `directiveNames`; undeclared names are treated as authoring errors.
+Canofold validates directive names, form, required attributes, and nesting strictly by default. Invalid syntax stops rendering, and `canofold check` reports the file and source position. A custom plugin must declare its directives through `directiveNames`; undeclared explicit directives are treated as authoring errors. Ordinary colon words such as `format:check` remain text.
+
+Editor hosts can opt into `directives.invalid: 'literal'` to display invalid directives as inert source without discarding valid content. It does not suppress plugin failures or relax HTML, media, or MDX safety boundaries. See the [React Markdown API](/en/reference/api/react-markdown/#rendermarkdownoptions) for the configuration contract.
 
 Open the [Playground](/en/markdown/playground/) to inspect each rendered element.

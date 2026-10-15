@@ -58,11 +58,16 @@ The standalone React entry defaults to `html: 'strip'`. Mermaid and PlantUML fen
 | Group | Type | Purpose |
 |---|---|---|
 | `html` | `trusted \| sanitize \| strip` | Raw HTML policy |
+| `directives` | `{ invalid?: 'error' \| 'literal' }` | Invalid rich-directive policy; defaults to `error` |
 | `code` | `MarkdownCodeOptions` | Shiki themes, unknown-language policy, and custom languages |
 | `features` | `MarkdownFeatureOptions` | Enable or disable composite capabilities |
 | `labels` | `Partial<MarkdownLabels>` | Accessible interaction labels |
 | `locale` | `string` | BCP 47 locale available to plugins that emit localized content |
 | `plugins` | `readonly MarkdownPlugin[]` | Compiler plugins applied to Markdown and MDX pipelines |
+
+Authoring previews can pass `options={{ directives: { invalid: 'literal' } }}` to retain unknown or invalid directives as escaped source while rendering valid surrounding content. An invalid child in a structured container such as Tabs or Steps preserves the complete container source, so transformation cannot discard its children. The default `error` policy continues to reject invalid directives in builds; ordinary colon words such as `format:check` do not require recovery mode.
+
+This is not a general exception handler: plugin failures and MDX compilation errors remain errors. HTML sanitization, media URL validation, and trusted MDX execution boundaries are unchanged.
 
 Custom plugins that must run in Canofold Playground realtime preview also declare `browserCompiler` with a browser-safe package export, named factory, and serializable factory options. Ordinary static pages do not load that entry.
 

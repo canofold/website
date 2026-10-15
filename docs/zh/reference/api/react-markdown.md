@@ -58,11 +58,16 @@ interface MarkdownProps extends MarkdownRootProps {
 | 分组 | 类型 | 用途 |
 |---|---|---|
 | `html` | `trusted \| sanitize \| strip` | Raw HTML 策略 |
+| `directives` | `{ invalid?: 'error' \| 'literal' }` | 无效富文本指令的处理策略，默认 `error` |
 | `code` | `MarkdownCodeOptions` | Shiki 主题、未知语言策略和自定义语言 |
 | `features` | `MarkdownFeatureOptions` | 按能力启停复合组件 |
 | `labels` | `Partial<MarkdownLabels>` | 交互可访问性文案 |
 | `locale` | `string` | 供插件生成本地化内容的 BCP 47 locale |
 | `plugins` | `readonly MarkdownPlugin[]` | 按需启用 Mermaid、PlantUML、数学等官方或自定义插件 |
+
+编辑预览可以传入 `options={{ directives: { invalid: 'literal' } }}`，将未知或无效指令保留为转义后的原文，同时继续显示正常内容。若错误出现在 Tabs、Steps 等结构化容器内，会保留整个容器的原文，避免转换时丢失子项。默认 `error` 继续阻止无效指令进入正式构建；`format:check` 等普通冒号文本无需开启容错。
+
+这不是通用的异常吞噬机制：插件异常和 MDX 编译错误仍会报告，HTML 清理、媒体 URL 校验和 MDX 可信执行边界不变。
 
 如果自定义插件需要在 Canofold Playground 的实时预览中运行，还要声明 `browserCompiler`，提供浏览器安全的包导出、命名工厂和可序列化工厂参数。普通静态文档不会加载该入口。
 
