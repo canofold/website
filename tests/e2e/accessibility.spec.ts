@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test'
 const wcagTags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
 for (let index = 0; index < 15; index++) {
-  test(`首页按钮在默认和 hover 状态保持可读：外观 ${index + 1}/15`, async ({ page }) => {
+  test(`首页按钮可读且滚动导航材质正确：外观 ${index + 1}/15`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
     const options = page.locator('[data-canofold-theme-option]')
@@ -28,6 +28,15 @@ for (let index = 0; index < 15; index++) {
       results = await new AxeBuilder({ page }).include('.cf-btn').withTags(wcagTags).analyze()
       expect(summarizeViolations(results.violations), `${value} button ${index} hover`).toEqual([])
     }
+    const header = page.locator('.cf-header-home')
+    for (const [top, mix, blur] of [[0, '0%', '0px'], [48, '34%', '11px'], [96, '68%', '22px'], [0, '0%', '0px']] as const) {
+      await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), top)
+      await expect.poll(() => header.evaluate((element) => getComputedStyle(element).getPropertyValue('--cf-header-surface-mix').trim())).toBe(mix)
+      await expect(header).toHaveCSS('backdrop-filter', `blur(${blur}) saturate(${top === 0 ? 1 : top === 48 ? 1.3 : 1.6})`)
+      await expect(header).toHaveCSS('border-bottom-width', '0px')
+      await expect(header).toHaveCSS('box-shadow', 'none')
+    }
+    await expect(header).toHaveCSS('background-color', /(?:\/\s*0\)|,\s*0\))$/)
   })
 }
 

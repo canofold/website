@@ -21,6 +21,16 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
+## From 0.6.6 to 0.6.7
+
+Upgrade all directly used Canofold packages together and rebuild; no configuration migration is required. This patch prevents same-page outline links and fragment history navigation from unnecessarily requesting and rebuilding the current document, preserving reading progress and interactive state. Check outline positioning, browser back/forward navigation, and restored scroll positions after navigating between pages.
+
+## From 0.6.5 to 0.6.6
+
+Upgrade all directly used Canofold packages together and rebuild; existing configuration needs no migration. Check homepage header transparency on scroll, reduced-motion preferences, consecutive sidebar navigation, and Mermaid colors when switching themes. For version routes containing Unicode, spaces, or percent characters, also verify the HTML and Markdown mirror links.
+
+Production builds continue to validate rich directives strictly by default. Editor or Webview hosts that need localized recovery can explicitly set `directives.invalid: 'literal'` to display invalid directives as source. Do not use this mode instead of pre-publication content checks. See the [React Markdown API](/en/reference/api/react-markdown/#rendermarkdownoptions).
+
 ## From 0.6.2 to 0.6.5
 
 Upgrade all directly used Canofold packages together. These patches leave configuration and theme contracts unchanged: 0.6.3 fixes intrinsic diagram sizing, container fitting, zoom, and expanded dialogs; 0.6.4 fixes button contrast in Glassmorphism, Sketch Style, Bauhaus, and Neumorphism. Rebuild and check diagram loading, source/preview switching, zoom, dialogs, and narrow layouts, plus default and hover button states in every enabled theme. Editors and Webviews with host renderers should also verify cancellation, error recovery, and closing and reopening previews.
@@ -29,7 +39,7 @@ Upgrade all directly used Canofold packages together. These patches leave config
 
 ## From 0.5.0 to 0.6.x
 
-Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.5, and commit the updated lockfile.
+Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.7, and commit the updated lockfile.
 
 - Replace the former `theme` object with explicit responsibilities: `themes` lists imported `ThemeDefinition` values, `branding` contains only logo and favicon paths, and `layout` contains header and sidebar geometry. Theme names belong to each definition, not `i18n.messages`. Omitting `themes` uses the Canofold light and dark appearances.
 - Standalone Markdown consumers must import `@canofold/markdown/base.css` followed by a selected `@canofold/themes/<theme>.css` entry. The former Markdown-owned theme entry no longer exists.

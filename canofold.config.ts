@@ -24,7 +24,7 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.6.5',
+  requiredVersion: '^0.6.7',
   themes: [
     canofold,
     glassmorphism,

@@ -48,6 +48,49 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
   expectNoRuntimeErrors()
 })
 
+test('首页插图持续运动并尊重减少动画偏好', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  const illustration = page.locator('.cf-hero-visual img')
+  await expect(illustration).toBeVisible()
+  await expect(illustration).toHaveCSS('animation-name', 'cf-home-visual-float')
+  const first = await illustration.evaluate((element) => getComputedStyle(element).transform)
+  await expect.poll(() => illustration.evaluate((element) => getComputedStyle(element).transform)).not.toBe(first)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(illustration).toHaveCSS('animation-iteration-count', '1')
+  await expect.poll(() => illustration.evaluate((element) => element.getAnimations().some((animation) => animation.playState === 'running'))).toBe(false)
+})
+
+test('同色系主题切换重新渲染 Mermaid，保留源码和缩放操作', async ({ page }) => {
+  const expectNoRuntimeErrors = captureRuntimeErrors(page)
+  await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
+  const source = page.locator('[data-canofold-playground-source]')
+  await source.fill('```mermaid\nflowchart LR\n Theme --> Preview\n```')
+  const figure = page.locator('[data-canofold-playground-preview] figure[data-cf-plugin-diagram="mermaid"]')
+  const svg = figure.locator('.cf-diagram-preview > svg')
+  // The hidden next preview coexists with the previous preview until enhancement completes.
+  await expect.poll(() => figure.evaluateAll((elements) => elements.map((element) => ({
+    source: element.getAttribute('data-cf-source'),
+    rendering: element.getAttribute('data-cf-rendering') === 'true'
+  })))).toEqual([{ source: expect.stringContaining('Theme --> Preview'), rendering: false }])
+  await expect(svg).toBeVisible()
+  for (const theme of ['neo-brutalist', 'neumorphism', 'glassmorphism']) {
+    const previous = await svg.getAttribute('id')
+    await page.locator('.cf-theme-menu > summary').click()
+    await page.locator(`[data-canofold-theme-option="${theme}:default"]`).click()
+    await expect(page.locator('html')).toHaveAttribute('data-cf-theme', theme)
+    await expect(svg).toBeVisible()
+    await expect(svg).not.toHaveAttribute('id', previous!)
+    await expect(figure).not.toHaveAttribute('data-cf-render-error', 'true')
+  }
+  await figure.locator('[data-cf-diagram-action="source"]').click()
+  await expect(figure.locator('.cf-diagram-source')).toBeVisible()
+  await figure.locator('[data-cf-diagram-action="source"]').click()
+  await figure.locator('[data-cf-diagram-action="zoom-in"]').click()
+  await expect(figure.locator('[data-cf-diagram-action="zoom-reset"]')).toBeEnabled()
+  expectNoRuntimeErrors()
+})
+
 test('多词搜索保留正文命中的正确页面，并按语言隔离结果', async ({ page }) => {
   const expectNoRuntimeErrors = captureRuntimeErrors(page)
   await page.goto('/')
@@ -131,6 +174,12 @@ test('指南侧栏在站内导航后保留位置且不整页刷新', async ({ pa
 
 test('点击后续目录标题时阅读进度不会倒退', async ({ page }) => {
   const expectNoRuntimeErrors = captureRuntimeErrors(page)
+  const samePageFetches: string[] = []
+  page.on('request', (request) => {
+    if (request.resourceType() === 'fetch' && new URL(request.url()).pathname === '/markdown/syntax/') {
+      samePageFetches.push(request.url())
+    }
+  })
   await page.goto('/markdown/syntax/')
 
   const outline = page.locator('[data-canofold-outline]')
@@ -168,6 +217,7 @@ test('点击后续目录标题时阅读进度不会倒退', async ({ page }) => 
     'data-active',
     'true'
   )
+  expect(samePageFetches, '同页目录跳转不应请求并重建整页').toEqual([])
   expectNoRuntimeErrors()
 })
 
