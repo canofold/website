@@ -76,7 +76,7 @@ iframe 模式运行的是仓库内可信代码。它会限制嵌入预览的导�
 
 ## 包入口与源码解析
 
-Canofold 不要求文档专用的 alias 或 library entry。`@canofold/vite` 直接复用项目现有的 Vite 解析规则。对于 `package.json` 有包名、Vite 只有一个 `build.lib.entry`、并且没有显式声明同名 alias 的标准单包组件库，0.3.3 会自动把这个包名精确解析到该源码入口，因此入口路径只需声明一次。多入口组件库和多包 workspace 不做推断，继续使用项目已有的 workspace、exports、TypeScript paths 或 Vite alias；Canofold 不覆盖项目主动配置的同名 alias。
+Canofold 不要求文档专用的 alias 或 library entry。`@canofold/vite` 直接复用项目现有的 Vite 解析规则。对于 `package.json` 有包名、Vite 只有一个 `build.lib.entry`、并且没有显式声明同名 alias 的标准单包组件库，引擎会自动把这个包名精确解析到该源码入口，因此入口路径只需声明一次。多入口组件库和多包 workspace 不做推断，继续使用项目已有的 workspace、exports、TypeScript paths 或 Vite alias；Canofold 不覆盖项目主动配置的同名 alias。
 
 `vite()` 默认从 Canofold 项目根目录发现 `vite.config`。只有 Vite 根目录不同或需要指定配置文件时，才使用 `vite({ root: './packages/ui' })`、`vite({ configFile: './vite.docs.config.ts' })`；传入 `configFile: false` 可关闭配置发现。
 

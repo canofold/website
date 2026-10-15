@@ -39,7 +39,7 @@ yarn add --dev @canofold/plugins
 | `readingTime()` | `markdown.plugins` | Show reading time below the title | None |
 | `math()` | `markdown.plugins` | Render mathematical notation | Import `@canofold/plugins/math.css` when using the Markdown package directly |
 | `mermaid()` | `markdown.plugins` | Render Mermaid diagrams | Install `mermaid` |
-| `plantUml()` | `markdown.plugins` | Render PlantUML diagrams | Configure a trusted `server` |
+| `plantUml()` | `markdown.plugins` | Render PlantUML diagrams | Configure a trusted `server` or host renderer |
 | `kroki()` | `markdown.plugins` | Render Graphviz and D2 through Kroki | Configure a trusted `server` or a host renderer |
 | `pagefind()` | `search.provider` | Build a Pagefind search index | Install `pagefind` |
 
@@ -48,8 +48,10 @@ yarn add --dev @canofold/plugins
 These packages run during local development and site builds, so install them as development dependencies. Add only the capabilities the site needs; when enabling Mermaid or Pagefind, install the corresponding dependency as well:
 
 ```bash
-pnpm add -D mermaid pagefind
+pnpm add -D mermaid@^12.2.0 pagefind
 ```
+
+Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold defaults to Dagre layout and the Classic look; authored diagram configuration can still select ELK or another layout. Its runtime is built from the site's installed package, not bundled inside `@canofold/plugins`; upgrading the plugin alone does not upgrade Mermaid. Mermaid 11 remains API-supported but retains a low-severity advisory in its old KaTeX dependency. New projects should use 12.2.0 or a newer supported release rather than a cross-version dependency override.
 
 ```ts title="canofold.config.ts"
 import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'
@@ -105,6 +107,8 @@ diagrams.dispose()
 ```
 
 The host owns workers, native processes, and editor message bridges. The renderer receives the plugin kind, authored language, mapped diagram type, source, and an `AbortSignal`, and returns a non-empty SVG string. Dispose the enhancer before replacing or unmounting the Markdown DOM. A restrictive CSP must allow `blob:` in `img-src`. `server` and `renderer: 'client'` are mutually exclusive; client rendering supports SVG only.
+
+The host implements `renderLocally`; it is not a runtime exported by the plugin package. PlantUML uses the matching `@canofold/plugins/client/plantuml` enhancement entry.
 
 ## Run and verify
 

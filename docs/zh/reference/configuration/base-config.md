@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.6.2'
+  requiredVersion: '^0.6.5'
 })
 ```
 
@@ -90,7 +90,7 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | 字段 | 默认值 | 说明 |
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` 列表；`resolve` 必须以 `./` 开头，`options` 必须可 JSON 序列化 |
-| `navigation` | `{}` | 按 locale 配置的 `{ text, link }[]`；未配置时从一级内容分区生成 |
+| `navigation` | `{}` | 按 locale 配置的 `{ text, link, activePaths? }[]`；未配置时从一级内容分区生成 |
 | `versions` | 当前版本 `current` | `{ current, items }`；当前版本必须使用 `/`，每个 id 和 base 唯一 |
 | `redirects` | `{}` | 旧路由到现有站内路由的映射；链、环和覆盖真实页面都会失败 |
 | `advertising` | 未设置 | `{ image, href, alt, label? }` 右侧图片位 |

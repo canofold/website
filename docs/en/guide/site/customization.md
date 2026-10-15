@@ -31,7 +31,24 @@ export default defineConfig({
 
 The first appearance of the first entry is the default. `canofold` provides light and dark appearances; every other official theme provides one fixed appearance. The reader's selection persists across pages and is also applied inside isolated Vite Demo frames. Omitting `themes` uses only `canofold`.
 
-Official themes include Canofold, Glassmorphism, Sketch Style, Hand-drawn Doodle, Minimalist Flat, Bauhaus, Neo-Brutalist, Neumorphism, Memphis, Cyber Chinese, Pixel Anime, Dopamine Design, Shoujo Manga, and Outrun. Import names and stable ids are exported by `@canofold/themes` rather than kept in a Core registry.
+Official exports and appearances are listed below. Names are localized by each definition, not kept in a Core registry.
+
+| Export | Name | Appearances |
+|---|---|---|
+| `canofold` | Canofold | Light, dark |
+| `glassmorphism` | Glassmorphism | Dark |
+| `sketchStyle` | Sketch Style | Light |
+| `handDrawnDoodle` | Hand-Drawn Doodle | Light |
+| `minimalistFlat` | Minimalist Flat | Light |
+| `bauhaus` | Bauhaus | Light |
+| `neoBrutalist` | Neo-Brutalist | Light |
+| `neumorphism` | Neumorphism | Light |
+| `memphis` | Memphis | Light |
+| `cyberChinese` | Cyber Chinese | Dark |
+| `pixelAnime` | Pixel Anime | Dark |
+| `dopamineDesign` | Dopamine Design | Light |
+| `shoujoManga` | Shoujo Manga | Light |
+| `outrun` | Outrun | Dark |
 
 ## Brand assets
 
@@ -84,6 +101,8 @@ export default defineConfig({
 ```
 
 Theme and appearance ids use lowercase kebab-case. Localized `name` values live in the theme definition, not in `i18n.messages`. CSS must be scoped with `html[data-cf-theme='theme-id']` and must not redefine layout, visibility, scrolling, hit areas, focus behavior, or accessibility.
+
+See [Develop a theme package](/en/guide/site/theme-development/) for the definition, CSS, declarations, packaging, and verification workflow.
 
 ## Project CSS
 

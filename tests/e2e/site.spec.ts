@@ -263,6 +263,63 @@ test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', asyn
   expectNoRuntimeErrors()
 })
 
+test('Mermaid 布局、数学标签和编辑恢复使用真实浏览器运行时', async ({ page }) => {
+  let invalid = false
+  const errors: string[] = []
+  const requests: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  page.on('request', (request) => requests.push(request.url()))
+  page.on('console', (message) => {
+    if (message.type() !== 'error') return
+    if (invalid && message.text().startsWith('[canofold] mermaid render failed:')) return
+    errors.push(message.text())
+  })
+  await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
+  const source = page.locator('[data-canofold-playground-source]')
+  const preview = page.locator('[data-canofold-playground-preview]')
+  const diagrams = preview.locator('figure[data-cf-plugin-diagram="mermaid"]')
+  const fences = [
+    'flowchart LR\n Input["$$E=mc^2$$"] --> Preview',
+    'sequenceDiagram\n Alice->>Bob: Ready',
+    'classDiagram\n Document --> Preview',
+    'stateDiagram-v2\n [*] --> Ready\n Ready --> [*]',
+    'erDiagram\n DOCUMENT ||--o{ PREVIEW : renders',
+    '---\nconfig:\n  layout: elk\n---\nflowchart LR\n Source --> ELK --> Preview'
+  ]
+  await source.fill(fences.map((diagram) => `\`\`\`mermaid\n${diagram}\n\`\`\``).join('\n\n'))
+  await expect(diagrams).toHaveCount(6)
+  await expect(diagrams.locator('.cf-diagram-preview > svg')).toHaveCount(6)
+  await expect(diagrams.first().locator('.katex')).toHaveCount(1)
+  expect(requests.some((url) => /elk.*\.mjs/.test(url))).toBe(true)
+  for (const figure of [diagrams.first(), diagrams.last()]) {
+    await expect(figure).not.toHaveAttribute('data-cf-render-error', 'true')
+    await figure.locator('[data-cf-diagram-action="zoom-in"]').click()
+    await expect(figure.locator('[data-cf-diagram-action="zoom-reset"]')).toBeEnabled()
+    await figure.locator('[data-cf-diagram-action="zoom-reset"]').click()
+    await figure.locator('[data-cf-diagram-action="source"]').click()
+    await expect(figure.locator('.cf-diagram-source')).toBeVisible()
+    await figure.locator('[data-cf-diagram-action="source"]').click()
+    await figure.locator('[data-cf-diagram-action="expand"]').click()
+    await expect(page.locator('dialog.cf-diagram-dialog')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('dialog.cf-diagram-dialog')).toHaveCount(0)
+  }
+  for (let index = 0; index < 12; index++) {
+    await source.fill(`\`\`\`mermaid\nflowchart LR\n Edit_${index} --> Latest\n\`\`\``)
+  }
+  await expect(diagrams).toHaveCount(1)
+  await expect(diagrams.locator('.cf-diagram-preview')).toContainText('Edit_11')
+  invalid = true
+  await source.fill('```mermaid\nflowchart LR\n A --> [\n```')
+  await expect(diagrams).toHaveAttribute('data-cf-render-error', 'true')
+  await expect(diagrams).not.toHaveAttribute('data-cf-rendering', 'true')
+  invalid = false
+  await source.fill('```mermaid\nflowchart LR\n Recovered --> Preview\n```')
+  await expect(diagrams.locator('.cf-diagram-preview')).toContainText('Recovered')
+  await expect(diagrams).not.toHaveAttribute('data-cf-render-error', 'true')
+  expect(errors).toEqual([])
+})
+
 test('长代码块行号在三位数时保留独立槽位', async ({ page }) => {
   await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
   const source = page.locator('[data-canofold-playground-source]')

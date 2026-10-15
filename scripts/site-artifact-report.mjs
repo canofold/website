@@ -6,7 +6,8 @@ import { filesUnder } from './lib/files.mjs'
 const root = resolve(import.meta.dirname, '..')
 const outputRoot = join(root, '.canofold/dist')
 const budgets = {
-  'assets/canofold.css': 24 * 1024,
+  // The official site enables all 14 themes (15 appearances), not only the default theme.
+  'assets/canofold.css': 32 * 1024,
   'assets/canofold-search.js': 4 * 1024,
   'assets/canofold-plugins/kroki.js': 3.5 * 1024,
   'assets/canofold-plugins/mermaid.js': 6 * 1024,
@@ -24,7 +25,8 @@ const optionalPluginBudgets = new Set(
   Object.keys(budgets).filter((relativePath) => relativePath.startsWith('assets/canofold-plugins/'))
 )
 const pagefindTotalBudget = 4 * 1024 * 1024
-const pluginRuntimeBudget = 4 * 1024 * 1024
+// Full Mermaid 12 includes the lazy ELK runtime; entry gzip budgets remain unchanged.
+const pluginRuntimeBudget = 5.5 * 1024 * 1024
 const failures = []
 const rows = []
 

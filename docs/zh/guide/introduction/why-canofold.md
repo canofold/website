@@ -43,7 +43,8 @@ Canofold 只解析一份 Markdown 和 MDX。页面结构、导航、搜索文本
 | 增加 Markdown 语法、数学或图表 | Markdown 插件 |
 | 修改整个站点的构建规则或生成额外文件 | Extension |
 | 替换索引和查询实现 | Search Provider |
-| 只调整页面外观 | 主题 Token、CSS 和组件插槽 |
+| 调整整个站点视觉 | 官方或第三方主题包、项目 CSS |
+| 定制独立 Markdown 渲染 | React components、classNames 与 slots |
 
 这些入口分别处理内容、构建、搜索和展示，避免一个插件同时控制整条构建链。
 
