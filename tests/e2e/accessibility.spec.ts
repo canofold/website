@@ -3,31 +3,33 @@ import { expect, test } from '@playwright/test'
 
 const wcagTags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
-test('全部主题的首页按钮在默认和 hover 状态保持可读', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
-  const options = await page.locator('[data-canofold-theme-option]').evaluateAll((elements) =>
-    elements.map((element) => element.getAttribute('data-canofold-theme-option')!)
-  )
-  expect(options).toHaveLength(15)
-  for (const value of options) {
+for (let index = 0; index < 15; index++) {
+  test(`首页按钮在默认和 hover 状态保持可读：外观 ${index + 1}/15`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    const options = page.locator('[data-canofold-theme-option]')
+    await expect(options).toHaveCount(15)
+    const option = options.nth(index)
+    const value = await option.getAttribute('data-canofold-theme-option')
+    if (!value) throw new Error('Missing theme selection')
     await page.locator('.cf-theme-menu > summary').click()
-    await page.locator(`[data-canofold-theme-option="${value}"]`).click()
+    await option.click()
     const [theme, appearance] = value.split(':')
     if (!theme || !appearance) throw new Error(`Invalid theme selection: ${value}`)
     await expect(page.locator('html')).toHaveAttribute('data-cf-theme', theme)
     await expect(page.locator('html')).toHaveAttribute('data-cf-theme-appearance', appearance)
     const buttons = page.locator('.cf-btn')
+    await expect(buttons).toHaveCount(2)
+    await page.getByRole('heading', { level: 1 }).hover()
+    let results = await new AxeBuilder({ page }).include('.cf-btn').withTags(wcagTags).analyze()
+    expect(summarizeViolations(results.violations), `${value} default buttons`).toEqual([])
     for (let index = 0; index < await buttons.count(); index++) {
-      await page.getByRole('heading', { level: 1 }).hover()
-      let results = await new AxeBuilder({ page }).include('.cf-btn').withTags(wcagTags).analyze()
-      expect(summarizeViolations(results.violations), `${value} button ${index}`).toEqual([])
       await buttons.nth(index).hover()
       results = await new AxeBuilder({ page }).include('.cf-btn').withTags(wcagTags).analyze()
       expect(summarizeViolations(results.violations), `${value} button ${index} hover`).toEqual([])
     }
-  }
-})
+  })
+}
 
 function summarizeViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>['violations']) {
   return violations.map(({ id, nodes }) => ({
