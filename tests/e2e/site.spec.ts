@@ -68,9 +68,11 @@ test('同色系主题切换重新渲染 Mermaid，保留源码和缩放操作', 
   await source.fill('```mermaid\nflowchart LR\n Theme --> Preview\n```')
   const figure = page.locator('[data-canofold-playground-preview] figure[data-cf-plugin-diagram="mermaid"]')
   const svg = figure.locator('.cf-diagram-preview > svg')
-  await expect(figure).toHaveCount(1)
-  await expect(figure).toHaveAttribute('data-cf-source', /Theme --> Preview/)
-  await expect(figure).not.toHaveAttribute('data-cf-rendering', 'true')
+  // The hidden next preview coexists with the previous preview until enhancement completes.
+  await expect.poll(() => figure.evaluateAll((elements) => elements.map((element) => ({
+    source: element.getAttribute('data-cf-source'),
+    rendering: element.getAttribute('data-cf-rendering') === 'true'
+  })))).toEqual([{ source: expect.stringContaining('Theme --> Preview'), rendering: false }])
   await expect(svg).toBeVisible()
   for (const theme of ['neo-brutalist', 'neumorphism', 'glassmorphism']) {
     const previous = await svg.getAttribute('id')
