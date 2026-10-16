@@ -26,7 +26,7 @@ order: 73
 - 确认插件已经放入 `markdown.plugins`；`pagefind()` 应放在 `search.provider`。
 - Mermaid 需要安装 `mermaid`，Pagefind 需要安装 `pagefind`。安装新依赖后重启开发服务。
 - 确认语法是页面内容，而不是包在另一个 `markdown` 代码围栏中的示例源码。
-- `canofold check` 只校验配置和插件声明。使用 `canofold dev` 或 `canofold build` 验证实际转换。
+- `canofold check` 会执行内容分析所需的插件转换，但不输出站点或运行浏览器增强。使用 `canofold dev` 或 `canofold build` 验证最终页面与客户端行为。
 - 自定义插件的 `name` 必须唯一。转换代码变化时提升 `version`，选项变化必须反映到 `cacheKey`。
 
 如果检查结果与页面不一致，运行 `pnpm exec canofold build --no-cache` 排除旧构建状态。浏览器端能力仍失败时检查控制台和 Network 面板，确认插件脚本及样式没有 404 或被 CSP 拦截。

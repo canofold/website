@@ -1,6 +1,6 @@
 ---
 title: What is Canofold?
-description: Learn what Canofold is for, what it provides, and which package to use
+description: Compile Markdown into documentation, search indexes, and AI knowledge; explore the workflow, ecosystem, and integration options
 group: Guide
 subgroup: Introduction
 order: 1
@@ -8,55 +8,51 @@ order: 1
 
 # What is Canofold?
 
-Canofold is a static knowledge and documentation platform built around Markdown and MDX. It produces documentation sites, search indexes, and AI-readable content, with a standalone React Markdown renderer, Vite component demos, theme packages, and plugin extensions.
+Canofold is a modern Markdown knowledge compiler for people and AI. Keep Markdown and MDX in your repository; compile those files into knowledge that people can read, search engines can index, and tools can consume.
 
-It fits teams that version knowledge alongside code, configuration, or other project assets. Adoption does not require changes to application source or a separate documentation frontend. One CLI handles development, checks, builds, and previews.
+Product guides, component examples, and team handbooks can become a complete static site, render inside an existing React application, or open directly in VS Code preview.
 
-## Add docs with minimal intrusion
+## Shared knowledge should not need separate copies
 
-Docs, configuration, and commands stay in the existing repository. `canofold init` adds only missing files; existing Markdown and MDX remain in place and are not overwritten.
+Documentation lives in a repository, readers visit a website, and AI needs clean context. When each surface stores its own copy, every revision becomes a synchronization task, and it gets harder to tell which copy is current.
 
-The build output is static. Production does not require a Canofold service, a Node.js server, or a database.
+Canofold keeps source files as the shared authority. Pages for readers, indexes for retrieval, and content for AI follow the same revision and build. Our direction is to connect authoring, reading, and knowledge use while preserving where the information came from.
 
-## Unfold one source into multiple outputs
+## One input, three kinds of output
 
-The same Markdown and MDX can produce a complete static site, local search indexes, Markdown mirrors, `llms.txt`, and bounded content shards, according to configuration. These files share the same content; they do not call a model or provide hosted retrieval or question answering.
+```text
+Markdown / MDX + configuration and assets
+                    |
+          Canofold content compilation
+                    |
+        +-----------+------------+
+        v           v            v
+   HTML pages   Search indexes   AI-readable content
+                            llms.txt / Markdown / JSONL
+```
 
-Navigation, sidebars, locale routes, and version routes are generated from the content structure and configuration as well.
+The content model records pages, headings, links, locales, and versions during compilation. Page generation, checks, and knowledge output use that information, keeping page identities and sources consistent rather than making each downstream tool infer the document structure again.
 
-Translations and historical content snapshots must be maintained separately. Canofold does not translate pages automatically or create historical documentation from package versions.
+HTML pages include navigation, outlines, and SEO metadata, ready for static hosting. Search uses the configured provider. Enable [AI-friendly output](/en/reference/output/ai-output/) to generate Markdown mirrors, `llms.txt`, page indexes, and JSONL shards for agents, retrieval, or RAG pipelines.
 
-## Main capabilities
+## Start where you need it
 
-| Task | What Canofold provides |
+| Your task | Starting point |
 |---|---|
-| Write content | Markdown, MDX, local React components, code, tables, file trees, media, math, and diagrams |
-| Organize the site | Routes, navigation, sidebars, page outlines, search, SEO, locales, and versions |
-| Customize presentation | 14 official themes, light/dark appearances, branding, and third-party theme packages |
-| Check content | Configuration, frontmatter, links, static assets, and missing translations |
-| Build and publish | Complete static HTML, redirects, search indexes, and deployable output |
-| Serve AI tools | Markdown mirrors, `llms.txt`, page indexes, and chunked data |
+| Build searchable documentation across languages and versions | [`canofold` CLI: Quick start](/en/guide/introduction/getting-started/) |
+| Render Markdown/MDX inside a React application or SSR pipeline | [`@canofold/markdown`: standalone rendering](/en/markdown/usage/) |
+| Give a React component library runnable examples with source views | [`@canofold/vite`: component demos](/en/guide/writing/component-demos/) |
+| Preview layout, equations, and diagrams while writing locally | [VS Code extension](/en/vscode/) |
+| Ask an agent to author content, maintain docs, or cite site knowledge | [Canofold Skills](/en/skills/) (experimental) |
 
-See the [Markdown SDK](/en/markdown/) for content syntax, [Quick start](/en/guide/introduction/getting-started/) for the site workflow, and [Reference](/en/reference/) for configuration fields.
+For a site, keep content and configuration in your project and use the CLI to develop, check, and build. For standalone rendering, the host application continues to own layout, content sources, and routing.
 
-## Choose a package
+## Separate content, presentation, and extensions
 
-| Package | Responsibility |
-|---|---|
-| `canofold` | Build a complete documentation site |
-| `@canofold/markdown` | Render Markdown and MDX in an existing React, SSR, or static generation project |
-| `@canofold/themes` | Provide the theme contract and official visual themes |
-| `@canofold/vite` | Run live examples, HMR, and production demo builds in a Vite component project |
-| `@canofold/plugins` | Provide math, diagrams, link handling, reading time, and Pagefind plugins |
+Write code blocks, tables, tabs, steps, and file trees in Markdown. Add official plugins for math and diagrams. React examples reference real Demo source files, with hot updates, source views, and optional iframe isolation.
 
-A regular documentation site only requires `canofold`. Install `@canofold/themes` directly when the config imports theme definitions; the other packages render Markdown independently, integrate Vite component demos, or add optional plugins.
+14 official themes offer 15 appearances, including Canofold light/dark, glassmorphism, neumorphism, and minimalist flat. Customize variables or publish a theme package through the `@canofold/themes` contract while reusing the same content.
 
-## Scope
+The five Core npm packages cover site compilation, Markdown rendering, themes, Vite demos, and official plugins. The VS Code extension is a separate editor entry point; Skills guide agents through authoring, documentation maintenance, and knowledge reading. Adopt the parts you need around your source files.
 
-Canofold fits product documentation, developer documentation, team knowledge bases, operating manuals, and open-source projects, especially when the project needs locales, version management, or AI-ready knowledge output.
-
-Canofold is not an online CMS or a hosted service. It does not provide collaborative editing, accounts, permissions, review comments, or a dynamic content API. Protect the complete output directory at the hosting layer for private documentation.
-
-MDX, local components, and build extensions execute code and should only process trusted content. See [Security boundaries](/en/reference/output/security/) for details.
-
-Read [Why choose Canofold?](/en/guide/introduction/why-canofold/) for its design tradeoffs. When you are ready, [install Canofold](/en/guide/introduction/installation/). To inspect the rendered content first, open the [Markdown Playground](/en/markdown/playground/).
+Ready to build? Follow the [Quick start](/en/guide/introduction/getting-started/). To see the result first, open the [Markdown Playground](/en/markdown/playground/). [Why choose Canofold?](/en/guide/introduction/why-canofold/) explains which teams these design choices fit.

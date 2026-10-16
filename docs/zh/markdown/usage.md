@@ -46,7 +46,7 @@ yarn add @canofold/markdown @canofold/themes react react-dom
 
 普通 Markdown 不需要接触 Canofold 的内部类名和数据属性。标准 Markdown、GFM、Tabs、Steps、文件树、媒体等写法统一收录在 [Markdown 语法参考](/markdown/syntax/)；[Playground](/markdown/playground/)用于对照源码和实际效果。
 
-MDX 可以使用同名 React 组件，适合需要动态属性的项目本地页面。
+需要 JSX 和本地 React 组件的可信页面可以使用 MDX；站点用法见 [MDX 本地组件](/guide/writing/mdx/)，独立渲染使用服务端的 `renderMdx()`，不把 MDX 源码直接传给 `Markdown` 组件。
 
 ## React
 
@@ -123,7 +123,7 @@ const { content, assets } = await renderer.render(source, {
 })
 ```
 
-`content` 用于 React SSR，`assets` 描述当前页面需要的客户端资源。
+`content` 用于 React SSR，`assets` 描述当前页面需要的客户端资源。可信 MDX 使用 `renderer.renderMdx()`，并显式设置 `markdown: { html: 'trusted' }`；具体参数见 [React Markdown API](/reference/api/react-markdown/#服务端接口)。
 
 ## 增强静态 HTML
 

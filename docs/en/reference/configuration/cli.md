@@ -14,7 +14,7 @@ This page uses bare `canofold` to show command signatures. Project scripts can u
 canofold --help
 ```
 
-Canofold currently provides eight commands. All except `init` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
+All commands except `init` load configuration from the current working directory. Supported names are `canofold.config.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs`. `init` creates or reads configuration in its target directory, while `--help` does not load project configuration.
 
 | Command | Purpose | Default output |
 |---|---|---|
@@ -41,7 +41,7 @@ canofold init --locale en --docs-dir handbook
 - With `dir`, Canofold creates a standalone project in that child directory.
 - A new project defaults to Chinese single-language content directly under `docs/`, without a `zh/` or `en/` layer.
 - Existing Markdown and MDX are adopted in place. Canofold only adds missing configuration and `canofold-env.d.ts`; it never moves, overwrites, or supplements existing content.
-- An existing `canofold.config.ts` is authoritative. Re-running the command on a configured project is a successful no-op.
+- An existing configuration is authoritative. The command adds only missing initialization files; it makes no changes when nothing is missing.
 
 | Option | Meaning |
 |---|---|
@@ -84,7 +84,9 @@ ERROR [broken-link]: docs/en/guide/install.md:12:1 Link target does not exist: /
 
 The command reports undeclared code languages, missing titles or descriptions, broken internal links and relative assets, duplicate headings, and locale gaps.
 
-`check` also validates drafts, while production builds omit them. When checks complete, `--json` emits `{ schemaVersion: 1, diagnostics: [...] }`; each diagnostic includes a stable `ruleId`, severity, project-relative path, and line/column when known. Configuration errors or a missing published home page prevent the content graph from loading, so the command exits with an error instead of a JSON report. Use `checks.rules` to set a rule to `off`, `warning`, or `error`. Any final `error` causes a nonzero exit code. A production build remains the final gate for MDX, components, and extension output; run `check` before `build` in release workflows.
+`check` also validates drafts, while production builds omit them. The JSON report contains `schemaVersion: 1`, `diagnostics`, `translationCoverage`, and `translationStatus`; diagnostics include line/column when known. Configuration errors or a missing published home page prevent the content graph from loading, so the command exits with an error instead of a JSON report. Use `checks.rules` to set a rule to `off`, `warning`, or `error`. Any final `error` causes a nonzero exit code.
+
+Content analysis executes compiler plugins, but does not render complete pages or run browser scripts. MDX component execution, Demos, and generated extension files still require a production build. Run `check` before `build` when publishing.
 
 ## `canofold build [--no-cache]`
 

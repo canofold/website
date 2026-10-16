@@ -26,7 +26,7 @@ order: 73
 - Put Markdown plugins in `markdown.plugins`; put `pagefind()` in `search.provider`.
 - Mermaid requires `mermaid`, and Pagefind requires `pagefind`. Restart the development server after installing a dependency.
 - Make sure the syntax is page content rather than example source nested inside an outer `markdown` fence.
-- `canofold check` validates config and plugin declarations. Use `canofold dev` or `canofold build` to verify the transform itself.
+- `canofold check` executes plugin transforms needed for content analysis, but does not emit the site or run browser enhancement. Use `canofold dev` or `canofold build` to verify final pages and client behavior.
 - Custom plugin names must be unique. Bump `version` when transform code changes and include resolved options in `cacheKey`.
 
 If checks and rendered output disagree, run `pnpm exec canofold build --no-cache`. For browser-side failures, inspect the console and Network panel for missing plugin scripts, missing styles, or CSP blocks.

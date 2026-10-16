@@ -34,7 +34,7 @@ order: 36.5
     ".": { "types": "./index.d.ts", "import": "./index.js" },
     "./aurora.css": "./aurora.css"
   },
-  "peerDependencies": { "@canofold/themes": "^0.6.7" }
+  "peerDependencies": { "@canofold/themes": "^0.6.8" }
 }
 ```
 
@@ -120,7 +120,7 @@ html[data-cf-theme='aurora'][data-cf-theme-appearance='dark'] {
 在主题目录运行 `npm pack --dry-run`，核对定义、声明、CSS 与许可证，再运行 `npm pack`。在独立测试站点安装生成的包：
 
 ```bash
-pnpm add -D canofold@0.6.7 @canofold/themes@0.6.7 /absolute/path/acme-canofold-theme-1.0.0.tgz
+pnpm add -D canofold@0.6.8 @canofold/themes@0.6.8 /absolute/path/acme-canofold-theme-1.0.0.tgz
 ```
 
 ```ts title="canofold.config.ts"

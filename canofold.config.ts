@@ -20,11 +20,11 @@ import { defineConfig } from 'canofold'
 
 export default defineConfig({
   title: 'Canofold',
-  description: '以 Markdown 和 MDX 构建文档站、搜索与 AI 可读内容',
+  description: '面向人与 AI 的现代 Markdown 知识编译器：静态文档站、搜索索引与 AI 可读内容，共用一份知识来源。',
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.6.7',
+  requiredVersion: '^0.6.8',
   themes: [
     canofold,
     glassmorphism,
@@ -69,19 +69,23 @@ export default defineConfig({
     zh: [
       { text: '指南', link: '/guide/' },
       { text: '参考', link: '/reference/' },
-      { text: 'Markdown SDK', link: '/markdown/' }
+      { text: 'Markdown SDK', link: '/markdown/' },
+      { text: 'VS Code', link: '/vscode/' },
+      { text: 'Skills', link: '/skills/' }
     ],
     en: [
       { text: 'Guide', link: '/en/guide/' },
       { text: 'Reference', link: '/en/reference/' },
-      { text: 'Markdown SDK', link: '/en/markdown/' }
+      { text: 'Markdown SDK', link: '/en/markdown/' },
+      { text: 'VS Code', link: '/en/vscode/' },
+      { text: 'Skills', link: '/en/skills/' }
     ]
   },
   i18n: {
     locales: ['zh', 'en'],
     messages: {
       en: {
-        brandTagline: 'Documentation, search, and AI-readable content from Markdown and MDX'
+        brandTagline: 'A modern Markdown knowledge compiler for people and AI: static documentation, search indexes, and AI-readable content from one source.'
       }
     }
   }

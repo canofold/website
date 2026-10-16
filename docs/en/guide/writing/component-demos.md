@@ -27,7 +27,7 @@ export default defineConfig({
 })
 ```
 
-Run `canofold dev`. Canofold remains responsible for routing, Markdown, and page rebuilds, while Vite handles component modules, the CSS dependency graph, and HMR. They share one process and one port, so no second Vite server is required. Existing `vite.config.ts`, plugins, aliases, and React settings continue to apply. The official engine currently supports React 18 and React 19.
+Run `canofold dev`. Canofold handles routing, Markdown, and page rebuilds, while Vite handles component modules, the CSS dependency graph, and HMR. They share one process and one port, so no second Vite server is required. Existing `vite.config.ts`, plugins, aliases, and React settings continue to apply. The official engine supports React 18.2, 18.3, and 19, with Vite 6.4, 7, and 8.
 
 ## Write a demo
 
@@ -57,11 +57,11 @@ Iframe mode runs trusted repository code. It restricts capabilities such as navi
 
 ### Demos running on this page
 
-The two cards below are generated from the same React demo file in the Website repository. The first mounts directly in the page and the second uses iframe isolation; the preview and expanded source always come from that one file.
+The two cards below run the same React component. The first mounts directly in the page and the second uses iframe isolation. Switch release channels, then expand the source to see how it works.
 
-::demo[Inline interaction]{src="/docs/examples/release-channel/basic.tsx" description="Switch release channels to verify React state, component CSS, and inline rendering."}
+::demo[Inline interaction]{src="/docs/examples/release-channel/basic.tsx" description="Switch release channels in the page and observe component state changes."}
 
-::demo[Iframe isolation]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="Run the same demo in an isolated document to verify iframe loading and automatic height."}
+::demo[Iframe isolation]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="Run the same component in a separate document to isolate page and component styles."}
 
 ### Demo syntax
 
@@ -103,4 +103,4 @@ export default function DemoSetup({ children }: PropsWithChildren) {
 }
 ```
 
-Do not create this file when no shared provider is needed. MDX remains available for trusted pages that need free-form JSX, but component demos no longer require MDX.
+Omit `setup` when no shared provider is needed. Demos can be embedded directly in `.md`; use MDX for trusted pages that need JSX composition.

@@ -14,7 +14,7 @@ order: 53
 canofold --help
 ```
 
-当前 Canofold 提供八个命令。除 `init` 外，命令从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
+除 `init` 外，命令从当前工作目录加载配置；支持 `canofold.config.ts`、`.mts`、`.cts`、`.js`、`.mjs` 和 `.cjs`。`init` 在目标目录创建或读取配置，`--help` 不加载项目配置。
 
 | 命令 | 用途 | 默认输出 |
 |---|---|---|
@@ -41,7 +41,7 @@ canofold init --locale zh --docs-dir handbook
 - 传入 `dir` 时，在子目录中创建独立项目。
 - 全新项目默认创建中文单语言内容，直接位于 `docs/`，不创建 `zh/` 或 `en/`。
 - 已有 Markdown/MDX 时原地接入，只补充缺失的配置与 `canofold-env.d.ts`，不移动、覆盖或自动补写内容。
-- 已有 `canofold.config.ts` 时以配置为准；重复运行是成功的无操作。
+- 已有配置时以配置为准，只补齐缺少的初始化文件；没有文件需要补齐时不做修改。
 
 | 选项 | 说明 |
 |---|---|
@@ -90,7 +90,9 @@ ERROR [broken-link]: docs/guide/install.md:12:1 Link target does not exist: /ref
 - 同页标题是否重复。
 - 各语言是否存在对应文件。
 
-`check` 同时检查草稿，但发布构建不会收录草稿。检查完成时，`--json` 输出 `{ schemaVersion: 1, diagnostics: [...] }`，每条诊断含稳定的 `ruleId`、严重级别、项目相对路径，以及能够确定时的行列。配置错误、缺少已发布首页等导致内容图无法建立时，命令会报错退出，不会生成 JSON 报告。可用 `checks.rules` 对单条规则设置 `off`、`warning` 或 `error`；只要最终诊断有 `error`，命令就以非零状态退出。生产构建仍是 MDX、本地组件和扩展产物的最终门禁，发布流程应先运行 `check` 再运行 `build`。
+`check` 同时检查草稿，但发布构建不会收录草稿。JSON 报告包含 `schemaVersion: 1`、`diagnostics`、`translationCoverage` 和 `translationStatus`；每条诊断包含能够确定时的行列。配置错误、缺少已发布首页等导致内容图无法建立时，命令会报错退出，不会生成 JSON 报告。可用 `checks.rules` 对单条规则设置 `off`、`warning` 或 `error`；只要最终诊断有 `error`，命令就以非零状态退出。
+
+内容分析会执行编译插件，但不渲染完整页面或运行浏览器脚本。MDX 组件执行、Demo 和扩展生成文件仍需通过生产构建验证；发布前应先运行 `check`，再运行 `build`。
 
 ## `canofold build [--no-cache]`
 

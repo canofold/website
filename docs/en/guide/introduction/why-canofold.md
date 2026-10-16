@@ -1,6 +1,6 @@
 ---
 title: Why choose Canofold?
-description: Evaluate Canofold through its static delivery, repository adoption, unified content model, and extension boundaries
+description: Keep knowledge in your repository, deliver static pages, and share the same content with AI; decide whether Canofold fits your team
 group: Guide
 subgroup: Introduction
 order: 2
@@ -8,64 +8,42 @@ order: 2
 
 # Why choose Canofold?
 
-Canofold is for teams that want to manage knowledge in source files without maintaining a separate documentation frontend. Markdown and MDX are the canonical source; one build unfolds them into the website, search indexes, and AI-ready knowledge outputs.
+Writing documentation already takes time. Publishing and reusing it should not become a second job. Canofold makes a clear choice: keep knowledge in the repository, keep pages static where possible, and make the same content available to AI.
 
-Its delivery layer combines a static documentation generator with a standalone Markdown SDK. The platform itself is not limited to technical documentation; it also fits product guides, team knowledge bases, and operating manuals.
+## Your knowledge, your workflow
 
-## Keep knowledge in the existing workflow
+Review documentation beside code or in a dedicated knowledge repository. Changes have diffs, releases have commits, and history stays traceable. Keep the Git branches and CI your team already uses instead of introducing another content backend.
 
-Documentation can live beside code, product specifications, operating manuals, or other project assets, or it can use a dedicated repository. Existing branches, reviews, CI, and release history continue to govern changes.
+During adoption, `canofold init` adds missing configuration and files while leaving existing content in place. Deploy the output to your own static host; protect the complete output directory with Access or an internal gateway for private knowledge. Your team owns the content and its delivery.
 
-When adopting an existing repository, `canofold init` adds only the required configuration and files. It does not move existing content or require changes to application source, so the team does not inherit a second frontend project for documentation.
+## Keep static content lightweight
 
-## Keep deployment static
+A reader should get the article first. Canofold generates complete HTML at build time. Native DOM enhancements handle interactions such as tabs and code copying, without full-page React hydration.
 
-Canofold renders pages and builds navigation, search indexes, and AI data during the build. Production only needs to serve static files; it does not require a Canofold service, Node.js server, or database.
+Run components where they are needed: Vite powers React demos, and plugins load diagram runtimes. Interactive technical docs can coexist with ordinary content that has little runtime work to do.
 
-Static delivery leaves caching, rollback, and access control with the hosting platform. A private knowledge base must still protect the complete output directory at that layer.
+Production needs only a static file service. Maintain content and a build pipeline rather than a dedicated documentation application server.
 
-## One canonical source for every entry point
+## Written for people, ready for AI
 
-Canofold parses one Markdown and MDX source. Page structure, navigation, search text, locale and version routes, Markdown mirrors, `llms.txt`, and bounded content shards are unfolded from that canonical source.
+Building a site and then writing crawlers and cleanup scripts for AI repeats work on headings, text, and sources. Canofold can generate Markdown mirrors, `llms.txt`, page metadata, and JSONL shards during the build.
 
-The website, site search, and AI tools therefore read the same titles, body content, and metadata. A content change happens once instead of being copied through separate pipelines.
+These files update with the pages and retain citable sources. Connect them to your own agents, retrieval systems, or vector stores. You choose the models and retrieval services; Canofold prepares the knowledge.
 
-## Separate the CLI from the Markdown SDK
+[Skills](/en/skills/) bring this workflow to agents: author against the actual project, update docs from code, or find answers within a specific documentation locale and version. They remain experimental and can be tried on a focused task.
 
-Use the `canofold` CLI for a complete knowledge site. Use the `@canofold/markdown` SDK directly when an existing React, SSR, or static generation project only needs content rendering. They share content semantics and theme contracts but can be adopted independently.
+## Where it is worth trying
 
-`@canofold/plugins` adds optional math, diagrams, link handling, reading time, and Pagefind support. A project installs only the capabilities it uses.
+If you maintain an open-source project, a React component library, or team knowledge in Git, and want both a complete reading experience and content for search and AI, try Canofold with a few real pages. Its 14 themes, live demos, and VS Code preview fit into that workflow directly.
 
-## Extend one responsibility at a time
+When browser-based collaborative editing, per-page permissions, or review comments are central requirements, an online CMS or collaborative knowledge base is usually a better fit. Canofold uses static publishing. Teams maintain translations and historical snapshots; the tools organize routes, switchers, and checks.
 
-| Requirement | Extension point |
-|---|---|
-| Add Markdown syntax, math, or diagrams | Markdown plugin |
-| Change repository-wide build rules or emit extra files | Extension |
-| Replace indexing and querying | Search Provider |
-| Change site presentation | Official or third-party theme packages and project CSS |
-| Customize standalone Markdown rendering | React components, classNames, and slots |
+MDX, local components, and build extensions execute code and are intended for trusted repository content. Read the [security boundaries](/en/reference/output/security/) before processing external input.
 
-Each entry point owns content, builds, search, or presentation instead of letting one plugin control the complete pipeline.
+## Try it in three steps
 
-## When it fits
+1. [Install and initialize](/en/guide/introduction/getting-started/), then add three to five existing pages with real links, images, and code examples.
+2. Run `canofold check` and `canofold build`. Inspect navigation, search, and any AI output you need.
+3. Read the build with `canofold preview`, edit a page in VS Code, and decide whether to bring in more documentation.
 
-Canofold is a good fit when:
-
-- Knowledge is maintained in Markdown or MDX and reviewed through Git.
-- The project needs locales, versions, site search, or AI-ready knowledge output.
-- Generated output must deploy to any static host.
-- The team needs a complete site and the option to use the Markdown SDK independently.
-
-Choose an online CMS or hosted knowledge base when browser-based collaborative editing, per-page permissions, review comments, or a dynamic content API are core requirements. Canofold should also not execute MDX, local components, or build extensions from untrusted sources.
-
-## Validate it with a small pilot
-
-Start with a few real documents from an existing repository:
-
-1. [Install Canofold](/en/guide/introduction/installation/) and initialize the configuration.
-2. Add three to five pages containing links, code, and static assets.
-3. Run `canofold check`, `canofold build`, and `canofold preview`.
-4. Inspect navigation, search, locale or version routes, and the generated AI output.
-
-If the pilot matches the team workflow, bring the remaining knowledge into the same structure. See the [Quick start](/en/guide/introduction/getting-started/) for the commands.
+Validate your own writing and reading tasks first, then expand themes, plugins, and locale configuration.

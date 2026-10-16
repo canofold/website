@@ -21,25 +21,19 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
-## From 0.6.6 to 0.6.7
+## 0.6.x patch upgrades
 
-Upgrade all directly used Canofold packages together and rebuild; no configuration migration is required. This patch prevents same-page outline links and fragment history navigation from unnecessarily requesting and rebuilding the current document, preserving reading progress and interactive state. Check outline positioning, browser back/forward navigation, and restored scroll positions after navigating between pages.
+Existing 0.6.x sites need no configuration or theme-definition migration for 0.6.8. Keep directly used packages from the five-package set on the same version, rebuild, and deploy the complete output directory. The Changelog lists individual fixes; this page covers migration steps that require project changes.
 
-## From 0.6.5 to 0.6.6
+### Upgrade Mermaid separately
 
-Upgrade all directly used Canofold packages together and rebuild; existing configuration needs no migration. Check homepage header transparency on scroll, reduced-motion preferences, consecutive sidebar navigation, and Mermaid colors when switching themes. For version routes containing Unicode, spaces, or percent characters, also verify the HTML and Markdown mirror links.
+Mermaid is an optional peer. Upgrading Canofold does not replace the project's installed Mermaid. To move from Mermaid 11 to 12, use `pnpm add -D mermaid@^12.2.0`. Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support.
 
-Production builds continue to validate rich directives strictly by default. Editor or Webview hosts that need localized recovery can explicitly set `directives.invalid: 'literal'` to display invalid directives as source. Do not use this mode instead of pre-publication content checks. See the [React Markdown API](/en/reference/api/react-markdown/#rendermarkdownoptions).
-
-## From 0.6.2 to 0.6.5
-
-Upgrade all directly used Canofold packages together. These patches leave configuration and theme contracts unchanged: 0.6.3 fixes intrinsic diagram sizing, container fitting, zoom, and expanded dialogs; 0.6.4 fixes button contrast in Glassmorphism, Sketch Style, Bauhaus, and Neumorphism. Rebuild and check diagram loading, source/preview switching, zoom, dialogs, and narrow layouts, plus default and hover button states in every enabled theme. Editors and Webviews with host renderers should also verify cancellation, error recovery, and closing and reopening previews.
-
-0.6.5 adds Mermaid 12 support and fixes a WebKit ResizeObserver loop during diagram resizing. Mermaid is a separately installed optional peer; upgrading Canofold does not replace it. Upgrade with `pnpm add -D mermaid@^12.2.0`. Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold retains Dagre layout and the Classic look by default; set `layout: elk` under `config` in diagram front matter to use ELK. Migrate the former `defaultRenderer` option to `layout`. The full runtime includes a lazy-loaded ELK chunk; deploy all generated resource chunks together.
+Canofold defaults to Dagre layout and the Classic look. To use ELK, set `layout: elk` under `config` in diagram front matter and migrate the former `defaultRenderer` setting to `layout`. Deploy the complete output directory, including the lazy-loaded ELK resource chunks.
 
 ## From 0.5.0 to 0.6.x
 
-Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.7, and commit the updated lockfile.
+Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/themes`, `@canofold/vite`, and `@canofold/plugins` packages together to 0.6.8, and commit the updated lockfile.
 
 - Replace the former `theme` object with explicit responsibilities: `themes` lists imported `ThemeDefinition` values, `branding` contains only logo and favicon paths, and `layout` contains header and sidebar geometry. Theme names belong to each definition, not `i18n.messages`. Omitting `themes` uses the Canofold light and dark appearances.
 - Standalone Markdown consumers must import `@canofold/markdown/base.css` followed by a selected `@canofold/themes/<theme>.css` entry. The former Markdown-owned theme entry no longer exists.
@@ -57,7 +51,7 @@ Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/vite`, an
 - `check --json` provides CI-readable diagnostics, and `checks.rules` can set individual rules to `error`, `warning`, or `off`. Review new findings before changing severity; editorial advice need not all block publication.
 - Pages without trusted Git history or explicit `updatedAt` no longer display an update date inferred from file mtime. Set `updatedAt` when you need a fixed date. Translation freshness is known only when `translation.sourceHash` records the reviewed source; otherwise it is unknown.
 - Existing historical version directories remain usable. For a new snapshot, run `check`, then `snapshot <version-id>`, and add the version to `versions.items` manually. The current version cannot be `archived`; historical Demo and MDX project-local code dependencies must stay inside that version's docs directory. See [version maintenance](/en/guide/site/versions/).
-- Search supports field weighting and match highlighting. Rebuild using the steps above, then check common queries and locale/version switching. Search indexes and build caches need no manual conversion.
+- The new release regenerates search indexes and build caches; neither needs manual conversion.
 
 If you provide a custom DemoEngine, historical Demos must report `dependencyPaths` in their manifest and keep project-local code and assets inside the version directory. Historical Demos cannot reference current-version source or global `demos.setup`. Run a full build after migrating them.
 

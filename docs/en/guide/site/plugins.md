@@ -8,7 +8,7 @@ order: 38
 
 # Official plugins
 
-A Markdown plugin is a build-time transform added to the content compiler. It receives one Markdown or MDX syntax tree and returns transformed syntax or HTML. A plugin can also declare the CSS and browser scripts required by that page. The deployed result remains static HTML; the plugin itself does not run in production.
+A Markdown plugin extends the content compiler through remark/rehype transforms, document metadata, and asset declarations. Transforms run when Markdown or MDX is compiled; plugins can also declare CSS and browser scripts. Deployed sites need no Node.js plugin service, but features such as Mermaid still load a runtime in the reader's browser.
 
 For example, `math()` turns `$E = mc^2$` into KaTeX HTML during the build. `mermaid()` loads its diagram client only on pages that contain executable Mermaid fences. A search provider has a different lifecycle: it receives the completed site and writes a site-wide index instead of transforming one document.
 
@@ -45,13 +45,13 @@ yarn add --dev @canofold/plugins
 
 ## Configure and use plugins
 
-These packages run during local development and site builds, so install them as development dependencies. Add only the capabilities the site needs; when enabling Mermaid or Pagefind, install the corresponding dependency as well:
+For static sites, install these packages as development and build dependencies, then deploy their generated browser assets with the site. Configure only the capabilities the site needs; when enabling Mermaid or Pagefind, install the corresponding dependency as well:
 
 ```bash
 pnpm add -D mermaid@^12.2.0 pagefind
 ```
 
-Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold defaults to Dagre layout and the Classic look; authored diagram configuration can still select ELK or another layout. Its runtime is built from the site's installed package, not bundled inside `@canofold/plugins`; upgrading the plugin alone does not upgrade Mermaid. Mermaid 11 remains API-supported but retains a low-severity advisory in its old KaTeX dependency. New projects should use 12.2.0 or a newer supported release rather than a cross-version dependency override.
+Mermaid 12 requires Node 22.12+, Safari 17.4+, or equivalent ES2024 browser support. Canofold defaults to Dagre layout and the Classic look; authored diagram configuration can still select ELK or another layout. The consuming project installs Mermaid separately; it is not bundled inside `@canofold/plugins`. Rebuild and deploy after updating it so browsers receive the new runtime. Consult the installed plugin's `peerDependencies` for supported versions and check dependency security advisories as well.
 
 ```ts title="canofold.config.ts"
 import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'
@@ -84,7 +84,7 @@ flowchart LR
 ```
 ````
 
-`canofold check` loads the config and uses plugin declarations to validate directives and code fences; it does not render complete pages. `canofold build` and `canofold dev` execute plugin transforms. Removing a plugin stops its syntax from being transformed, and fences not claimed by another plugin remain subject to the unknown-language policy.
+`canofold check` uses plugin declarations to validate directives and code fences, and executes compiler transforms during content analysis to check transformed headings and links. It neither emits the complete site nor verifies browser runtimes. Use `canofold dev` or `canofold build` to inspect final pages. Removing a plugin stops its syntax from being transformed, and fences not claimed by another plugin remain subject to the unknown-language policy.
 
 Kroki and PlantUML send diagram source to an external service only when `server` is configured. Canofold emits one explicit warning when a document actually activates either external renderer. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint. The warning does not replace network, CSP, or data-governance review.
 
@@ -162,7 +162,7 @@ Every option is optional. The table lists the behavior used when an option is om
 
 ## Plugins, providers, and extensions
 
-Starting in 0.5.0, `mermaid()` builds browser resources from the project's installed `mermaid` by default. Rebuild and deploy after dependency updates. Setting `moduleUrl` uses that module instead; you manage its version and availability. See [security boundaries](/en/reference/output/security/).
+`mermaid()` builds browser resources from the project's installed `mermaid` by default. Setting `moduleUrl` uses that module instead; you manage its version and availability. See [security boundaries](/en/reference/output/security/).
 
 | Type | Use it for | Configuration |
 |---|---|---|

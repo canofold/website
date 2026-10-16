@@ -289,7 +289,7 @@ Command failed with exit code 1
 显式配置主题、搜索和部署路径。
 :::
 :::tab[持续集成]
-提交前运行 `pnpm typecheck`，发布前运行 `pnpm docs:build`。
+发布前运行 `pnpm docs:check` 和 `pnpm docs:build`。
 :::
 ::::
 
@@ -303,7 +303,7 @@ Command failed with exit code 1
 把 Markdown 放入文档目录并补全 frontmatter。
 :::
 :::step[检查构建]
-执行 `pnpm typecheck`、站点构建和内容检查；只在全部通过后发布产物。
+执行内容检查和站点构建，然后发布生成的静态文件。
 :::
 ::::
 
@@ -334,13 +334,15 @@ Command failed with exit code 1
   - en/
     - playground.md
     - usage.md
-- public/
-  - logo.svg
+  - public/
+    - logo.svg
 - canofold.config.ts
 - package.json
 :::
 
 ## API 与侧注
+
+以下是接口说明的排版示例，不是 Canofold 提供的 HTTP API。
 
 ::::api{method="GET" path="/api/docs/:slug"}
 | 参数 | 类型 | 要求 | 说明 |

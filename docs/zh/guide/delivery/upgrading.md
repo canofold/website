@@ -21,25 +21,19 @@ pnpm exec canofold build
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
 
-## 从 0.6.6 升级到 0.6.7
+## 0.6.x 补丁升级
 
-整套更新项目直接使用的 Canofold 包并重新构建，无需迁移配置。此补丁修复同页目录跳转和片段历史导航时多余请求并重建当前文档的问题，保留阅读进度与页面交互状态。升级后检查目录定位、浏览器前进／后退及跨页返回后的滚动位置。
+升级到 0.6.8 时，已有 0.6.x 站点无需修改配置或主题定义。将项目直接使用的五包保持同版，并重新构建、部署完整输出目录。各补丁的修复明细见 Changelog；本文只说明需要项目调整的迁移事项。
 
-## 从 0.6.5 升级到 0.6.6
+### 单独升级 Mermaid
 
-整套更新项目直接使用的 Canofold 包并重新构建，无需迁移现有配置。升级后检查首页导航的滚动透明度、减少动画偏好、文档侧栏连续切换，以及 Mermaid 在不同主题间的配色更新。含中文、空格或百分号的版本路由也应检查 HTML 与 Markdown 镜像链接。
+Mermaid 是可选 Peer，升级 Canofold 不会自动替换项目安装的 Mermaid。需要从 Mermaid 11 升级到 12 时，可使用 `pnpm add -D mermaid@^12.2.0`。Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。
 
-正式构建仍默认严格校验富文本指令。编辑器或 Webview 宿主如需局部容错，可显式设置 `directives.invalid: 'literal'`，将无效指令显示为原文；不要用它替代发布前的内容检查。详见 [React Markdown API](/reference/api/react-markdown/#rendermarkdownoptions)。
-
-## 从 0.6.2 升级到 0.6.5
-
-整套更新项目直接使用的 Canofold 包。这些补丁不改变配置或主题契约：0.6.3 修复图表的原始尺寸、容器适配、缩放和放大弹框；0.6.4 修复玻璃拟态、铅笔手绘、包豪斯与新拟物主题的按钮对比度。重新构建后，检查图表的首次加载、源码/预览切换、缩放、弹框与窄屏显示，以及全部已启用主题的按钮默认与 hover 状态。使用宿主 renderer 的编辑器或 Webview 也应验证取消、错误恢复与关闭重开。
-
-0.6.5 新增 Mermaid 12 支持并修复 WebKit 中图表尺寸回写的 ResizeObserver 循环。Mermaid 是站点单独安装的可选 Peer，升级 Canofold 不会自动替换它。使用 `pnpm add -D mermaid@^12.2.0` 升级；Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认保留 Dagre 布局和 Classic 外观；需要 ELK 时在图表 Frontmatter 的 `config` 中指定 `layout: elk`。旧的 `defaultRenderer` 应迁移为 `layout`。完整运行时包含按需加载的 ELK，部署时需一起保留生成的资源分块。
+Canofold 默认使用 Dagre 布局和 Classic 外观；需要 ELK 时，在图表 Frontmatter 的 `config` 中指定 `layout: elk`，将旧的 `defaultRenderer` 配置迁移为 `layout`。部署时保留完整输出目录，包括按需加载的 ELK 资源分块。
 
 ## 从 0.5.0 升级到 0.6.x
 
-将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.7，并提交更新后的锁文件。
+将项目直接使用的 `canofold`、`@canofold/markdown`、`@canofold/themes`、`@canofold/vite`、`@canofold/plugins` 一起升级到 0.6.8，并提交更新后的锁文件。
 
 - 把原来的 `theme` 对象拆到明确职责中：`themes` 放导入的 `ThemeDefinition`，`branding` 只放 Logo 与 favicon 路径，`layout` 放页头和侧栏几何尺寸。主题名称属于主题定义，不应放在 `i18n.messages`。省略 `themes` 时使用 Canofold 的浅色和深色外观。
 - 独立 Markdown 消费方需要先引入 `@canofold/markdown/base.css`，再引入选中主题对应的 `@canofold/themes/<theme>.css`；原先由 Markdown 包拥有的主题入口已经删除。
@@ -57,7 +51,7 @@ pnpm exec canofold build
 - `check --json` 可供 CI 使用，`checks.rules` 可以按规则设置 `error`、`warning` 或 `off`。先查看新的诊断，再决定是否提高规则级别；不要把所有编辑建议都当成发布错误。
 - 缺少可信 Git 提交信息且未声明 `updatedAt` 的页面不再显示由文件 mtime 推断的更新时间。需要固定日期时在 Frontmatter 写入 `updatedAt`；译文过期状态只有设置 `translation.sourceHash` 后才有依据，否则显示为未知。
 - 历史版本仍可继续使用已有目录。需要创建新快照时先运行 `check`，再使用 `snapshot <版本号>`，然后手动把版本添加到 `versions.items`。当前版不能标为 `archived`；旧版 Demo、MDX 的本地代码依赖必须留在对应版本的文档目录内。详见[版本维护](/guide/site/versions/)。
-- 搜索支持字段权重和命中高亮。升级后按上面的步骤重新构建，检查常用查询和语言、版本切换；无需手工转换搜索索引或构建缓存。
+- 搜索索引与构建缓存由新版本重新生成，无需手工转换。
 
 如果项目提供自定义 DemoEngine，历史版本的 Demo 必须在 manifest 中报告 `dependencyPaths`，并将项目内代码与资源保存在版本目录中。历史 Demo 不支持引用当前版源码或全局 `demos.setup`，迁移后请运行完整构建。
 

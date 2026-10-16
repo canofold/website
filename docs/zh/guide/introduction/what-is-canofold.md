@@ -1,6 +1,6 @@
 ---
 title: 什么是 Canofold
-description: 了解 Canofold 的用途、主要能力和包选择
+description: 一份 Markdown，编译为文档站、搜索索引与 AI 知识；了解 Canofold 的工作链路、生态与接入方式
 group: 指南
 subgroup: 入门
 order: 1
@@ -8,55 +8,51 @@ order: 1
 
 # 什么是 Canofold
 
-Canofold 是以 Markdown 和 MDX 为内容源的静态知识文档平台。它构建文档站、搜索索引和 AI 可读内容，并提供可独立使用的 React Markdown 渲染器、Vite 组件示例、主题包与插件扩展。
+Canofold 是面向人与 AI 的现代 Markdown 知识编译器。你在仓库中维护 Markdown 和 MDX，它把这些源文件编译成可阅读、可搜索、可供机器使用的知识。
 
-它适合把知识内容与代码、配置或其他项目资产一起进行版本管理的团队。接入时不改业务源码，也不需要单独维护文档前端；开发、检查、构建和预览都由同一个 CLI 完成。
+产品文档、组件示例、团队手册都可以从这里出发：发布为完整静态站点，在现有 React 应用中渲染，或直接在 VS Code 中预览。
 
-## 低侵入接入现有仓库
+## 同一份知识，不该维护多套副本
 
-文档、配置和命令脚本都留在原仓库。`canofold init` 只补齐缺少的文件；已有 Markdown 和 MDX 会在原目录接入，不会被移动或覆盖。
+文档写在仓库里，读者去网站看，AI 又需要一份干净的上下文。如果每个入口各存一份内容，修订一次就要同步多处，最后很难判断哪份才是最新的。
 
-构建结果是静态文件。部署后不需要运行 Canofold 服务、Node.js 服务器或数据库。
+Canofold 希望让源文件成为共同依据。面向人的页面、面向检索的索引、面向 AI 的语料，都跟随同一次内容修订与构建更新。我们的方向是让知识在创作、阅读和使用之间流动，同时保留它的来源。
 
-## 一份源，展开成多种产物
+## 从源文件到三类产物
 
-同一批 Markdown 和 MDX 可以按配置生成完整静态站点、本地搜索索引、Markdown 镜像、`llms.txt` 和分片语料。网站、搜索和 AI 工具使用同一批内容；这些文件不调用模型，也不包含托管检索或问答服务。
+```text
+Markdown / MDX + 配置与资源
+              │
+        Canofold 内容编译
+              │
+     ┌────────┼─────────┐
+     ↓        ↓         ↓
+ HTML 页面  搜索索引   AI 可读内容
+                    llms.txt / Markdown / JSONL
+```
 
-导航、侧栏、多语言和版本路由也从文档结构与配置生成，不需要另写一套页面数据。
+编译时，内容模型记录页面、标题、链接、语言和版本等信息；页面生成、检查与知识输出围绕这些信息展开。网站和下游工具因此能保留相同的页面身份与来源，不必各自从网页重新猜测文档结构。
 
-多语言需要分别维护译文，多版本需要独立内容快照；Canofold 不会自动翻译，也不会根据包版本自动生成历史文档。
+HTML 页面带有导航、目录和 SEO 元数据，可以直接部署到静态托管。搜索按配置接入 Provider；开启 [AI 友好输出](/reference/output/ai-output/)后，还能得到 Markdown 镜像、`llms.txt`、页面索引和分片 JSONL，供 Agent、检索或 RAG 系统读取。
 
-## 主要能力
+## 从你需要的入口开始
 
-| 任务 | Canofold 提供的能力 |
+| 想做什么 | 从哪里开始 |
 |---|---|
-| 编写内容 | Markdown、MDX、本地 React 组件、代码、表格、文件树、媒体、数学和图表 |
-| 组织站点 | 路由、导航、侧栏、页内目录、搜索、SEO、多语言和多版本 |
-| 定制外观 | 14 个官方主题、明暗外观、品牌资源和第三方主题包 |
-| 检查内容 | 配置、Frontmatter、链接、静态资源和翻译缺口 |
-| 构建与发布 | 完整静态 HTML、重定向、搜索索引和可直接部署的产物 |
-| 提供 AI 内容 | Markdown 镜像、`llms.txt`、页面索引和分片数据 |
+| 为项目搭建可搜索的多语言、多版本文档站 | [`canofold` CLI：快速开始](/guide/introduction/getting-started/) |
+| 在已有 React 应用或 SSR 流程里显示 Markdown/MDX | [`@canofold/markdown`：独立渲染](/markdown/usage/) |
+| 给 React 组件库编写可运行、可看源码的示例 | [`@canofold/vite`：组件 Demo](/guide/writing/component-demos/) |
+| 在本地边写边看公式、图表和排版 | [VS Code 扩展](/vscode/) |
+| 让 Agent 协助写内容、同步文档或引用站点知识 | [Canofold Skills](/skills/)（实验阶段） |
 
-具体写法见 [Markdown SDK](/markdown/)，建站流程见[快速开始](/guide/introduction/getting-started/)，配置字段见[参考](/reference/)。
+建站时，把内容与配置留在自己的项目里，使用 CLI 开发、检查和构建。只需要渲染器时，宿主应用继续决定布局、内容来源和路由。
 
-## 五个包怎样选择
+## 内容、外观与扩展各自独立
 
-| 包 | 职责 |
-|---|---|
-| `canofold` | 构建完整文档站点 |
-| `@canofold/markdown` | 在现有 React、SSR 或静态生成项目中渲染 Markdown 和 MDX |
-| `@canofold/themes` | 提供主题契约和官方视觉主题 |
-| `@canofold/vite` | 在 Vite 组件项目中运行实时示例、HMR 与生产 Demo 构建 |
-| `@canofold/plugins` | 提供数学、图表、链接处理、阅读时长和 Pagefind 插件 |
+Markdown 可以编写代码、表格、Tabs、步骤和文件树；数学与图表通过官方插件接入。React 组件示例直接引用 Demo 源文件，支持热更新、源码切换与可选 iframe 隔离。
 
-普通文档站只需安装 `canofold`；配置文件直接导入主题定义时，再显式安装 `@canofold/themes`。其余包分别用于独立渲染 Markdown、接入 Vite 组件示例或按需加入插件。
+14 个官方主题提供 15 种外观，覆盖 Canofold 浅色/深色、玻璃拟态、新拟物、极简扁平等风格。通过 `@canofold/themes` 的主题契约，可以定制变量或发布自己的主题包，内容继续复用。
 
-## 适用范围
+Core 的五个 npm 包分别承担站点编译、Markdown 渲染、主题、Vite Demo 和官方插件。VS Code 扩展是单独安装的编辑器入口；Skills 则把创作、文档维护和知识读取流程交给 Agent。它们围绕源文件协作，不要求一次接入全部工具。
 
-Canofold 适合产品文档、开发者文档、团队知识库、操作手册和开源项目，尤其适合需要多语言、版本管理或 AI-ready 知识输出的项目。
-
-Canofold 不是在线 CMS，也不是托管服务。它不提供多人在线编辑、账户、权限、评论审批或动态内容接口；私有文档需要由托管平台保护整个静态输出目录。
-
-MDX、本地组件和构建扩展会执行代码，只应处理可信内容。具体边界见[安全边界](/reference/output/security/)。
-
-继续阅读[为什么选择 Canofold](/guide/introduction/why-canofold/)了解它的设计取舍。准备开始时，先[安装 Canofold](/guide/introduction/installation/)；想查看内容效果，可以打开 [Markdown Playground](/markdown/playground/)。
+准备动手时，直接看[快速开始](/guide/introduction/getting-started/)；想先看效果，打开 [Markdown Playground](/markdown/playground/)。[为什么选择 Canofold](/guide/introduction/why-canofold/)解释这些设计适合什么样的团队。
