@@ -1,8 +1,20 @@
 import { expect, test } from '@playwright/test'
 
+for (const root of ['/', '/en/']) {
+  test(`${root} 栏目页面显示左侧目录`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    for (const section of ['vscode', 'skills']) {
+      await page.goto(`${root}${section}/`)
+      const sidebar = page.locator('.cf-sidebar-nav')
+      await expect(sidebar).toBeVisible()
+      await expect(sidebar.getByRole('link', { name: section === 'skills' ? 'Canofold Skills' : root === '/' ? 'VS Code 扩展' : 'VS Code extension', exact: true })).toHaveAttribute('aria-current', 'page')
+    }
+  })
+}
+
 for (const locale of [
-  { root: '/', nav: '主导航', title: 'Canofold｜面向人与 AI 的 Markdown 知识编译器', heading: 'VS Code 扩展', status: '实验阶段', start: '快速开始', try: '在线体验' },
-  { root: '/en/', nav: 'Primary navigation', title: 'Canofold | A Markdown Knowledge Compiler for People and AI', heading: 'VS Code extension', status: 'experimental', start: 'Get started', try: 'Try it online' }
+  { root: '/', nav: '主导航', editor: '编辑器扩展', title: 'Canofold｜面向人与 AI 的 Markdown 知识编译器', heading: 'VS Code 扩展', status: '实验阶段', start: '快速开始', try: '在线体验', install: '中文安装说明', readme: 'README.zh-CN.md' },
+  { root: '/en/', nav: 'Primary navigation', editor: 'Editor Extension', title: 'Canofold | A Markdown Knowledge Compiler for People and AI', heading: 'VS Code extension', status: 'experimental', start: 'Get started', try: 'Try it online', install: 'installation instructions', readme: 'README.md' }
 ]) {
   for (const width of [1280, 390, 320]) {
     test(`${locale.root} 知识定位、SEO 与独立入口在 ${width}px 可用`, async ({ page }) => {
@@ -17,22 +29,28 @@ for (const locale of [
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', 'https://canofold.dev/en/')
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
 
-      const nav = page.getByRole('banner').getByRole('navigation', { name: locale.nav })
+      let nav = page.getByRole('banner').getByRole('navigation', { name: locale.nav })
       if (width < 840) await page.locator('.cf-primary-menu > summary').click()
-      await nav.getByRole('link', { name: 'VS Code', exact: true }).click()
+      await nav.getByRole('link', { name: locale.editor, exact: true }).click()
       await expect(page).toHaveURL(`${locale.root}vscode/`)
       await expect(page.getByRole('heading', { name: locale.heading, level: 1 })).toBeVisible()
       await expect(page.getByRole('link', { name: 'VS Code Marketplace', exact: true })).toHaveAttribute('href', 'https://marketplace.visualstudio.com/items?itemName=canofold.canofold-vscode')
 
-      if (width < 840) await page.locator('.cf-primary-menu > summary').click()
-      await expect(nav.getByRole('link', { name: 'VS Code', exact: true })).toHaveAttribute('aria-current', 'page')
+      if (width < 840) {
+        await page.locator('[data-canofold-sidebar-open]').click()
+        nav = page.locator('[data-canofold-sidebar]').getByRole('navigation', { name: locale.nav })
+      }
+      await expect(page.locator('.cf-sidebar-nav').getByRole('link', { name: locale.heading, exact: true })).toBeVisible()
+      await expect(nav.getByRole('link', { name: locale.editor, exact: true })).toHaveAttribute('aria-current', 'page')
       await nav.getByRole('link', { name: 'Skills', exact: true }).click()
       await expect(page).toHaveURL(`${locale.root}skills/`)
       await expect(page.getByRole('heading', { name: 'Canofold Skills', level: 1 })).toBeVisible()
-      if (width < 840) await page.locator('.cf-primary-menu > summary').click()
+      if (width < 840) await page.locator('[data-canofold-sidebar-open]').click()
+      await expect(page.locator('.cf-sidebar-nav').getByRole('link', { name: 'Canofold Skills', exact: true })).toBeVisible()
       await expect(nav.getByRole('link', { name: 'Skills', exact: true })).toHaveAttribute('aria-current', 'page')
       await expect(page.locator('main')).toContainText(locale.status)
       await expect(page.locator('main')).toContainText('canofold-knowledge-reader')
+      await expect(page.locator('main').getByRole('link', { name: locale.install, exact: true })).toHaveAttribute('href', `https://github.com/canofold/skills/blob/main/${locale.readme}`)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
     })
   }

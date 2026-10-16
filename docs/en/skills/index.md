@@ -4,14 +4,13 @@ seoTitle: Canofold Skills | Agent-Assisted Markdown & Knowledge Reading
 description: Explore experimental Canofold Agent Skills for project-aware Markdown authoring, documentation updates from code, and source-cited answers from versioned knowledge output.
 group: Skills
 order: 50
-sidebar: false
 ---
 
 # Canofold Skills
 
 Write a guide, document an API change, or find an answer with a source: Canofold Skills give agents a workflow for these tasks. They inspect the project's actual version, configuration, and source files before creating, maintaining, or using knowledge.
 
-Skills are experimental and cover the three tasks below. Once you have the Skill files, try one on a real document before adding it to your daily workflow. A public installation entry point will accompany public distribution.
+Skills are public in the [Canofold Skills repository](https://github.com/canofold/skills) and remain experimental. Install them individually for the tasks below. Try one on a real document before adding it to your daily workflow.
 
 ## Tasks
 
@@ -25,7 +24,7 @@ Author with the project's syntax, maintain docs against real code, and retain pa
 
 ## Integration
 
-Once you have the complete `skills/<name>/` directory, place it in a Skills location supported by your agent. Keep `SKILL.md` together with the reference files it uses. Follow your agent's instructions for installation paths and loading.
+Get the complete `skills/<name>/` directory from the repository and follow the [installation instructions](https://github.com/canofold/skills/blob/main/README.md) to place it in a Skills location supported by your agent. Keep `SKILL.md` together with the reference files it uses. Follow your agent's instructions for installation paths and loading.
 
 Example tasks:
 
