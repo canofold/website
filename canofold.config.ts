@@ -70,14 +70,14 @@ export default defineConfig({
       { text: '指南', link: '/guide/' },
       { text: '参考', link: '/reference/' },
       { text: 'Markdown SDK', link: '/markdown/' },
-      { text: 'VS Code', link: '/vscode/' },
+      { text: '编辑器扩展', link: '/vscode/' },
       { text: 'Skills', link: '/skills/' }
     ],
     en: [
       { text: 'Guide', link: '/en/guide/' },
       { text: 'Reference', link: '/en/reference/' },
       { text: 'Markdown SDK', link: '/en/markdown/' },
-      { text: 'VS Code', link: '/en/vscode/' },
+      { text: 'Editor Extension', link: '/en/vscode/' },
       { text: 'Skills', link: '/en/skills/' }
     ]
   },

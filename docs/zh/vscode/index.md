@@ -2,9 +2,8 @@
 title: VS Code 扩展
 seoTitle: Canofold VS Code 扩展｜Markdown 实时预览、数学与图表
 description: 安装 Canofold Markdown Preview，在 VS Code 当前标签页切换 Markdown 源码与预览，支持实时更新、数学公式、Mermaid 等图表及受限 iframe。
-group: VS Code
+group: 编辑器扩展
 order: 40
-sidebar: false
 ---
 
 # VS Code 扩展

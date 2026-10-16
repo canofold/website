@@ -4,14 +4,13 @@ seoTitle: Canofold Skills｜Agent 辅助 Markdown 创作与知识读取
 description: 了解实验中的 Canofold Agent Skills：让 Agent 按项目语法写 Markdown、根据代码更新文档，并从指定版本的知识产物中查找和引用答案。
 group: Skills
 order: 50
-sidebar: false
 ---
 
 # Canofold Skills
 
 写一篇指南、同步一次 API 变化、从文档里找到有来源的答案：Canofold Skills 把这些任务的工作方法交给 Agent。它先看项目实际版本、配置与源文件，再创作、维护或使用知识。
 
-Skills 处于实验阶段，目前面向以下三类任务。取得 Skill 文件后，可以从一篇真实文档开始试用，再决定是否放入日常工作流；公开安装入口将在开放分发时提供。
+Skills 已在 [Canofold Skills 仓库](https://github.com/canofold/skills)公开，仍处于实验阶段，可按任务单独安装。建议先用一篇真实文档试用，再决定是否放入日常工作流。
 
 ## 面向哪些任务
 
@@ -25,7 +24,7 @@ Skills 处于实验阶段，目前面向以下三类任务。取得 Skill 文件
 
 ## 如何接入
 
-取得所需的 `skills/<name>/` 完整目录后，将其放入 Agent 支持的 Skills 位置。目录包含 `SKILL.md` 和它引用的参考文件，需要一起保留。具体路径与加载方式遵循所用 Agent 的说明。
+从仓库取得所需的 `skills/<name>/` 完整目录，按照[中文安装说明](https://github.com/canofold/skills/blob/main/README.zh-CN.md)放入 Agent 支持的 Skills 位置。目录包含 `SKILL.md` 和它引用的参考文件，需要一起保留。具体路径与加载方式遵循所用 Agent 的说明。
 
 例如可以提出以下任务：
 

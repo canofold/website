@@ -2,9 +2,8 @@
 title: VS Code extension
 seoTitle: Canofold VS Code Extension | Live Markdown, Math & Diagrams
 description: Install Canofold Markdown Preview to switch source and live preview in the current VS Code tab, with math, Mermaid and other diagrams, and restricted iframes.
-group: VS Code
+group: Editor Extension
 order: 40
-sidebar: false
 ---
 
 # VS Code extension
