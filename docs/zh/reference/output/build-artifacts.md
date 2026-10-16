@@ -43,7 +43,7 @@ order: 71
 |---|---|---|
 | 页面 `index.html` | 始终 | 包含完整正文的静态页面 |
 | 页面 `index.md` | `markdownMirror` 启用 | 构建时使用的页面 Markdown/MDX 源文 |
-| `assets/canofold.css` | 始终 | 默认主题、Token 和用户样式 |
+| `assets/canofold.css` | 始终 | 站点结构、已配置主题、语义 Token 和项目样式 |
 | `assets/canofold-markdown/*` | 页面存在交互 behavior 且未配置 Demo Engine | 内置原生增强入口与按需富交互代码 |
 | `assets/canofold-demos/*` | 配置 Demo Engine | 原生增强器、组件 Demo、按需 chunk 与组件 CSS 共用的 Vite 构建图 |
 | `assets/fonts/*` | 启用 math 插件且至少一页包含数学 | KaTeX 的完整 WOFF2 字体集 |

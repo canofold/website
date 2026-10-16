@@ -8,7 +8,7 @@ order: 38
 
 # 官方插件
 
-Markdown 插件是在构建期加入内容编译器的转换步骤。它接收一篇 Markdown 或 MDX 的语法树，返回新的语法树或 HTML；插件还可以声明当前页面需要的 CSS 和浏览器脚本。最终产物仍是静态 HTML，不需要在生产环境运行插件本身。
+Markdown 插件通过 remark/rehype 转换、文档元数据和资源声明扩展内容编译器。转换在编译 Markdown 或 MDX 时执行；插件还可以声明页面需要的 CSS 和浏览器脚本。站点部署后无需运行 Node.js 插件服务，但 Mermaid 等能力仍会在读者浏览器中加载运行时。
 
 例如，配置 `math()` 后，源码中的 `$E = mc^2$` 会在构建时变成 KaTeX HTML；配置 `mermaid()` 后，只有包含 Mermaid 围栏的页面才会加载图表客户端。搜索 Provider 不处理单篇 Markdown，而是在全部页面完成后生成站点级索引。
 
@@ -45,13 +45,13 @@ yarn add --dev @canofold/plugins
 
 ## 配置并使用插件
 
-这些包只在本地开发和站点构建时使用，因此安装为开发依赖。只安装并配置站点需要的能力；启用 Mermaid 或 Pagefind 时，再补充对应依赖：
+对于静态站点，这些包作为开发与构建依赖安装，生成的浏览器资源随站点一起部署。只配置站点需要的能力；启用 Mermaid 或 Pagefind 时，再补充对应依赖：
 
 ```bash
 pnpm add -D mermaid@^12.2.0 pagefind
 ```
 
-Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认使用 Dagre 布局和 Classic 外观，图表自己的配置仍可选择 ELK 等布局。Mermaid 的运行时从站点安装的包构建，不内置于 `@canofold/plugins`；仅升级插件包不会升级它。Mermaid 11 的 API 仍受支持，但保留旧 KaTeX 的低危告警，新项目应使用 12.2.0 或更新的受支持版本，不能用跨版本依赖覆盖代替升级。
+Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认使用 Dagre 布局和 Classic 外观，图表自己的配置仍可选择 ELK 等布局。Mermaid 由消费项目单独安装，不内置于 `@canofold/plugins`；更新它后需要重新构建并部署，浏览器才会使用新运行时。支持的版本范围以已安装插件包的 `peerDependencies` 为准，并应一并检查其依赖安全告警。
 
 ```ts title="canofold.config.ts"
 import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'
@@ -84,7 +84,7 @@ flowchart LR
 ```
 ````
 
-`canofold check` 会加载配置，并根据插件声明校验指令和代码围栏；它不会执行完整的页面渲染。`canofold build` 和 `canofold dev` 才会执行插件转换。删除配置后，对应语法不再转换，未被其他插件声明的围栏仍受未知语言策略检查。
+`canofold check` 根据插件声明校验指令和代码围栏，并在内容分析中执行编译转换，以检查转换后的标题与链接；它不输出完整站点，也不验证浏览器运行时。使用 `canofold dev` 或 `canofold build` 检查最终页面。删除插件配置后，对应语法不再转换，未被其他插件声明的围栏仍受未知语言策略检查。
 
 Kroki 和 PlantUML 只有配置 `server` 时才会把图示源码发送到外部服务。Canofold 在文档实际使用对应围栏时输出一次明确警告。公开内容可评估服务条款后使用，私有或受限内容应改用可信的自托管地址；警告不会代替网络、CSP 或数据合规检查。
 
@@ -162,7 +162,7 @@ pnpm docs:preview
 
 ## 插件、Provider 和 Extension
 
-从 0.5.0 起，`mermaid()` 默认使用项目安装的 `mermaid` 构建浏览器资源。更新依赖后需要重新构建并部署站点。设置 `moduleUrl` 后改用指定模块，其版本和可用性由你维护；详见[安全边界](/reference/output/security/)。
+`mermaid()` 默认使用项目安装的 `mermaid` 构建浏览器资源。设置 `moduleUrl` 后改用指定模块，其版本和可用性由你维护；详见[安全边界](/reference/output/security/)。
 
 | 类型 | 适合解决的问题 | 配置位置 |
 |---|---|---|

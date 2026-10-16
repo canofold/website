@@ -23,7 +23,7 @@ pnpm exec canofold build --no-cache
 
 至少放置 `docs/index.md`。`docs/guide/install.md` 对应 `/guide/install/`；页面相对图片保持在页面附近，全站固定地址的文件放到 `docs/public/`。为页面补 `title` 和 `description`，已公开 URL 若改变则配置 [重定向](/guide/site/redirects/)。`check --json` 可供 CI 读取具体行列与规则。
 
-从 0.5.0 起，指向已收录文档的相对 `.md` / `.mdx` 链接会按源文件位置解析，并输出同一版本内的 HTML 页面地址，保留查询参数和锚点。例如 `docs/guide/start.md` 中的 `[下一步](./next.md#api)` 会跳到 `/guide/next/#api`，不依赖 Markdown 镜像开关。省略扩展名或链接目录时，与检查器一样依次查找目标文件、`.md`、`.mdx`、`index.md` 和 `index.mdx`；实际存在的资源文件优先于同名文档候选。跨语言链接同样按实际文件位置解析；站点绝对 URL、外链、资源链接不套用源文件转换。若要下载 Markdown 镜像，应显式链接其公开地址，并开启镜像输出。
+指向已收录文档的相对 `.md` / `.mdx` 链接会按源文件位置解析，并输出同一版本内的 HTML 页面地址，保留查询参数和锚点。例如 `docs/guide/start.md` 中的 `[下一步](./next.md#api)` 会跳到 `/guide/next/#api`，不依赖 Markdown 镜像开关。省略扩展名或链接目录时，与检查器一样依次查找目标文件、`.md`、`.mdx`、`index.md` 和 `index.mdx`；实际存在的资源文件优先于同名文档候选。跨语言链接同样按实际文件位置解析；站点绝对 URL、外链、资源链接不套用源文件转换。若要下载 Markdown 镜像，应显式链接其公开地址，并开启镜像输出。
 
 文档引用了新文档根目录以外的文件时，将依赖文件一起迁入并调整相对路径，或将链接改为稳定的仓库 URL。
 

@@ -1,38 +1,38 @@
 ---
 title: Canofold
-seoTitle: 'Canofold | Static-first knowledge and documentation platform'
-description: Build static documentation, search indexes, and AI-readable content from Markdown and MDX, with optional React rendering, component demos, and theme packages
+seoTitle: 'Canofold | A Markdown Knowledge Compiler for People and AI'
+description: Build searchable, multilingual documentation from Markdown and MDX while generating llms.txt and structured knowledge. Canofold brings 14 themes, React demos, VS Code live preview, and Agent Skills to one source for readers and AI.
 order: 0
 hero:
-  accent: Markdown to documentation and knowledge outputs
-  tagline: Canofold builds static documentation, search indexes, and AI-readable content from Markdown and MDX. Manage locales and versions, use the standalone React renderer, run Vite component demos, and extend the site with theme packages.
+  accent: A modern Markdown knowledge compiler for people and AI
+  tagline: Keep Markdown in your repository. Make it your readers’ documentation and your AI’s knowledge source. Preview live in VS Code, choose from 14 themes, and build static pages, search indexes, and structured content together.
   image: /banner.webp
   imageAlt: Documentation content flowing through Canofold into a static site
   actions:
-    - text: What is Canofold
-      link: /en/guide/introduction/what-is-canofold/
-      primary: true
-      icon: file
     - text: Get started
       link: /en/guide/introduction/getting-started/
+      primary: true
       icon: rocket
+    - text: Try it online
+      link: /en/markdown/playground/
+      icon: file
 features:
   - image: /feature/cli.svg
-    title: Add docs without a separate frontend
-    details: Keep docs, configuration, and commands in the existing repository without changing application source.
+    title: Static pages. Less to run.
+    details: Content becomes complete HTML at build time. Tabs and code copying add interaction without full-page React hydration. Deploy to a static host without a documentation server or database.
   - image: /feature/ai.svg
-    title: Shared content, multiple outputs
-    details: Configure static pages, search indexes, Markdown mirrors, llms.txt, and content shards without calling an AI model.
+    title: A site for readers. Context for AI.
+    details: Build search indexes alongside optional llms.txt, Markdown mirrors, and source-linked JSONL shards. Give agents and RAG pipelines the content directly instead of extracting it from web pages again.
   - image: /feature/md.svg
-    title: Rich content needs no handwritten HTML
-    details: Code groups, file trees, tabs, media, math, and diagrams have dedicated Markdown syntax.
+    title: Write Markdown. Get interaction.
+    details: Author tabs, steps, file trees, sortable tables, and image lightboxes in Markdown. Add math and diagram plugins to put equations, Mermaid flowcharts, and technical explanations on the same page.
   - image: /feature/load.svg
-    title: Choose a theme or develop your own
-    details: 14 official themes offer 15 appearances. Third-party packages share a visual contract without taking over layout or behavior.
+    title: 14 themes. Make the docs yours.
+    details: Choose minimalist flat, glassmorphism, neumorphism, cyber Chinese, or another style that fits your project. Extend theme variables or ship a theme package without rewriting content.
   - image: /feature/find.svg
-    title: Separate locales and versions
-    details: Maintain translations and historical snapshots separately. Navigation and search respect both boundaries; deploy the output as static files.
+    title: The right language. The right version.
+    details: Give translations and historical docs their own routes, switchers, and search scope. Check links, assets, and translation gaps before publishing so readers can find the docs for their version.
   - image: /feature/pkg.svg
-    title: React rendering and real component demos
-    details: Use @canofold/markdown independently in React and SSR, or run component source directly in documentation with @canofold/vite.
+    title: Run the example. Preview as you write.
+    details: Run React demos with @canofold/vite, inspect their source, and isolate them in iframes when needed. Preview Markdown, math, and diagrams in your current VS Code tab, then switch back to writing.
 ---

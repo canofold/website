@@ -32,8 +32,8 @@ order: 20
 | `description` | `string` | 空 | SEO、搜索结果和确定性摘要 |
 | `createdAt` | ISO 8601 日期 | 无 | 保存内容创建时间并写入公开页面元数据 |
 | `updatedAt` | ISO 8601 日期 | 可确认的 Git 内容提交时间；否则不显示 | 固定页脚“最后更新”时间并写入公开页面元数据 |
-| `group` | `string` | 一级目录名 | 顶级分区的兼容/显示覆盖字段 |
-| `subgroup` | `string` | 二级目录名 | 第一层嵌套分组的兼容/显示覆盖字段 |
+| `group` | `string` | 一级目录名 | 覆盖顶级分区显示名，目录首页声明优先 |
+| `subgroup` | `string` | 二级目录名 | 覆盖第一层嵌套分组显示名，目录首页声明优先 |
 | `order` | `number` | 最后 | 页面、侧栏和上下篇顺序 |
 | `collapsed` | `boolean` | `false` | 目录 `index.md` 对应分组的初始折叠状态 |
 | `layout` | `document \| playground` | `document` | 使用标准文档布局，或为可编辑源码/预览页启用 Playground 布局 |
@@ -51,7 +51,7 @@ order: 20
 
 各级目录的 `index.md` 是分组名称和折叠状态的权威来源。同一目录声明不同的 `group` 或 `subgroup` 会使构建失败。
 
-`group` 和 `subgroup` 不会把内容树限制为两层。递归导航应使用各级目录的 `index.md`；这两个字段主要用于兼容旧内容或覆盖显示名称。
+`group` 和 `subgroup` 不会把内容树限制为两层。需要为更深层目录命名时，使用该目录的 `index.md`。
 
 ### 日期字段
 

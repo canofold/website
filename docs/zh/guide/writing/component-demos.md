@@ -27,7 +27,7 @@ export default defineConfig({
 })
 ```
 
-运行 `canofold dev` 即可。Canofold 仍负责路由、Markdown 与页面重建；Vite 负责组件模块、CSS 依赖图和 HMR。两者共用一个进程、一个端口，不需要再启动独立的 Vite 服务。项目已有的 `vite.config.ts`、插件、别名和 React 配置会继续生效。当前官方引擎支持 React 18 和 React 19。
+运行 `canofold dev` 即可。Canofold 负责路由、Markdown 与页面重建；Vite 负责组件模块、CSS 依赖图和 HMR。两者共用一个进程、一个端口，不需要再启动独立的 Vite 服务。项目已有的 `vite.config.ts`、插件、别名和 React 配置会继续生效。官方引擎支持 React 18.2、18.3 和 19，以及 Vite 6.4、7 和 8。
 
 ## 编写一个 Demo
 
@@ -57,11 +57,11 @@ iframe 模式运行的是仓库内可信代码。它会限制嵌入预览的导�
 
 ### 本页实际运行的 Demo
 
-下面两张卡片由 Website 仓库中的同一个 React Demo 文件生成。第一张直接挂载在页面中，第二张使用 iframe 隔离；预览与展开后的源码始终来自同一个文件。
+下面两张卡片运行同一个 React 组件。第一张直接挂载在页面中，第二张使用 iframe 隔离；点击切换发布通道，再展开源码查看实现。
 
-::demo[内联交互]{src="/docs/examples/release-channel/basic.tsx" description="切换发布通道，验证 React 状态、组件 CSS 与页面内预览。"}
+::demo[内联交互]{src="/docs/examples/release-channel/basic.tsx" description="在页面中切换发布通道，查看组件状态变化。"}
 
-::demo[iframe 隔离]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="在隔离文档中运行同一个 Demo，验证 iframe 加载与自适应高度。"}
+::demo[iframe 隔离]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="在独立文档中运行相同组件，隔离页面与组件的全局样式。"}
 
 ### Demo 语法
 
@@ -103,4 +103,4 @@ export default function DemoSetup({ children }: PropsWithChildren) {
 }
 ```
 
-没有共享 Provider 时不要创建这个文件。MDX 仍可用于需要自由 JSX 编排的可信页面，但展示组件示例不再要求 MDX。
+没有共享 Provider 时不需要配置 `setup`。Demo 可以直接嵌入 `.md`；需要 JSX 编排的可信页面则使用 MDX。

@@ -257,7 +257,7 @@ Command failed with exit code 1
 | Diagram | Preview and source | Copy, switch, zoom |
 | Image | Responsive media frame | Open large preview |
 
-Use the table header to test sorting and the toolbar to test CSV and preview behavior.
+Use the table header to sort rows and the toolbar to copy or download CSV and open a larger view.
 
 ## Extended content components
 
@@ -271,7 +271,7 @@ Use the default theme and component map.
 Provide semantic component overrides and theme tokens.
 :::
 :::tab[Continuous integration]
-Run `pnpm typecheck` before merge and `pnpm docs:build` before publishing.
+Run `pnpm docs:check` and `pnpm docs:build` before publishing.
 :::
 ::::
 
@@ -316,13 +316,15 @@ With `linkCard()` enabled, a standalone HTTP(S) link becomes a link card:
   - zh/
     - playground.md
     - usage.md
-- public/
-  - logo.svg
+  - public/
+    - logo.svg
 - canofold.config.ts
 - package.json
 :::
 
 ## API block and aside
+
+This is an API documentation layout example, not an HTTP API provided by Canofold.
 
 ::::api{method="GET" path="/api/docs/:slug"}
 | Parameter | Type | Required | Description |

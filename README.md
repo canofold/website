@@ -4,7 +4,7 @@ Official Canofold website, documentation, and Markdown Playground.
 
 ## Development
 
-Requires Node.js 22 or later and pnpm 11.
+Requires Node.js 22.12 or later and pnpm 11.
 
 ```bash
 corepack enable

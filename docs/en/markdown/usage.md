@@ -46,7 +46,7 @@ The core emits only behaviors required by the current document. Diagram clients 
 
 Ordinary Markdown does not need Canofold's internal class names or data attributes. The [Markdown syntax reference](/en/markdown/syntax/) covers standard Markdown, GFM, tabs, steps, file trees, media, and every built-in directive. Use the [Playground](/en/markdown/playground/) to compare source with rendered output.
 
-MDX can still use the matching React components when project-local content needs dynamic props.
+Trusted pages that need JSX and local React components can use MDX. See [Project-local MDX components](/en/guide/writing/mdx/) for sites; standalone rendering uses the server's `renderMdx()`, not MDX source passed directly to the `Markdown` component.
 
 ## React
 
@@ -123,7 +123,7 @@ const { content, assets } = await renderer.render(source, {
 })
 ```
 
-`content` is ready for React SSR. `assets` describes the client resources required by the page.
+`content` is ready for React SSR. `assets` describes the client resources required by the page. Use `renderer.renderMdx()` for trusted MDX and explicitly set `markdown: { html: 'trusted' }`. See the [React Markdown API](/en/reference/api/react-markdown/#server-interface) for its parameters.
 
 ## Enhance static HTML
 

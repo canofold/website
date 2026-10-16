@@ -251,6 +251,6 @@ flowchart LR
 
 Canofold 默认严格检查指令名称、形态、必填属性和嵌套关系。无效指令会中止渲染，`canofold check` 会同时给出文件和源码位置。自定义插件必须通过 `directiveNames` 声明自己拥有的指令；未声明的显式指令会按拼写错误处理。`format:check` 等普通冒号文本仍按正文显示。
 
-编辑器宿主可选择 `directives.invalid: 'literal'`，让无效指令以惰性原文显示而不丢弃正常内容；它不忽略插件异常，也不放宽 HTML、媒体或 MDX 的安全限制。配置契约见 [React Markdown API](/reference/api/react-markdown/#rendermarkdownoptions)。
+编辑器宿主可选择 `directives.invalid: 'literal'`，让无效指令作为转义后的原文显示而不丢弃正常内容；它不忽略插件异常，也不放宽 HTML、媒体或 MDX 的安全限制。配置契约见 [React Markdown API](/reference/api/react-markdown/#rendermarkdownoptions)。
 
 需要逐项查看渲染效果时，打开 [Playground](/markdown/playground/)。

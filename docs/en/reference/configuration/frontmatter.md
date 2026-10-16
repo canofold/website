@@ -32,8 +32,8 @@ order: 20
 | `description` | `string` | Empty | SEO, search result, and deterministic summary |
 | `createdAt` | ISO 8601 date | None | Preserve the content creation time in public page metadata |
 | `updatedAt` | ISO 8601 date | Known Git content commit time; otherwise hidden | Pin the footer's last-updated time and publish it in page metadata |
-| `group` | `string` | First directory name | Compatibility/display override for the top-level section |
-| `subgroup` | `string` | Second directory name | Compatibility/display override for the first nested group |
+| `group` | `string` | First directory name | Override the top section's display name; the directory index takes precedence |
+| `subgroup` | `string` | Second directory name | Override the first nested group's display name; the directory index takes precedence |
 | `order` | `number` | Last | Page, sidebar, and pagination order |
 | `collapsed` | `boolean` | `false` | Initial subgroup state from its `index.md` |
 | `layout` | `document \| playground` | `document` | Use the standard document layout or the editable source/preview Playground layout |
@@ -51,7 +51,7 @@ Local `dev` can preview a draft home page, but every version and locale still ne
 
 Directory `index.md` files are authoritative for group labels and collapsed state. Conflicting `group` or `subgroup` labels in one directory fail the build.
 
-`group` and `subgroup` do not limit the content tree to two levels. Use directory `index.md` files for recursive navigation. Keep these fields for legacy content or display-name overrides.
+`group` and `subgroup` do not limit the content tree to two levels. Name deeper groups through their directory `index.md` files.
 
 ### Date fields
 

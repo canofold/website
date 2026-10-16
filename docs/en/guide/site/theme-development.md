@@ -34,7 +34,7 @@ This theme reuses the official base palette and overrides its own variables. Its
     ".": { "types": "./index.d.ts", "import": "./index.js" },
     "./aurora.css": "./aurora.css"
   },
-  "peerDependencies": { "@canofold/themes": "^0.6.7" }
+  "peerDependencies": { "@canofold/themes": "^0.6.8" }
 }
 ```
 
@@ -120,7 +120,7 @@ Consult the installed `shared.css` and theme CSS for complete hooks. If variable
 Run `npm pack --dry-run` in the theme directory to inspect definitions, declarations, CSS, and the license, then run `npm pack`. Install the result in an independent test site:
 
 ```bash
-pnpm add -D canofold@0.6.7 @canofold/themes@0.6.7 /absolute/path/acme-canofold-theme-1.0.0.tgz
+pnpm add -D canofold@0.6.8 @canofold/themes@0.6.8 /absolute/path/acme-canofold-theme-1.0.0.tgz
 ```
 
 ```ts title="canofold.config.ts"
