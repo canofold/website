@@ -34,7 +34,7 @@ order: 36.5
     ".": { "types": "./index.d.ts", "import": "./index.js" },
     "./aurora.css": "./aurora.css"
   },
-  "peerDependencies": { "@canofold/themes": "^0.6.8" }
+  "peerDependencies": { "@canofold/themes": "^0.7.0" }
 }
 ```
 
@@ -104,6 +104,8 @@ html[data-cf-theme='aurora'][data-cf-theme-appearance='dark'] {
 
 `styles` 读取 CSS 内容，不会自动复制主题包的字体或图片，也不会重写其中的相对 `url()`。小型装饰可内嵌为 data URL；项目资源放进 `docs/public/` 并使用其公开地址。需要随主题分发额外文件时，应明确提供资源安装或构建步骤，再验证子路径部署；不要假设 npm 包里的相对资源会自动出现在站点。
 
+例如，主题包公开 `assets/fixture.woff2` 和 `assets/picture.svg` 后，项目安装步骤将它们复制到 `docs/public/theme-assets/`。输出样式位于 `assets/canofold.css`，主题 CSS 可用 `url('../theme-assets/fixture.woff2')` 与 `url('../theme-assets/picture.svg')`：浏览器会从最终 CSS 地址解析，在 `/` 和 `/project/` 部署时分别请求对应前缀下的 `theme-assets/`。这依赖明确的项目资源安装步骤，Core 不会从原始 CSS 的目录自动复制这些文件；发布前检查字体加载和图片响应，而不只检查 CSS 字符串。
+
 | 用途 | 视觉 Hook 示例 |
 |---|---|
 | 内容表面 | `--cf-canvas`、`--cf-surface`、`--cf-surface-elevated` |
@@ -120,7 +122,7 @@ html[data-cf-theme='aurora'][data-cf-theme-appearance='dark'] {
 在主题目录运行 `npm pack --dry-run`，核对定义、声明、CSS 与许可证，再运行 `npm pack`。在独立测试站点安装生成的包：
 
 ```bash
-pnpm add -D canofold@0.6.8 @canofold/themes@0.6.8 /absolute/path/acme-canofold-theme-1.0.0.tgz
+pnpm add -D canofold@0.7.0 @canofold/themes@0.7.0 /absolute/path/acme-canofold-theme-1.0.0.tgz
 ```
 
 ```ts title="canofold.config.ts"

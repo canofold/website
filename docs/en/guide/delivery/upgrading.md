@@ -21,6 +21,14 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
+## Machine-format migration to 0.7.0
+
+Canofold 0.7.0 introduces schema 2 machine output. Existing 0.6.x sites continue to produce their previous format until upgraded and rebuilt.
+
+Upgrade directly used packages from the five-package set together to 0.7.0, update `requiredVersion` and the lockfile, then run content checks, a clean build and a second cached build. Upgrade machine consumers to support schema 2 and establish a fresh trusted baseline. Never compare schema 1 route records with new document IDs to infer removals.
+
+Existing HTML/Markdown routes and output switches retain their meanings. Configure a stable `ai.contentSpace` for the same collection across roots; without one, compare only within the same source. Full manifests work with the page index disabled. If full content is disabled, select an explicit metadata entry instead of treating read failures as deleted content. See [AI-friendly output](/en/reference/output/ai-output/) for representations and integrity rules.
+
 ## 0.6.x patch upgrades
 
 Existing 0.6.x sites need no configuration or theme-definition migration for 0.6.8. Keep directly used packages from the five-package set on the same version, rebuild, and deploy the complete output directory. The Changelog lists individual fixes; this page covers migration steps that require project changes.

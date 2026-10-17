@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@canofold/plugins':
-        specifier: ^0.6.8
-        version: 0.6.8(mermaid@12.2.0)(pagefind@1.5.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.7.0
+        version: 0.7.0(mermaid@12.2.0)(pagefind@1.5.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       canofold:
-        specifier: ^0.6.8
-        version: 0.6.8
+        specifier: ^0.7.0
+        version: 0.7.0
       mermaid:
         specifier: ^12.2.0
         version: 12.2.0
@@ -25,11 +25,11 @@ importers:
         specifier: ^4.13.0
         version: 4.13.0(playwright-core@1.63.0)
       '@canofold/themes':
-        specifier: ^0.6.8
-        version: 0.6.8
+        specifier: ^0.7.0
+        version: 0.7.0
       '@canofold/vite':
-        specifier: ^0.6.8
-        version: 0.6.8(canofold@0.6.8)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite@8.3.0(@types/node@22.20.3)(esbuild@0.28.2)(yaml@2.9.1))
+        specifier: ^0.7.0
+        version: 0.7.0(canofold@0.7.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite@8.3.0(@types/node@22.20.3)(esbuild@0.28.2)(yaml@2.9.1))
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.63.0
@@ -83,15 +83,15 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@canofold/markdown@0.6.8':
-    resolution: {integrity: sha512-WRNJe2RIElnG28KUjbhMo8OSTJoCjsqA1T0eAqpzDFwbhS1he6JXeaLubeKqdSRjSAQM5cOxyqNxtpSO5f/mZQ==}
+  '@canofold/markdown@0.7.0':
+    resolution: {integrity: sha512-6aN6SDlNY+Ug6WTw/S6kidC88+qWdly025RbWFDt+IFZgl15gOb8S6MyiSMXHhudr+nGmeKNLWYCRJpQkXTLkQ==}
     engines: {node: '>=22'}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       react-dom: ^18.2.0 || ^19.0.0
 
-  '@canofold/plugins@0.6.8':
-    resolution: {integrity: sha512-O0kCrb34Istl8yNYZZxVwNtQA8FLmrzMPGI2X0Fmgt/sbdYLA1FljTk8pbav5yxFkfjxfiDiWm2Khs3ah0iiOw==}
+  '@canofold/plugins@0.7.0':
+    resolution: {integrity: sha512-9dFxpzTLt5JVNz/BC4nxdUQ5Y5GExbGv3whvf1TReFpw7i/+KTz9fMxiBSeoXs/APHW/PmTkYvMNzRCGLtS3ug==}
     engines: {node: '>=22'}
     peerDependencies:
       mermaid: ^11.12.0 || ^12.0.0
@@ -102,14 +102,14 @@ packages:
       pagefind:
         optional: true
 
-  '@canofold/themes@0.6.8':
-    resolution: {integrity: sha512-bzRXlrDhn1Kwk1Z0DIQlm5K8SJ0v9l/B1GCYlBL7Siyy/O4WqJUwaK/o3rtJ5OHZYd6ioLauJE7q13Iy67YFGw==}
+  '@canofold/themes@0.7.0':
+    resolution: {integrity: sha512-NZ/A2+rgRgfU+IRGCyjqmStLrE6ntR/q6ugm03ZK3ZeKCOTbecw38JX7y3ay6mn9LaQwsdmoXIplmbr3bVIw3Q==}
 
-  '@canofold/vite@0.6.8':
-    resolution: {integrity: sha512-Qj++1zOzeULAUiBv/0PsKnjuVIeB77REPa8alkLT0fazOhf3e3XQ+27HY0XZ+uHhsLUhrGgCQLQlPLiOFqtGlQ==}
+  '@canofold/vite@0.7.0':
+    resolution: {integrity: sha512-cQrMwxSXaHRNvCFpQPNWUgsVYHoCByEn5ep/h2hLZdM/u8W4AOhmBG2DZb29+t2RlEHzKJnnp+ODLNROlJbRfQ==}
     engines: {node: '>=22'}
     peerDependencies:
-      canofold: ^0.6.8
+      canofold: ^0.7.0
       react: ^18.2.0 || ^19.0.0
       react-dom: ^18.2.0 || ^19.0.0
       vite: ^6.4.0 || ^7.0.0 || ^8.0.0
@@ -691,8 +691,8 @@ packages:
   bidi-js@1.1.0:
     resolution: {integrity: sha512-fX1Onk0tdVPC7obPWB5EbJ1z7NVhLq4m2xZLq2YXBkxzMXIGRpNMU88n0EPgWseKl12J7zXs7qrDxPK4sRs2fg==}
 
-  canofold@0.6.8:
-    resolution: {integrity: sha512-734xxveGsUDXlaGPQQ/BAHiPqeW2ubRG2SXSS2mLMtO6FAJNQdDQwKR4l7IfhLgAyROJN3jEcXhI2Q7PxUiY3Q==}
+  canofold@0.7.0:
+    resolution: {integrity: sha512-/mXNEHTH6qBFQIqbo7QrAAZiinJpXvyDeiyZEyB02CeGg7FHfQa89+kMMGGavYmwZww4d6iJg0MZc0GF9Z56Rw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -1828,9 +1828,9 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@canofold/markdown@0.6.8(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@canofold/markdown@0.7.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@canofold/themes': 0.6.8
+      '@canofold/themes': 0.7.0
       '@mdx-js/mdx': 3.1.1
       '@shikijs/langs': 4.4.3
       '@shikijs/rehype': 4.4.3
@@ -1856,9 +1856,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@canofold/plugins@0.6.8(mermaid@12.2.0)(pagefind@1.5.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@canofold/plugins@0.7.0(mermaid@12.2.0)(pagefind@1.5.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@canofold/markdown': 0.6.8(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@canofold/markdown': 0.7.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       fflate: 0.8.3
       hast-util-from-html: 2.0.3
       katex: 0.18.7
@@ -1871,12 +1871,12 @@ snapshots:
       - react-dom
       - supports-color
 
-  '@canofold/themes@0.6.8': {}
+  '@canofold/themes@0.7.0': {}
 
-  '@canofold/vite@0.6.8(canofold@0.6.8)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite@8.3.0(@types/node@22.20.3)(esbuild@0.28.2)(yaml@2.9.1))':
+  '@canofold/vite@0.7.0(canofold@0.7.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vite@8.3.0(@types/node@22.20.3)(esbuild@0.28.2)(yaml@2.9.1))':
     dependencies:
-      '@canofold/markdown': 0.6.8(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      canofold: 0.6.8
+      '@canofold/markdown': 0.7.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      canofold: 0.7.0
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
       vite: 8.3.0(@types/node@22.20.3)(esbuild@0.28.2)(yaml@2.9.1)
@@ -2355,10 +2355,10 @@ snapshots:
     dependencies:
       require-from-string: 2.0.2
 
-  canofold@0.6.8:
+  canofold@0.7.0:
     dependencies:
-      '@canofold/markdown': 0.6.8(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@canofold/themes': 0.6.8
+      '@canofold/markdown': 0.7.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@canofold/themes': 0.7.0
       chokidar: 5.0.0
       esbuild: 0.28.2
       import-meta-resolve: 4.2.0

@@ -34,7 +34,7 @@ This theme reuses the official base palette and overrides its own variables. Its
     ".": { "types": "./index.d.ts", "import": "./index.js" },
     "./aurora.css": "./aurora.css"
   },
-  "peerDependencies": { "@canofold/themes": "^0.6.8" }
+  "peerDependencies": { "@canofold/themes": "^0.7.0" }
 }
 ```
 
@@ -104,6 +104,8 @@ The example explicitly lists `canofold.css` first to reuse a complete light/dark
 
 `styles` reads CSS content; it does not automatically copy package fonts or images or rewrite relative `url()` references. Small decorations can use data URLs. Put project assets in `docs/public/` and use their public URLs. If a theme distributes additional files, provide explicit installation or build steps and verify subpath deployment instead of assuming package-relative resources will appear on the site.
 
+For example, export `assets/fixture.woff2` and `assets/picture.svg` from the theme package and copy them into the project's `docs/public/theme-assets/` during installation. The generated stylesheet is `assets/canofold.css`; `url('../theme-assets/fixture.woff2')` and `url('../theme-assets/picture.svg')` resolve from that final CSS address, retaining the correct prefix for both `/` and `/project/` deployments. Core does not copy files relative to the original theme CSS. Verify actual font loading and image responses before publishing, not only the CSS strings.
+
 | Purpose | Example visual hooks |
 |---|---|
 | Content surfaces | `--cf-canvas`, `--cf-surface`, `--cf-surface-elevated` |
@@ -120,7 +122,7 @@ Consult the installed `shared.css` and theme CSS for complete hooks. If variable
 Run `npm pack --dry-run` in the theme directory to inspect definitions, declarations, CSS, and the license, then run `npm pack`. Install the result in an independent test site:
 
 ```bash
-pnpm add -D canofold@0.6.8 @canofold/themes@0.6.8 /absolute/path/acme-canofold-theme-1.0.0.tgz
+pnpm add -D canofold@0.7.0 @canofold/themes@0.7.0 /absolute/path/acme-canofold-theme-1.0.0.tgz
 ```
 
 ```ts title="canofold.config.ts"

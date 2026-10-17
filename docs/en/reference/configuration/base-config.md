@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme platform documentation',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.6.8'
+  requiredVersion: '^0.7.0'
 })
 ```
 
@@ -116,6 +116,7 @@ See [navigation](/en/guide/site/navigation/), [versions](/en/guide/site/versions
 | `ai.llmsFullMaxBytes` | `10485760` | Budget for the legacy aggregate file |
 | `ai.llmsFullOverflow` | `manifest` | Write a Manifest pointer on overflow, or use `error` to fail the build |
 | `ai.versions` | `current` | Publish only the current version, or use `all` for every version |
+| `ai.contentSpace` | Unset | Stable machine-content namespace; omission permits comparison only within the same source |
 
 See [Internationalization](/en/guide/site/internationalization/) and [AI-friendly output](/en/reference/output/ai-output/) for setup and artifact details.
 
