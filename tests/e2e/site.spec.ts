@@ -316,9 +316,7 @@ test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', asyn
 test('Mermaid 布局、数学标签和编辑恢复使用真实浏览器运行时', async ({ page }) => {
   let invalid = false
   const errors: string[] = []
-  const requests: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
-  page.on('request', (request) => requests.push(request.url()))
   page.on('console', (message) => {
     if (message.type() !== 'error') return
     if (invalid && message.text().startsWith('[canofold] mermaid render failed:')) return
@@ -327,7 +325,7 @@ test('Mermaid 布局、数学标签和编辑恢复使用真实浏览器运行时
   await page.goto('/markdown/playground/', { waitUntil: 'domcontentloaded' })
   const source = page.locator('[data-canofold-playground-source]')
   const preview = page.locator('[data-canofold-playground-preview]')
-  const diagrams = preview.locator('figure[data-cf-plugin-diagram="mermaid"]')
+  const diagrams = preview.locator('figure[data-cf-plugin-diagram="mermaid"]').filter({ visible: true })
   const fences = [
     'flowchart LR\n Input["$$E=mc^2$$"] --> Preview',
     'sequenceDiagram\n Alice->>Bob: Ready',
@@ -336,11 +334,32 @@ test('Mermaid 布局、数学标签和编辑恢复使用真实浏览器运行时
     'erDiagram\n DOCUMENT ||--o{ PREVIEW : renders',
     '---\nconfig:\n  layout: elk\n---\nflowchart LR\n Source --> ELK --> Preview'
   ]
-  await source.fill(fences.map((diagram) => `\`\`\`mermaid\n${diagram}\n\`\`\``).join('\n\n'))
+  await expect(diagrams).toHaveCount(1)
+  await expect(diagrams.locator('.cf-diagram-preview > svg')).toBeVisible()
+  let releaseElk!: () => void
+  const elkGate = new Promise<void>((resolve) => {
+    releaseElk = resolve
+  })
+  await page.route(/\/elk-.*\.mjs$/, async (route) => {
+    await elkGate
+    await route.continue()
+  })
+  const elkRequested = page.waitForRequest(/\/elk-.*\.mjs$/)
+  try {
+    await source.fill(fences.map((diagram) => `\`\`\`mermaid\n${diagram}\n\`\`\``).join('\n\n'))
+    await elkRequested
+    await expect(
+      preview.locator('.cf-playground-live-preview[hidden] figure[data-cf-plugin-diagram="mermaid"]')
+    ).toHaveCount(6)
+    // A pending candidate must not count as the reader's committed preview.
+    await expect(diagrams).toHaveCount(1)
+  } finally {
+    releaseElk()
+  }
+  await preview.locator('figure[data-cf-source*="Source --> ELK --> Preview"]').waitFor({ state: 'visible' })
   await expect(diagrams).toHaveCount(6)
   await expect(diagrams.locator('.cf-diagram-preview > svg')).toHaveCount(6)
   await expect(diagrams.first().locator('.katex')).toHaveCount(1)
-  expect(requests.some((url) => /elk.*\.mjs/.test(url))).toBe(true)
   for (const figure of [diagrams.first(), diagrams.last()]) {
     await expect(figure).not.toHaveAttribute('data-cf-render-error', 'true')
     await figure.locator('[data-cf-diagram-action="zoom-in"]').click()
