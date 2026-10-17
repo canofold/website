@@ -18,7 +18,7 @@ export default defineConfig({
   description: 'Acme 平台开发文档',
   siteUrl: 'https://docs.acme.com',
   basePath: '/',
-  requiredVersion: '^0.6.8'
+  requiredVersion: '^0.7.0'
 })
 ```
 
@@ -116,6 +116,7 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | `ai.llmsFullMaxBytes` | `10485760` | 兼容单文件的容量上限 |
 | `ai.llmsFullOverflow` | `manifest` | 超限时写 Manifest 指针或使用 `error` 停止构建 |
 | `ai.versions` | `current` | 只发布当前版本，或使用 `all` 发布全部版本 |
+| `ai.contentSpace` | 未设置 | 稳定的机器内容命名空间；省略时仅在同一读取来源内比较 |
 
 添加语言见[配置多语言](/guide/site/internationalization/)，文件结构与收录规则见 [AI 友好输出](/reference/output/ai-output/)。
 

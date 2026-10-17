@@ -23,15 +23,15 @@
     "test:ci": "pnpm test && pnpm test:e2e"
   },
   "dependencies": {
-    "@canofold/plugins": "^0.6.8",
-    "canofold": "^0.6.8",
+    "@canofold/plugins": "^0.7.0",
+    "canofold": "^0.7.0",
     "mermaid": "^12.2.0",
     "pagefind": "^1.5.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@canofold/themes": "^0.6.8",
-    "@canofold/vite": "^0.6.8",
+    "@canofold/themes": "^0.7.0",
+    "@canofold/vite": "^0.7.0",
     "@playwright/test": "^1.62.1",
     "@types/node": "^22.20.3",
     "@types/react": "19.3.0",

@@ -105,6 +105,47 @@ export default {
 
 如果关闭 `ai.fullContent`，同时 `llms-full.txt` 超过容量上限，`manifest` 策略也会让构建失败，而不会写入指向不存在的分片清单的链接。
 
+## 0.7.0 机器消费契约
+
+Canofold 0.7.0 使用 schema 2。旧版 0.6.x 的 Manifest 为 schema 1；升级生产者与读取工具后，才能使用下面的字段。
+
+页面索引和完整 Manifest 共享 `schemaVersion: 2`、`scope`、`outputs`、`basePath`、`snapshotRevision`、`pages`。Manifest 自带页面清单，关闭索引也可读取完整内容；启用索引时，`pageIndex` 提供它的路径、字节数与 SHA-256，必须与 Manifest 的快照和清单匹配。
+
+| 字段 | 消费含义 |
+| --- | --- |
+| `id` | 由内容空间、版本、语言与语言内源路径生成的文档身份，与部署地址分开 |
+| `revision` | 内容事实与表示的修订；标题/正文更新不改变身份 |
+| `source.path` / `source.kind` | 逻辑来源与 Markdown/MDX 类型；路径使用 `/` 和 Unicode NFC，不发布本机绝对路径 |
+| `source.revision` / `source.transformedRevision` | 原文件与 Extension 转换后完整源文的 SHA-256 |
+| `representation.body` | `extension-transformed-source-body`，保留作者语法的转换后正文 |
+| `representation.facts` | `compiled-static-with-author-and-extension-overrides`，编译事实及作者/Extension 覆盖 |
+| `representation.analysis` | `markdown-static` 或 `mdx-static-only`，动态 MDX 的运行结果不属于静态分析保证 |
+| `representation.fingerprint` | 重组后正文的 UTF-8 SHA-256 |
+| `representation.declaredInputsRevision` | 声明的插件/Extension 输入指纹，不保证涵盖任意代码与环境 |
+
+跨目录或地址迁移同一集合时，可配置 `ai.contentSpace: 'my-project'`。省略时 `scope.space` 为 null，只能在同一来源内比较。名称为 1–200 个 ASCII 字母、数字、点、下划线、冒号或连字符，以字母或数字开头；命名空间是发布者声明，不是认证凭据。
+
+完整 Manifest 的 JSONL 记录使用 `documentId` 关联页面，按 `part`/`parts` 重组。验证分片字节数、指纹、记录数、版本语言、分段唯一性与正文指纹，全部成功后再更新消费状态。没有旧基线、缺片、损坏、请求失败或不支持的格式时，不能据此删除旧记录。
+
+改名或移动源文件按旧身份退出、新身份加入处理；修改标题和正文保持身份。`ai: false`、草稿、删除和版本选择都可能使文档退出 AI 范围，缺席本身不能证明源文件删除。关闭输出也不等于删除内容或设置访问权限。完整消费快照不同于复制历史版本目录的 `canofold snapshot`。
+
+Markdown Mirror 保留完整 Extension 转换后源文；JSONL 与完整 `llms-full.txt` 使用其解析后的正文，均不反向序列化 HTML。插件可以使编译标题、摘要与正文源文不同；消费前应明确所需表示，并将获取的 MDX/指令作为数据处理。
+
+从 schema 1 升级时整套升级 Canofold 包与 Reader，重新构建并建立新基线，不把格式切换解释为大批文档新增或删除。读取流程及失败处理示例见 [Skills](/skills/)。
+
+### 独立读取示例
+
+取得与 0.7.0 配套的 `canofold-knowledge-reader` Skill 完整目录后，可用 Node.js 22 或更新版本执行其参考脚本。它只读取公开文件，不导入 Core，也不会执行获取的 MDX：
+
+```sh
+node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist /guide/
+node path/to/canofold-knowledge-reader/scripts/read-page.mjs https://docs.example.com/project/ /project/guide/
+node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist --snapshot
+node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist --snapshot --previous trusted-snapshot.json
+```
+
+将 `/guide/` 换成索引中的实际 `routePath`；远端根地址需要包含部署前缀。没有旧基线时 `changes.status` 为 `unknown`。只在命令成功并返回 `complete: true` 后保存新快照，读取失败时保留旧状态。默认读取完整 Manifest；只有索引时可用 `--snapshot --index` 取得元数据，但不能把它当作正文证据。此脚本是可运行参考实现，不是独立 npm SDK。
+
 ## 私有文档注意事项
 
 AI 文件和页面旁的 Markdown 原文都是静态公开产物的一部分。如果站点需要身份验证，托管层必须保护 `/*.md`、`/ai/*`、`/llms*.txt` 和搜索索引，不能只限制 HTML 页面。
