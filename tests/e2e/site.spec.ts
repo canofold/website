@@ -33,6 +33,8 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1, name: 'Canofold' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible()
+  await expect(page.locator('.cf-version-badge')).toHaveText('v0.7.1')
+  await expect(page.locator('.cf-version-menu')).toHaveCount(0)
   await expect(page.locator('main > article.cf-content')).toHaveCount(0)
 
   await page.getByRole('button', { name: '搜索文档' }).click()
@@ -106,7 +108,7 @@ test('多词搜索保留正文命中的正确页面，并按语言隔离结果',
   await page.goto('/en/')
   await page.getByRole('button', { name: 'Search docs' }).click()
   const englishSearch = page.getByRole('searchbox', { name: 'Search docs' })
-  await englishSearch.fill('keep older docs versions')
+  await englishSearch.fill('snapshot name Git lookup')
   await expect(page.locator('[data-canofold-search-results] a[href^="/en/guide/site/versions/"]')).toBeVisible()
   await expect(page.locator('[data-canofold-search-results] a[href^="/guide/"]')).toHaveCount(0)
   expectNoRuntimeErrors()
