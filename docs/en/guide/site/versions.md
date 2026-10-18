@@ -8,7 +8,9 @@ order: 34
 
 # Manage documentation versions
 
-To keep older docs versions available, give each version its own source directory and URL prefix. The current version usually uses `/`, while historical versions use prefixes such as `/v1/` or `/v2/`. Switching versions does not rewrite one document at runtime.
+From Canofold 0.7.1, `versions` is an array whose first entry is current. Each version has its own source directory and URL prefix. Builds publish them together; readers choose an old version from the dropdown to open its pages without switching Git revisions.
+
+Omit `versions` or use `[]` to hide the control while building from the top-level `docsDir` (`docs` by default). One entry displays its `label`; multiple entries offer switching. Labels are not read automatically from the project or Canofold package version.
 
 ## Prepare a historical snapshot
 
@@ -19,9 +21,13 @@ pnpm exec canofold check
 pnpm exec canofold snapshot v1
 ```
 
-`snapshot` copies the whole current documentation directory—pages, relative assets, `public/`, and version-local MDX and Demo source—into `versions/v1/`. It does not rewrite or overwrite `canofold.config.ts`, nor overwrite an existing directory. It stops on drafts, symbolic links, MDX/Demo dependencies outside the docs directory, or global `demos.setup`. Add the historical item to `versions.items` yourself, then continue editing current docs. To revise history, edit `versions/v1/` and rerun `check` and `build`.
+`snapshot` copies the current documentation directory, including its assets, MDX components, and Demo source, into `versions/v1/`. It saves content as it exists when run. `v1` is a snapshot name, not a Git lookup.
 
-A component library's usual `::demo{src="/src/..."}` points at current source and is not a historical snapshot. Before archiving, place the Demo and its project-local dependencies in the current docs directory and use a relative `src`. Historical builds reject local source outside their version directory. Pin third-party packages to exact versions and commit the lockfile so a reinstall does not silently change old examples. `snapshot` does not automatically freeze npm packages, Vite configuration, or a global provider; maintain these inputs separately.
+The command does not modify configuration or overwrite an existing destination. Append the historical entry to the `versions` array, keeping the current main version first. Run `check` and `build`, commit the snapshot and configuration together, then start rewriting current docs.
+
+Drafts, symbolic links, MDX/Demo dependencies outside the docs directory, or docs with Demos using global `demos.setup` cause snapshots to fail. Move Demos and their project-local dependencies into the docs directory and use relative `src` paths rather than `/src/...`. Snapshots do not freeze npm packages, external public assets, Vite configuration, or global providers; maintain those inputs and the lockfile separately.
+
+## Configure version directories and URLs
 
 This example uses English as the default locale, keeps current documentation in `docs/`, and stores the old release in `versions/v1/`:
 
@@ -44,29 +50,37 @@ The current English and Chinese homes map to `/` and `/zh/`; the v1 homes map to
 import { defineConfig } from 'canofold'
 
 export default defineConfig({
-  versions: {
-    current: 'v2',
-    items: [
-      {
-        id: 'v2',
-        label: '2.x',
-        docsDir: 'docs',
-        base: '/'
-      },
-      {
-        id: 'v1',
-        label: '1.x',
-        docsDir: 'versions/v1',
-        base: '/v1/',
-        status: 'archived'
-      }
-    ]
-  }
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh']
+  },
+  versions: [
+    { id: 'v2', label: '2.x', docsDir: 'docs', base: '/' },
+    {
+      id: 'v1',
+      label: '1.x',
+      docsDir: 'versions/v1',
+      base: '/v1/',
+      status: 'archived'
+    }
+  ]
 })
 ```
 
-Keep `docsDir` and `base` boundaries clear across versions so that two pages cannot write to the same output path.
-Omit `status` for a maintained historical release. `status: 'archived'` keeps pages readable and searchable while visibly marking them as no longer maintained. The current version cannot be archived.
+- `id` is an internal identifier used for version associations and search partitions.
+- `label` is the name displayed in the version control, such as `2.x`. It does not locate historical content.
+- `docsDir` is the source directory relative to the project root. It must contain that version's actual documentation.
+- `base` is the version's URL prefix, not a disk directory or Git branch. The current main version must use `/`.
+
+Each `id` and `base` must be unique, and content directories should be maintained independently. With a non-empty `versions` array, omit the top-level `docsDir`. The first entry must use `base: '/'` and cannot be archived. Do not change the main version just to reorder the dropdown.
+
+`basePath` prefixes the whole deployment: `basePath: '/manual/'` with `base: '/v1/'` produces `/manual/v1/`. Omit `status` for a maintained historical release; `status: 'archived'` keeps it readable and searchable but marks it as no longer maintained.
+
+To migrate the old configuration, assign its `items` array directly to `versions`, move the entry selected by `current` to the first position, and remove both wrapper fields.
+
+## If you did not save the old docs
+
+Version configuration does not generate historical content. Without a snapshot, recover docs and their referenced assets and source from Git or a backup, verify them, then register the version. Canofold does not restore Git history automatically; without a historical source, old content cannot be recovered.
 
 ## Switch pages
 
@@ -76,7 +90,7 @@ When a reader switches versions, Canofold looks for the same page-relative path 
 
 Compact Search writes a separate JSON file for each version and locale. Pagefind uses one index and restricts results with `version` and `locale` filters. Both providers keep results from other versions out of the current page's search results.
 
-AI artifacts include only `versions.current` by default. Set `ai.versions: 'all'` to write historical versions into separate partitions:
+AI artifacts include only the first array entry's current main version by default. Set `ai.versions: 'all'` to write historical versions into separate partitions:
 
 ```ts title="canofold.config.ts"
 import { defineConfig } from 'canofold'
@@ -90,4 +104,4 @@ export default defineConfig({
 
 ## When to keep a snapshot
 
-Keep a historical snapshot when a release changes configuration, APIs, or workflows incompatibly and readers still need the old instructions. Whether that boundary follows major, minor, or another release marker depends on the project's compatibility policy.
+Keep a snapshot when configuration, APIs, or workflows change incompatibly and readers still need the old instructions, not for every patch. For example, maintain one `0.7.x` content set, save it before rewriting for `0.8`, then offer both series. With one content set, maintain it and record its release commit. Correct historical docs in their snapshot directory, then check, rebuild, and publish.

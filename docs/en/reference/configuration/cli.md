@@ -136,7 +136,9 @@ canofold check
 canofold snapshot v1
 ```
 
-Copies the current version's complete docs directory to `versions/v1/` without rewriting configuration or overwriting a target. Drafts, symlinks, or historical Demo/MDX code that still points to current source cause an error. Add the historical entry to `versions.items` yourself; see [versions](/en/guide/site/versions/).
+Copies current docs to `versions/v1/` without modifying configuration or overwriting a destination. Current docs come from the first configured array entry, or `docsDir` when versions are unconfigured. Append the historical entry to `versions`, keeping the main version first; see [versions](/en/guide/site/versions/).
+
+`v1` names the snapshot; it does not trigger a Git lookup. Run it before rewriting docs. Drafts, symlinks, or MDX/Demo dependencies outside the version directory cause errors. Snapshots do not freeze the entire project's build environment.
 
 ## `canofold deploy`
 

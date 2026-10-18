@@ -35,7 +35,7 @@ export default defineConfig({
 | `editUrl` | unset | HTTP(S) prefix for “Edit this page”; queries and hashes are rejected |
 | `github` | unset | HTTP(S) URL for the header GitHub link |
 | `requiredVersion` | unset | Semver range that the running CLI must satisfy |
-| `docsDir` | `docs` | Content directory for a single-version site; cannot be combined with `versions` |
+| `docsDir` | `docs` | Content directory without configured versions; cannot be combined with non-empty `versions` |
 | `outputDir` | `.canofold/dist` | Static site output directory |
 | `markdownMirror` | `true` | Emit Markdown source beside each HTML page; `ai/index.md` links to HTML when disabled |
 | `styles` | `[]` | Site-wide project CSS loaded after the default stylesheet; demo CSS should be imported by components |
@@ -91,11 +91,13 @@ Theme definitions come from `@canofold/themes` or a third-party package and own 
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` entries; `resolve` starts with `./` and options are JSON-serializable |
 | `navigation` | `{}` | Locale-keyed `{ text, link, activePaths? }[]`; derived from top-level content sections when omitted |
-| `versions` | current version `current` | `{ current, items }`; current uses `/`, and every id and base is unique |
+| `versions` | `[]` | Version array; first entry is current and uses `/`. Omitted or empty hides the control; one shows a label, multiple offer switching |
 | `redirects` | `{}` | Old-to-current route map; chains, cycles, and real-page collisions fail validation |
 | `advertising` | unset | `{ image, href, alt, label? }` image slot beside the page outline |
 
 See [navigation](/en/guide/site/navigation/), [versions](/en/guide/site/versions/), [redirects](/en/guide/site/redirects/), [extensions](/en/guide/site/extensions/), and [advertising](/en/guide/delivery/advertising/) for workflows.
+
+Each `versions[]` entry requires `id`, `label`, project-relative `docsDir`, and URL prefix `base`; `status: 'supported' | 'archived'` is optional. IDs and bases must be unique, and the first entry cannot be archived. Labels are not read from package versions. The array format applies from 0.7.1; see [Manage documentation versions](/en/guide/site/versions/) for examples, migration, and snapshots.
 
 ## Internationalization and AI output
 

@@ -142,7 +142,9 @@ canofold check
 canofold snapshot v1
 ```
 
-复制当前版本的完整文档目录到 `versions/v1/`，不会改写配置或覆盖目标。草稿、符号链接、历史 Demo/MDX 引用当前源码等不安全情况会报错。复制后手工在 `versions.items` 登记历史版本；详见[版本管理](/guide/site/versions/)。
+复制当前文档到 `versions/v1/`，不修改配置或覆盖目标。配置版本时，以数组第一项为当前文档；未配置时使用 `docsDir`。复制后将历史项追加到 `versions` 数组，保留主版本在第一项；详见[版本管理](/guide/site/versions/)。
+
+`v1` 是快照名称，不会触发 Git 回溯，须在改写文档前执行。草稿、符号链接、版本目录外的 MDX/Demo 依赖等不安全情况会报错；快照不冻结整个项目的构建环境。
 
 ## `canofold deploy`
 

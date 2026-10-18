@@ -37,7 +37,7 @@ VitePress [Markdown extensions](https://vitepress.dev/guide/markdown) and [Vue-i
 | `public/` | `{docsDir}/public/`, then verify absolute asset URLs |
 | Ordinary `.md` and relative links | Keep files, run `check`, verify public routes |
 | Vue components, interpolation, framework-specific containers | Rewrite page by page; use `::demo` for React component examples, supported Markdown directives or trusted MDX for other content |
-| Older version directories | Add `versions.items`; check routes and component sources for each version |
+| Older version directories | Configure a `versions` array with the main version first; check routes and component sources per version |
 
 For example, `docs/guide/install.md` becomes `/guide/install/`. Validate the new page before redirecting an existing `/guide/install` public URL. Do not blindly replace links: fragments, query strings, and subpath deployment need individual review.
 
@@ -50,7 +50,7 @@ Docusaurus [MDX](https://docusaurus.io/docs/markdown-features/react), [admonitio
 | `sidebars.js`, `_category_.json` | Directory `index.md` names groups; `order` sorts pages |
 | `id`, `slug`, `sidebar_position` | Derive routes from paths, sort with `order`, redirect old URLs where needed |
 | `static/` | `{docsDir}/public/`, then verify references |
-| Versioned docs | Separate `docsDir` per version with a `versions.items` `base` |
+| Versioned docs | Separate `docsDir` per version with `base` on each `versions` array entry |
 | Theme components and MDX package imports | Rewrite individually; local Canofold MDX components use trusted relative imports, interactive examples use Demo |
 
 Sample a page with `:::note` or `:::tip`, tabs, an image, and a titled code block, then compare its actual preview. Keep unsupported plugins, React components, or routing metadata on a migration checklist until converted; unknown Frontmatter fields may parse without taking effect.

@@ -21,6 +21,12 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
+## Documentation version configuration in 0.7.1
+
+`versions` is now an array. Assign the old `items` directly to `versions`, move the entry selected by `current` to the first position, and remove the `current` and `items` wrapper fields. The object format is no longer accepted; source directories and URL paths need not change.
+
+Omitted or empty versions no longer display a control. Configure one entry for a label or multiple entries for switching. Neither the project nor Canofold package version is read automatically. Check default docs, historical paths, and search after upgrading, then rebuild. See [Manage documentation versions](/en/guide/site/versions/) for examples.
+
 ## Machine-format migration to 0.7.0
 
 Canofold 0.7.0 introduces schema 2 machine output. Existing 0.6.x sites continue to produce their previous format until upgraded and rebuilt.
@@ -58,7 +64,7 @@ Upgrade any directly used `canofold`, `@canofold/markdown`, `@canofold/vite`, an
 - Drafts now participate in local preview and `check`, but remain absent from production pages, search, Markdown mirrors, and AI outputs. If you previously used `status: draft` for permanently hidden content, review local preview visibility.
 - `check --json` provides CI-readable diagnostics, and `checks.rules` can set individual rules to `error`, `warning`, or `off`. Review new findings before changing severity; editorial advice need not all block publication.
 - Pages without trusted Git history or explicit `updatedAt` no longer display an update date inferred from file mtime. Set `updatedAt` when you need a fixed date. Translation freshness is known only when `translation.sourceHash` records the reviewed source; otherwise it is unknown.
-- Existing historical version directories remain usable. For a new snapshot, run `check`, then `snapshot <version-id>`, and add the version to `versions.items` manually. The current version cannot be `archived`; historical Demo and MDX project-local code dependencies must stay inside that version's docs directory. See [version maintenance](/en/guide/site/versions/).
+- Existing historical version directories remain usable. For a new snapshot, run `check`, then `snapshot <version-id>`, and register the historical version. The current version cannot be `archived`; historical Demo and MDX project-local code dependencies must stay inside that version's docs directory. When upgrading to 0.7.1, convert the configuration as described above. See [version maintenance](/en/guide/site/versions/) for usage.
 - The new release regenerates search indexes and build caches; neither needs manual conversion.
 
 If you provide a custom DemoEngine, historical Demos must report `dependencyPaths` in their manifest and keep project-local code and assets inside the version directory. Historical Demos cannot reference current-version source or global `demos.setup`. Run a full build after migrating them.

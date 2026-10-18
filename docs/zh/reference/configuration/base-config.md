@@ -35,7 +35,7 @@ export default defineConfig({
 | `editUrl` | 未设置 | “编辑此页”的 HTTP(S) URL 前缀，不允许查询和哈希 |
 | `github` | 未设置 | 页头 GitHub 入口的 HTTP(S) URL |
 | `requiredVersion` | 未设置 | 当前 CLI 必须满足的 semver 范围 |
-| `docsDir` | `docs` | 单版本内容目录；不能与 `versions` 同时配置 |
+| `docsDir` | `docs` | 未配置版本时的内容目录；不能与非空 `versions` 同时配置 |
 | `outputDir` | `.canofold/dist` | 静态站点输出目录 |
 | `markdownMirror` | `true` | 是否在每个 HTML 页面旁生成 Markdown 原文；关闭后 `ai/index.md` 改用 HTML 链接 |
 | `styles` | `[]` | 在默认样式之后加载的站点级项目 CSS；组件 Demo 的 CSS 应由组件入口导入 |
@@ -91,11 +91,13 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` 列表；`resolve` 必须以 `./` 开头，`options` 必须可 JSON 序列化 |
 | `navigation` | `{}` | 按 locale 配置的 `{ text, link, activePaths? }[]`；未配置时从一级内容分区生成 |
-| `versions` | 当前版本 `current` | `{ current, items }`；当前版本必须使用 `/`，每个 id 和 base 唯一 |
+| `versions` | `[]` | 版本数组，第一项为主版本并使用 `/`；省略或空数组隐藏入口，一项显示标签，多项提供切换 |
 | `redirects` | `{}` | 旧路由到现有站内路由的映射；链、环和覆盖真实页面都会失败 |
 | `advertising` | 未设置 | `{ image, href, alt, label? }` 右侧图片位 |
 
 对应流程见[导航](/guide/site/navigation/)、[版本](/guide/site/versions/)、[重定向](/guide/site/redirects/)、[扩展](/guide/site/extensions/)和[广告](/guide/delivery/advertising/)。
+
+`versions[]` 各项需提供 `id`、`label`、项目相对源目录 `docsDir` 和网址前缀 `base`，可选 `status: 'supported' | 'archived'`；id 和 base 必须唯一，第一项不能归档。标签不自动取自包版本。数组写法适用于 0.7.1 起；示例、迁移与快照步骤见[管理文档版本](/guide/site/versions/)。
 
 ## 多语言与 AI 输出
 

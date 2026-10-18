@@ -37,7 +37,7 @@ VitePress 的 [Markdown 扩展](https://vitepress.dev/guide/markdown) 与 [Vue �
 | `public/` | 移到 `{docsDir}/public/`，核对绝对资源路径 |
 | 普通 `.md` 与相对链接 | 保留文件，运行 `check`，再核对公开 URL |
 | Vue 组件、Vue 插值、VitePress 专有容器 | 逐页改写；React Demo 使用 `::demo`，其他内容使用 Canofold 支持的 Markdown 指令或可信 MDX |
-| 旧版本目录 | 配置 `versions.items`，逐版检查路径和组件来源 |
+| 旧版本目录 | 配置 `versions` 数组，主版本在第一项；逐版检查路径和组件来源 |
 
 例如旧站的 `docs/guide/install.md` 若链接为 `/guide/install`，Canofold 的页面地址为 `/guide/install/`。先验证新页面，再为已有外部入口增加重定向。不要机械替换所有链接：带查询参数、锚点和子路径部署需逐项检查。
 
@@ -50,7 +50,7 @@ Docusaurus 的 [MDX](https://docusaurus.io/docs/markdown-features/react)、[admo
 | `sidebars.js`、`_category_.json` | 用目录 `index.md` 命名分组；页面用 `order` 排序 |
 | `id`、`slug`、`sidebar_position` | 改为文件路径生成路由，并用 `order` 排序；需要保留旧 URL 时配置 redirects |
 | `static/` | 移到 `{docsDir}/public/` 并核对引用 |
-| 版本化文档 | 每个版本放独立 `docsDir`，在 `versions.items` 指定 `base` |
+| 版本化文档 | 每个版本放独立 `docsDir`，在 `versions` 数组各项指定 `base` |
 | Docusaurus 主题组件、MDX 包导入 | 逐页替换；Canofold 的本地 MDX 组件仅支持可信项目内相对导入，交互组件示例用 Demo |
 
 把 `:::note`、`:::tip` 等提示块、Tabs、图片和代码标题作为迁移抽样页，打开实际预览核对。不能自动对应的插件、React 组件或路由元数据应保留在迁移清单中，人工处理后再删除旧实现；不要让未知 Frontmatter 字段“看似存在但实际无效”。
