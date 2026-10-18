@@ -86,6 +86,8 @@ export default defineConfig({
 
 切换版本时，Canofold 先查找目标版本中相同相对路径的页面。如果不存在，切换菜单会标注“此页不存在，前往首页”，链接指向目标版本当前语言的首页。历史版本删除页面或调整目录后，可以通过 redirects 保留常用入口。
 
+OpenAPI 等派生页面按来源类型、`id` 和 operation 键匹配，而不是按生成 URL 或原文件名猜测。历史来源需单独配置 `root`、`entry`、`version` 和 `locale`；所有引用都必须在该版 `docsDir` 内。快照不会自动添加这些绑定，详见 [OpenAPI 接口文档](/guide/writing/openapi/)。
+
 ## 搜索和 AI 输出
 
 内置 Compact Search 为每个版本和语言写入独立 JSON 文件。Pagefind 使用一份索引，并通过 `version` 和 `locale` filter 限定结果。两种 provider 都不会把其他版本的结果混入当前页面的搜索结果。

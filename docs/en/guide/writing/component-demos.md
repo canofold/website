@@ -59,9 +59,9 @@ Iframe mode runs trusted repository code. It restricts capabilities such as navi
 
 The two cards below run the same React component. The first mounts directly in the page and the second uses iframe isolation. Switch release channels, then expand the source to see how it works.
 
-::demo[Inline interaction]{src="/docs/examples/release-channel/basic.tsx" description="Switch release channels in the page and observe component state changes."}
+::demo[Inline interaction]{src="../../../examples/release-channel/basic.tsx" description="Switch release channels in the page and observe component state changes."}
 
-::demo[Iframe isolation]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="Run the same component in a separate document to isolate page and component styles."}
+::demo[Iframe isolation]{src="../../../examples/release-channel/basic.tsx" sandbox="iframe" description="Run the same component in a separate document to isolate page and component styles."}
 
 ### Demo syntax
 

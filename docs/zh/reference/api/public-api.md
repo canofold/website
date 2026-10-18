@@ -18,6 +18,8 @@ Canofold 发布五个包。`canofold` 根入口公开 `canofoldVersion`、`defin
 
 AI Manifest 与扩展描述符带有独立版本；消费者遇到不支持的版本应明确拒绝，不能猜测兼容。
 
+构建期来源通过 `sources` 配置；`canofold` 公开 `ContentSource`、`ContentSourceContext`、`SourceDocument` 类型，统一交付页面、搜索和机器内容。官方 `openapi()` 仅由 `@canofold/plugins/openapi` 服务端子路径导出，不进入聚合根入口或浏览器包。接入与边界见 [OpenAPI 接口文档](/guide/writing/openapi/)。
+
 ## 版本策略
 
 在 `0.x` 阶段，Patch 版本保持向后兼容。Minor 版本只有在 Changelog 明确说明影响和升级路径时才允许做破坏性修正；可平滑迁移的非安全删除至少弃用一个 Minor 版本。

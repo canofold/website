@@ -86,7 +86,7 @@ flowchart LR
 
 `canofold check` uses plugin declarations to validate directives and code fences, and executes compiler transforms during content analysis to check transformed headings and links. It neither emits the complete site nor verifies browser runtimes. Use `canofold dev` or `canofold build` to inspect final pages. Removing a plugin stops its syntax from being transformed, and fences not claimed by another plugin remain subject to the unknown-language policy.
 
-Kroki and PlantUML send diagram source to an external service only when `server` is configured. Canofold emits one explicit warning when a document actually activates either external renderer. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint. The warning does not replace network, CSP, or data-governance review.
+Kroki and PlantUML embed remote image URLs only when `server` is configured; the browser sends diagram source to that service when loading those images. Public content may use a reviewed service, while private or restricted content should use a trusted self-hosted endpoint or a local host renderer. Review network access, CSP, and data governance before enabling a remote service.
 
 ## Host-provided diagram rendering
 

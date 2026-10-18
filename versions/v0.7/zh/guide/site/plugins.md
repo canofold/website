@@ -1,0 +1,229 @@
+---
+title: 官方插件
+description: 使用 @canofold/plugins 启用图表、数学、链接、阅读时长和 Pagefind
+group: 指南
+subgroup: 站点能力
+order: 38
+---
+
+# 官方插件
+
+Markdown 插件通过 remark/rehype 转换、文档元数据和资源声明扩展内容编译器。转换在编译 Markdown 或 MDX 时执行；插件还可以声明页面需要的 CSS 和浏览器脚本。站点部署后无需运行 Node.js 插件服务，但 Mermaid 等能力仍会在读者浏览器中加载运行时。
+
+例如，配置 `math()` 后，源码中的 `$E = mc^2$` 会在构建时变成 KaTeX HTML；配置 `mermaid()` 后，只有包含 Mermaid 围栏的页面才会加载图表客户端。搜索 Provider 不处理单篇 Markdown，而是在全部页面完成后生成站点级索引。
+
+官方插件统一发布在 `@canofold/plugins`：
+
+:::code-group[包管理器]
+
+```bash title="pnpm"
+pnpm add -D @canofold/plugins
+```
+
+```bash title="npm"
+npm install --save-dev @canofold/plugins
+```
+
+```bash title="yarn"
+yarn add --dev @canofold/plugins
+```
+
+:::
+
+## 可用能力
+
+| 工厂 | 配置位置 | 作用 | 额外要求 |
+|---|---|---|---|
+| `externalLinks()` | `markdown.plugins` | 为外链添加安全属性 | 无 |
+| `linkCard()` | `markdown.plugins` | 把独占段落的链接渲染为卡片 | 无 |
+| `readingTime()` | `markdown.plugins` | 在标题后显示阅读时长 | 无 |
+| `math()` | `markdown.plugins` | 渲染数学公式 | 独立使用 Markdown 包时导入 `@canofold/plugins/math.css` |
+| `mermaid()` | `markdown.plugins` | 渲染 Mermaid 图表 | 安装 `mermaid` |
+| `plantUml()` | `markdown.plugins` | 渲染 PlantUML 图表 | 配置可信 `server` 或宿主 renderer |
+| `kroki()` | `markdown.plugins` | 通过 Kroki 渲染 Graphviz 和 D2 | 配置可信 `server` 或宿主 renderer |
+| `pagefind()` | `search.provider` | 生成 Pagefind 搜索索引 | 安装 `pagefind` |
+
+## 配置并使用插件
+
+对于静态站点，这些包作为开发与构建依赖安装，生成的浏览器资源随站点一起部署。只配置站点需要的能力；启用 Mermaid 或 Pagefind 时，再补充对应依赖：
+
+```bash
+pnpm add -D mermaid@^12.2.0 pagefind
+```
+
+Mermaid 12 要求 Node 22.12+、Safari 17.4+ 或具备同等 ES2024 支持的浏览器。Canofold 默认使用 Dagre 布局和 Classic 外观，图表自己的配置仍可选择 ELK 等布局。Mermaid 由消费项目单独安装，不内置于 `@canofold/plugins`；更新它后需要重新构建并部署，浏览器才会使用新运行时。支持的版本范围以已安装插件包的 `peerDependencies` 为准，并应一并检查其依赖安全告警。
+
+```ts title="canofold.config.ts"
+import { externalLinks, math, mermaid, pagefind } from '@canofold/plugins'
+import { defineConfig } from 'canofold'
+
+export default defineConfig({
+  search: {
+    provider: pagefind()
+  },
+  markdown: {
+    plugins: [
+      math(),
+      mermaid(),
+      externalLinks({ internalHosts: ['docs.example.com'] })
+    ]
+  }
+})
+```
+
+`readingTime()` 已内置中英文文案。只有新增语言或需要改写文案时才传 `labels`。
+
+配置完成后直接使用插件拥有的 Markdown 语法：
+
+````markdown
+行内公式 $E = mc^2$。
+
+```mermaid
+flowchart LR
+  Markdown --> HTML
+```
+````
+
+`canofold check` 根据插件声明校验指令和代码围栏，并在内容分析中执行编译转换，以检查转换后的标题与链接；它不输出完整站点，也不验证浏览器运行时。使用 `canofold dev` 或 `canofold build` 检查最终页面。删除插件配置后，对应语法不再转换，未被其他插件声明的围栏仍受未知语言策略检查。
+
+Kroki 和 PlantUML 只有配置 `server` 时才会把图示源码发送到外部服务。Canofold 在文档实际使用对应围栏时输出一次明确警告。公开内容可评估服务条款后使用，私有或受限内容应改用可信的自托管地址；警告不会代替网络、CSP 或数据合规检查。
+
+## 由宿主提供图表渲染
+
+编辑器、React 或 Webview 宿主可以使用 `renderer: 'client'` 把源码留在本地，并向对应的客户端增强器传入 renderer：
+
+```ts
+import { kroki } from '@canofold/plugins/kroki'
+import { enhance, type DiagramRenderer } from '@canofold/plugins/client/kroki'
+
+const plugin = kroki({ renderer: 'client' })
+const renderer: DiagramRenderer = async ({ diagramType, source, signal }) => ({
+  svg: await renderLocally({ diagramType, source, signal })
+})
+
+const diagrams = enhance(markdownRoot, { renderer })
+await diagrams.ready
+diagrams.dispose()
+```
+
+Worker、本地进程和编辑器消息桥由宿主负责。renderer 会收到插件类型、原始语言、映射后的图表类型、源码和 `AbortSignal`，并返回非空 SVG 字符串。替换或卸载 Markdown DOM 前必须销毁增强器；严格 CSP 还需在 `img-src` 中允许 `blob:`。`server` 与 `renderer: 'client'` 互斥，客户端渲染只支持 SVG。
+
+示例中的 `renderLocally` 由宿主实现，不是插件包导出的运行时；PlantUML 使用对应的 `@canofold/plugins/client/plantuml` 增强入口。
+
+## 运行并验证
+
+```bash
+pnpm docs:check
+pnpm docs:dev
+```
+
+打开包含示例语法的页面，确认公式已经排版、Mermaid 显示图表而不是源码。外链应按配置带有 `target` 和 `rel` 属性。
+
+发布前再检查生产产物：
+
+```bash
+pnpm docs:build
+pnpm docs:preview
+```
+
+在预览中搜索该页面，确认 Pagefind 返回结果。普通页面不应加载 Mermaid 客户端；只有包含可执行 Mermaid 围栏的页面才会加载它。插件没有生效时，按[故障排查](/reference/output/troubleshooting/#插件没有生效)检查。
+
+## 选项参考
+
+所有选项都可省略。数值和行为均使用下表中的默认值：
+
+| 工厂 | 选项 | 默认值 | 作用 |
+|---|---|---|---|
+| `externalLinks` | `newTab` | `true` | 外链使用新窗口 |
+|  | `rel` | `['noopener', 'noreferrer']` | 写入外链的 `rel` |
+|  | `internalHosts` | `[]` | 视为站内链接的域名及其子域名 |
+| `linkCard` | `internalHosts` | `[]` | 不转换为外链卡片的域名 |
+|  | `includeRelative` | `false` | 同时转换以 `/` 开头的站内链接 |
+| `readingTime` | `wordsPerMinute` | `220` | 拉丁文本每分钟词数，必须是正有限数 |
+|  | `cjkWordsPerMinute` | `300` | 中日韩文本每分钟字符数，必须是正有限数 |
+|  | `includeCode` | `false` | 是否把代码计入阅读时长 |
+|  | `label` | `'{minutes} min read'` | 未匹配语言时的文案 |
+|  | `labels` | 内置中文 | 按 locale 覆盖文案，保留 `{minutes}` 占位符 |
+| `math` | `throwOnError` | `false` | KaTeX 遇到错误时是否抛出异常 |
+|  | `errorColor` | `'#b42318'` | 非抛错模式下的错误颜色 |
+|  | `trust` | `false` | 是否允许 KaTeX 生成 URL 或 HTML 的受信命令 |
+|  | `strict` | `'warn'` | KaTeX 严格模式 |
+|  | `macros` | `{}` | 自定义 KaTeX 宏 |
+| `mermaid` | `moduleUrl` | 本地依赖构建产物 | 覆盖浏览器端 Mermaid ESM 地址 |
+| `plantUml` | `server` | 未配置 | 可信 PlantUML HTTP(S) 基础地址；未配置时只展示源码 |
+|  | `renderer` | 未设置 | 使用 `'client'` 把 SVG 渲染交给宿主 |
+| `kroki` | `server` | 未配置 | 可信 Kroki HTTP(S) 基础地址；未配置时只展示源码 |
+|  | `renderer` | 未设置 | 使用 `'client'` 把 SVG 渲染交给宿主 |
+|  | `languages` | Graphviz、Dot、GV、D2 | Markdown 语言名到 Kroki 类型的映射 |
+|  | `format` | `'svg'` | 输出 `svg` 或 `png` |
+| `pagefind` | `includeCharacters` | `'._-'` | Pagefind 分词时保留的字符 |
+|  | `keepIndexUrl` | `false` | 是否保留索引页 URL |
+|  | `writePlayground` | `false` | 是否生成 Pagefind 调试 Playground |
+
+## 插件、Provider 和 Extension
+
+`mermaid()` 默认使用项目安装的 `mermaid` 构建浏览器资源。设置 `moduleUrl` 后改用指定模块，其版本和可用性由你维护；详见[安全边界](/reference/output/security/)。
+
+| 类型 | 适合解决的问题 | 配置位置 |
+|---|---|---|
+| Markdown 插件 | 一篇文档中的语法或 HTML 转换 | `markdown.plugins` |
+| Search Provider | 根据整个站点生成搜索索引 | `search.provider` |
+| Extension | 转换仓库源码、补充页面元数据或生成附加文件 | `extensions` |
+
+包管理器会安装整个 `@canofold/plugins` 包；只有传入配置的插件会参与内容处理并影响构建结果。需要浏览器运行时的能力还会按页面内容加载资源；只有可执行的 Mermaid 围栏会启用 Mermaid，教程代码块里展示的 Mermaid 示例不会误加载运行时。
+
+常规配置使用包根入口。子路径入口仍是公共 API，适合只解析单项能力的库或工具。
+
+## 编写一个最小插件
+
+自定义插件可以放在项目中，再从 `canofold.config.ts` 导入。下面的完整示例为所有二级标题添加项目自己的 `data-section` 属性，不依赖 Canofold 内部 class：
+
+```js title="markdown/section-labels.mjs"
+import { defineMarkdownPlugin } from '@canofold/markdown'
+
+function markSections() {
+  return (tree) => {
+    const walk = (node) => {
+      if (node.type === 'element' && node.tagName === 'h2') {
+        node.properties ??= {}
+        node.properties.dataSection = ''
+      }
+      node.children?.forEach(walk)
+    }
+    walk(tree)
+  }
+}
+
+export function sectionLabels() {
+  return defineMarkdownPlugin({
+    name: 'section-labels',
+    version: '1',
+    rehypePlugins: [markSections]
+  })
+}
+```
+
+```ts title="canofold.config.ts"
+import { defineConfig } from 'canofold'
+import { sectionLabels } from './markdown/section-labels.mjs'
+
+export default defineConfig({
+  markdown: { plugins: [sectionLabels()] },
+  styles: ['./docs/section-labels.css']
+})
+```
+
+```css title="docs/section-labels.css"
+h2[data-section] {
+  border-inline-start: 0.2rem solid currentColor;
+  padding-inline-start: 0.75rem;
+}
+```
+
+运行 `pnpm docs:dev` 后，二级标题左侧应出现边线。再运行 `pnpm docs:build`，确认生成的二级标题带有 `data-section` 属性。前者验证项目 CSS，后者验证插件转换。
+
+`name` 是同一编译器中的唯一标识；转换行为变化时要提升 `version`，配置数据放进 `cacheKey`。插件如果拥有自定义指令或代码围栏，还要分别声明 `directiveNames` 或 `fenceLanguages`，否则拼写错误和未知语言检查无法区分这些语法。
+
+### 浏览器资源
+
+`assets.clients[].resources` 的每一项用 `module` 指定可从客户端所属包解析的入口，`output` 指定客户端资源目录内的相对文件名。默认复制该文件；预先构建的分块可用 `directories` 声明。对于仍含 npm 导入的浏览器模块，设置 `bundle: true`，由 Canofold 使用已安装的依赖构建 ESM 并保留动态加载分块；输出名必须以 `.js` 或 `.mjs` 结尾，不能同时配置 `directories`。这不执行资源入口，也不是任意代码沙箱：插件和依赖仍须可信。

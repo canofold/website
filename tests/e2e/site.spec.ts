@@ -33,8 +33,8 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1, name: 'Canofold' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible()
-  await expect(page.locator('.cf-version-badge')).toHaveText('v0.7.1')
-  await expect(page.locator('.cf-version-menu')).toHaveCount(0)
+  await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.0')
+  await expect(page.locator('.cf-version-menu')).toHaveCount(1)
   await expect(page.locator('main > article.cf-content')).toHaveCount(0)
 
   await page.getByRole('button', { name: '搜索文档' }).click()
@@ -282,38 +282,77 @@ test('Playground 实时预览不闪空白并保持双向滚动同步', async ({ 
   expectNoRuntimeErrors()
 })
 
-test('Vite 组件示例支持内联交互、源码切换和 iframe 隔离', async ({ page }) => {
-  const expectNoRuntimeErrors = captureRuntimeErrors(page)
-  await page.goto('/guide/writing/component-demos/')
+for (const base of ['', '/v0.7']) {
+  test(`Vite 组件示例支持内联交互、源码切换和 iframe 隔离（${base || 'current'}）`, async ({
+    page
+  }) => {
+    const expectNoRuntimeErrors = captureRuntimeErrors(page)
+    await page.goto(`${base}/guide/writing/component-demos/`)
 
-  const demos = page.locator('[data-cf-component="demo"]')
-  await expect(demos).toHaveCount(2)
+    const demos = page.locator('[data-cf-component="demo"]')
+    await expect(demos).toHaveCount(2)
 
-  const inlineDemo = demos.nth(0)
-  await expect(inlineDemo.getByText('Stable channel')).toBeVisible()
-  await inlineDemo.getByRole('button', { name: 'Preview' }).click()
-  await expect(inlineDemo.getByText('Preview channel')).toBeVisible()
-  await expect(inlineDemo.getByRole('button', { name: 'Preview' })).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  )
+    const inlineDemo = demos.nth(0)
+    await expect(inlineDemo.getByText('Stable channel')).toBeVisible()
+    await inlineDemo.getByRole('button', { name: 'Preview' }).click()
+    await expect(inlineDemo.getByText('Preview channel')).toBeVisible()
+    await expect(inlineDemo.getByRole('button', { name: 'Preview' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
 
-  const source = inlineDemo.locator('[data-cf-demo-source]')
-  const sourceToggle = inlineDemo.locator('[data-cf-demo-source-toggle]')
-  await expect(source).toBeHidden()
-  await expect(sourceToggle).toHaveAttribute('aria-label', '查看代码')
-  await sourceToggle.click()
-  await expect(sourceToggle).toHaveAttribute('aria-expanded', 'true')
-  await expect(sourceToggle).toHaveAttribute('aria-label', '收起代码')
-  await expect(source).toBeVisible()
-  await expect(source).toContainText("from './ReleaseChannel'")
+    const source = inlineDemo.locator('[data-cf-demo-source]')
+    const sourceToggle = inlineDemo.locator('[data-cf-demo-source-toggle]')
+    await expect(source).toBeHidden()
+    await expect(sourceToggle).toHaveAttribute('aria-label', '查看代码')
+    await sourceToggle.click()
+    await expect(sourceToggle).toHaveAttribute('aria-expanded', 'true')
+    await expect(sourceToggle).toHaveAttribute('aria-label', '收起代码')
+    await expect(source).toBeVisible()
+    await expect(source).toContainText("from './ReleaseChannel'")
 
-  const isolatedDemo = demos.nth(1)
-  const frame = isolatedDemo.locator('iframe.cf-demo-frame')
-  await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin')
-  await expect(isolatedDemo.frameLocator('iframe').getByRole('button', { name: 'Stable' })).toBeVisible()
-  expectNoRuntimeErrors()
-})
+    const isolatedDemo = demos.nth(1)
+    const frame = isolatedDemo.locator('iframe.cf-demo-frame')
+    await expect(frame).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin')
+    await expect(
+      isolatedDemo.frameLocator('iframe').getByRole('button', { name: 'Stable' })
+    ).toBeVisible()
+    expectNoRuntimeErrors()
+  })
+}
+
+for (const locale of ['', '/en']) {
+  test(`文档版本切换保留语言与页面，旧版不混入 OpenAPI 文档（${locale || 'zh'}）`, async ({
+    page
+  }) => {
+    const expectNoRuntimeErrors = captureRuntimeErrors(page)
+    const route = `${locale}/guide/introduction/installation/`
+    await page.goto(route)
+    await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.0')
+    await expect(page.locator('main')).toContainText('22.12')
+    await page.locator('.cf-version-menu > summary').click()
+    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.7.x' }).click()
+    await expect(page).toHaveURL(`/v0.7${route}`)
+    await expect(page.locator('.cf-version-banner')).toBeVisible()
+    await expect(page.locator('.cf-version-badge')).toHaveText('v0.7.x')
+    await expect(page.locator('main')).not.toContainText('22.12')
+    await expect(page.locator('.cf-sidebar a[href*="/guide/writing/openapi/"]')).toHaveCount(0)
+    await page.locator('.cf-version-menu > summary').click()
+    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.8.0' }).click()
+    await expect(page).toHaveURL(route)
+    await expect(page.locator('.cf-version-banner')).toHaveCount(0)
+    await page.goto(`${locale}/guide/writing/openapi/`)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('OpenAPI')
+    await expect(page.locator('main')).toContainText('@canofold/plugins/openapi')
+    await page.locator('.cf-version-menu > summary').click()
+    const missing = page.locator('.cf-version-menu a').filter({ hasText: 'v0.7.x' })
+    await expect(missing).toHaveAttribute('href', `/v0.7${locale}/`)
+    await expect(missing.locator('small')).toBeVisible()
+    await missing.click()
+    await expect(page).toHaveURL(`/v0.7${locale}/`)
+    expectNoRuntimeErrors()
+  })
+}
 
 test('Mermaid 布局、数学标签和编辑恢复使用真实浏览器运行时', async ({ page }) => {
   let invalid = false

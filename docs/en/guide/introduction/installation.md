@@ -8,7 +8,7 @@ order: 3
 
 # Installation
 
-Canofold requires Node.js 22 or newer. Install it as a development dependency so local development and CI use the same locked version.
+Canofold requires Node.js 22.12 or newer. Install it as a development dependency so local development and CI use the same locked version.
 
 :::code-group[Package manager]
 

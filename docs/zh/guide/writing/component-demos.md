@@ -59,9 +59,9 @@ iframe 模式运行的是仓库内可信代码。它会限制嵌入预览的导�
 
 下面两张卡片运行同一个 React 组件。第一张直接挂载在页面中，第二张使用 iframe 隔离；点击切换发布通道，再展开源码查看实现。
 
-::demo[内联交互]{src="/docs/examples/release-channel/basic.tsx" description="在页面中切换发布通道，查看组件状态变化。"}
+::demo[内联交互]{src="../../../examples/release-channel/basic.tsx" description="在页面中切换发布通道，查看组件状态变化。"}
 
-::demo[iframe 隔离]{src="/docs/examples/release-channel/basic.tsx" sandbox="iframe" description="在独立文档中运行相同组件，隔离页面与组件的全局样式。"}
+::demo[iframe 隔离]{src="../../../examples/release-channel/basic.tsx" sandbox="iframe" description="在独立文档中运行相同组件，隔离页面与组件的全局样式。"}
 
 ### Demo 语法
 

@@ -36,6 +36,8 @@ Use canofold-knowledge-reader to answer only from this site's current English do
 
 Installation paths, invocation, and automatic selection belong to the agent host. The CLI compiles content, the VS Code extension previews it, and your agent loads Skills.
 
+The Knowledge Reader for Canofold 0.8 reads schema 3 Markdown, MDX, and OpenAPI-derived bodies with source files, Pointers, and dependency revisions. Use the matching older Reader or available HTML/Markdown for schema 1/2 sites. Establish a new trusted baseline after upgrading; a format change is not content deletion. See [AI-friendly output](/en/reference/output/ai-output/) for usage.
+
 ## Boundaries
 
 - Follow the target project's version and configuration, not syntax from development branches or unrelated versions.

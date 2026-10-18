@@ -90,6 +90,7 @@ Theme definitions come from `@canofold/themes` or a third-party package and own 
 | Field | Default | Purpose |
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` entries; `resolve` starts with `./` and options are JSON-serializable |
+| `sources` | `[]` | Trusted build-time content adapters; the official `openapi()` reads local OpenAPI and belongs here, not in Markdown plugins or Extensions |
 | `navigation` | `{}` | Locale-keyed `{ text, link, activePaths? }[]`; derived from top-level content sections when omitted |
 | `versions` | `[]` | Version array; first entry is current and uses `/`. Omitted or empty hides the control; one shows a label, multiple offer switching |
 | `redirects` | `{}` | Old-to-current route map; chains, cycles, and real-page collisions fail validation |
@@ -98,6 +99,10 @@ Theme definitions come from `@canofold/themes` or a third-party package and own 
 See [navigation](/en/guide/site/navigation/), [versions](/en/guide/site/versions/), [redirects](/en/guide/site/redirects/), [extensions](/en/guide/site/extensions/), and [advertising](/en/guide/delivery/advertising/) for workflows.
 
 Each `versions[]` entry requires `id`, `label`, project-relative `docsDir`, and URL prefix `base`; `status: 'supported' | 'archived'` is optional. IDs and bases must be unique, and the first entry cannot be archived. Labels are not read from package versions. The array format applies from 0.7.1; see [Manage documentation versions](/en/guide/site/versions/) for examples, migration, and snapshots.
+
+See [OpenAPI documentation](/en/guide/writing/openapi/) for source fields, selection, and safety boundaries. Custom sources implement the public `ContentSource`, `ContentSourceContext`, and `SourceDocument` types and declare bounded dependencies through `context.read()`. Adapters do not own output writing or write generated files into author directories.
+
+`kind` identifies a derived type; `markdown` and `mdx` are reserved for authored documents. The reference Reader currently supports Markdown, MDX, and OpenAPI and explicitly rejects unknown representations instead of guessing how to interpret them.
 
 ## Internationalization and AI output
 

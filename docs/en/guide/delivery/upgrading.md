@@ -21,6 +21,16 @@ pnpm exec canofold build
 
 The first build bypasses old cache state and proves that the new release can generate a complete site from source. The second build verifies the persistent cache path.
 
+## Upgrade to 0.8
+
+Upgrade local, CI, and build environments to Node.js 22.12 or newer first. Version 0.8 aligns its minimum runtime with the supported OpenAPI validator and no longer supports Node 22.0–22.11.
+
+Upgrade the directly used Canofold packages together and update `requiredVersion` and the lockfile. Version 0.8 writes schema 3 for every collection, including Markdown-only sites. Upgrade the Knowledge Reader at the same time, rebuild and establish a new trusted baseline. Schema 1/2 output and baselines are explicitly rejected by the schema 3 Reader; retain a matching earlier reader for old deployments. Do not interpret a format transition as mass deletion.
+
+Markdown/MDX URLs and document identities retain their existing meanings. The new `sources` option is opt-in; an ordinary site does not need to register an adapter or import its parser. See [OpenAPI documentation](/en/guide/writing/openapi/) for separate server imports, local references, generated representations and version bindings, and [AI output](/en/reference/output/ai-output/) for the machine contract.
+
+Before rewriting incompatible documentation, save and verify the preceding series with `snapshot`, then explicitly register its historical version. Historical OpenAPI entries and all refs must stay inside their own `docsDir`; a source binding is not automatically added by snapshotting. Test a clean build, a cached build, source/ref changes, failures and recovery before deployment.
+
 ## Documentation version configuration in 0.7.1
 
 `versions` is now an array. Assign the old `items` directly to `versions`, move the entry selected by `current` to the first position, and remove the `current` and `items` wrapper fields. The object format is no longer accepted; source directories and URL paths need not change.

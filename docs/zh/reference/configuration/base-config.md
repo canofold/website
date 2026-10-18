@@ -90,6 +90,7 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 | 字段 | 默认值 | 说明 |
 |---|---|---|
 | `extensions` | `[]` | `{ resolve, options }` 列表；`resolve` 必须以 `./` 开头，`options` 必须可 JSON 序列化 |
+| `sources` | `[]` | 可信构建期来源适配器数组；官方 `openapi()` 接入本地 OpenAPI，不放入 Markdown 插件或 Extension 列表 |
 | `navigation` | `{}` | 按 locale 配置的 `{ text, link, activePaths? }[]`；未配置时从一级内容分区生成 |
 | `versions` | `[]` | 版本数组，第一项为主版本并使用 `/`；省略或空数组隐藏入口，一项显示标签，多项提供切换 |
 | `redirects` | `{}` | 旧路由到现有站内路由的映射；链、环和覆盖真实页面都会失败 |
@@ -98,6 +99,10 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 对应流程见[导航](/guide/site/navigation/)、[版本](/guide/site/versions/)、[重定向](/guide/site/redirects/)、[扩展](/guide/site/extensions/)和[广告](/guide/delivery/advertising/)。
 
 `versions[]` 各项需提供 `id`、`label`、项目相对源目录 `docsDir` 和网址前缀 `base`，可选 `status: 'supported' | 'archived'`；id 和 base 必须唯一，第一项不能归档。标签不自动取自包版本。数组写法适用于 0.7.1 起；示例、迁移与快照步骤见[管理文档版本](/guide/site/versions/)。
+
+来源字段、选择范围与安全边界见 [OpenAPI 接口文档](/guide/writing/openapi/)。自定义来源实现公开的 `ContentSource`、`ContentSourceContext`、`SourceDocument` 类型，通过 `context.read()` 声明有界依赖；不得让适配器自行接管输出写入或把生成文件写回作者目录。
+
+`kind` 为派生类型标识；`markdown` 和 `mdx` 保留给作者文档，不能用于自定义派生来源。参考 Reader 目前支持 Markdown、MDX 和 OpenAPI，遇到未知表示会明确拒绝，不猜测解析。
 
 ## 多语言与 AI 输出
 

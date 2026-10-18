@@ -36,6 +36,8 @@ Skills 已在 [Canofold Skills 仓库](https://github.com/canofold/skills)公开
 
 安装路径、调用方式和自动选择由 Agent 宿主决定。CLI 负责内容编译，VS Code 扩展负责预览；Skills 由你使用的 Agent 加载。
 
+Canofold 0.8 的 Knowledge Reader 读取 schema 3 中的 Markdown、MDX 和 OpenAPI 派生正文，保留来源文件、Pointer 与依赖修订。读取旧版 schema 1/2 站点时使用对应旧版 Reader 或可用的 HTML/Markdown；升级后重新建立可信基线，不把格式切换当成内容删除。用法见 [AI 友好输出](/reference/output/ai-output/)。
+
 ## 使用边界
 
 - 以目标项目的版本与配置为准，不把开发分支或其他版本的语法当成已支持能力。
