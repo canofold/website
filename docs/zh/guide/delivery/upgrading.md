@@ -21,6 +21,12 @@ pnpm exec canofold build
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
 
+## 0.7.1 文档版本配置
+
+`versions` 改为数组：把原 `items` 直接赋给 `versions`，将原 `current` 指向的项移到第一位，删除外层 `current` 和 `items`。旧对象格式不再接受；文档目录和网址路径无需改变。
+
+未配置或空数组不再显示版本入口；需要标签时显式配置一项，需要切换时配置多项。不自动读取项目或 Canofold 的包版本。升级后检查默认文档、历史路径和搜索，再重新构建；完整示例见[管理文档版本](/guide/site/versions/)。
+
 ## 0.7.0 机器格式迁移
 
 Canofold 0.7.0 引入 schema 2 机器产物。已有 0.6.x 站点在升级并重新构建前，仍使用原有格式。
@@ -58,7 +64,7 @@ Canofold 默认使用 Dagre 布局和 Classic 外观；需要 ELK 时，在图�
 - 草稿现在参与本地预览和 `check`，但不会进入生产站点、搜索、Markdown 镜像或 AI 产物。若此前把 `status: draft` 用作长期隐藏内容，升级后请检查本地预览的可见范围。
 - `check --json` 可供 CI 使用，`checks.rules` 可以按规则设置 `error`、`warning` 或 `off`。先查看新的诊断，再决定是否提高规则级别；不要把所有编辑建议都当成发布错误。
 - 缺少可信 Git 提交信息且未声明 `updatedAt` 的页面不再显示由文件 mtime 推断的更新时间。需要固定日期时在 Frontmatter 写入 `updatedAt`；译文过期状态只有设置 `translation.sourceHash` 后才有依据，否则显示为未知。
-- 历史版本仍可继续使用已有目录。需要创建新快照时先运行 `check`，再使用 `snapshot <版本号>`，然后手动把版本添加到 `versions.items`。当前版不能标为 `archived`；旧版 Demo、MDX 的本地代码依赖必须留在对应版本的文档目录内。详见[版本维护](/guide/site/versions/)。
+- 历史版本仍可继续使用已有目录。需要创建新快照时先运行 `check`，再使用 `snapshot <版本号>`，然后登记历史版本。当前版不能标为 `archived`；旧版 Demo、MDX 的本地代码依赖必须留在对应版本的文档目录内。升级到 0.7.1 时按上文转换配置，完整用法见[版本维护](/guide/site/versions/)。
 - 搜索索引与构建缓存由新版本重新生成，无需手工转换。
 
 如果项目提供自定义 DemoEngine，历史版本的 Demo 必须在 manifest 中报告 `dependencyPaths`，并将项目内代码与资源保存在版本目录中。历史 Demo 不支持引用当前版源码或全局 `demos.setup`，迁移后请运行完整构建。
