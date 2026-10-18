@@ -60,11 +60,15 @@ canofold dev
 canofold dev --port 3334
 ```
 
-`--port` follows the same validation as `preview` and must be an integer from 1 through 65535.
+`--port` follows the same validation as `preview` and must be an integer from 1 through 65535. Development starts at port 3333 by default. If occupied, it tries higher ports up to 65535 and prints the actual address with the configured `basePath`; other listen errors fail immediately. It does not stop the existing service.
+
+Only one dev session may run per project. Startup checks ownership before loading configuration or building, including when the project is reached through a directory symlink. A duplicate exits with an explicit error without rebuilding or opening another port. Normal shutdown releases ownership; the next startup recovers after a crashed process. Port conflicts between different projects still use the fallback described above.
 
 The command performs an initial build and watches project inputs: configured content roots, local styles, components, extensions, and all six supported configuration names. It ignores `.git`, `node_modules`, `.canofold`, build output, and temporary swap directories.
 
 A Markdown or MDX edit can use a single-page rebuild when navigation metadata is unchanged. Configuration, new files, and content-graph changes trigger a full rebuild.
+
+Successful rebuilds print one short status line. Unchanged cached builds neither repeat statistics nor reload the browser. Detailed cache reasons, sizes, and output paths remain in `.canofold/cache/build-report.json`. Interactive terminals distinguish statuses with color; redirected output and `NO_COLOR` stay plain text. Build errors remain visible and preserve the last successful output.
 
 ## `canofold check`
 
@@ -127,7 +131,7 @@ canofold preview
 canofold preview --port 4174
 ```
 
-`--port` must be an integer from 1 through 65535. The command serves `outputDir` and does not watch source files.
+`--port` must be an integer from 1 through 65535. Preview defaults to 4173 and uses the same occupied-port fallback as `dev`, printing the actual mounted address. The command serves `outputDir` and does not watch source files.
 
 ## `canofold snapshot <id>`
 

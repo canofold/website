@@ -18,6 +18,8 @@ Canofold publishes five packages. `canofold` exports `canofoldVersion`, `defineC
 
 Generated AI Manifests and extension descriptors carry explicit versions. Reject versions your consumer does not understand.
 
+Configure build-time sources through `sources`. The public `ContentSource`, `ContentSourceContext`, and `SourceDocument` types from `canofold` feed pages, search, and machine content through one pipeline. The official `openapi()` factory is exported only by the server-side `@canofold/plugins/openapi` subpath, not the aggregate root or browser bundle. See [OpenAPI documentation](/en/guide/writing/openapi/) for setup and boundaries.
+
 ## Version policy
 
 During `0.x`, patch releases remain compatible. A minor release may make a breaking correction only when the Changelog states its impact and upgrade path. When possible, a non-security removal is deprecated for at least one minor release.

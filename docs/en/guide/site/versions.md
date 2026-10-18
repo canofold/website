@@ -86,6 +86,8 @@ Version configuration does not generate historical content. Without a snapshot, 
 
 When a reader switches versions, Canofold looks for the same page-relative path in the target version. If it does not exist, the menu explicitly says that the page is unavailable and its link opens that version's home page for the current locale. Redirects can preserve common entry points after an old version removes or moves a page.
 
+Derived pages such as OpenAPI operations match by source kind, `id`, and operation key rather than generated URLs or input filenames. Configure historical `root`, `entry`, `version`, and `locale` bindings explicitly; every dependency must stay inside that version's `docsDir`. Snapshots do not add these bindings automatically. See [OpenAPI documentation](/en/guide/writing/openapi/).
+
 ## Search and AI output
 
 Compact Search writes a separate JSON file for each version and locale. Pagefind uses one index and restricts results with `version` and `locale` filters. Both providers keep results from other versions out of the current page's search results.

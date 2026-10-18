@@ -25,7 +25,7 @@ yarn add @canofold/markdown @canofold/themes react react-dom
 
 :::
 
-React 18.2, 18.3, and 19 are supported. Node.js 22 or newer is required.
+React 18.2, 18.3, and 19 are supported. Node.js 22.12 or newer is required.
 
 ## Capabilities and loading boundaries
 

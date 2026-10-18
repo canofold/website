@@ -21,6 +21,16 @@ pnpm exec canofold build
 
 第一次构建绕过旧缓存，用来确认新版本可以从源文件生成完整产物；第二次构建用来验证持久缓存。
 
+## 升级到 0.8
+
+先将本地、CI 与构建环境升级到 Node.js 22.12 或更高版本。0.8 的最低运行时随正式 OpenAPI 校验依赖统一调整，不再支持 Node 22.0–22.11。
+
+直接使用的 Canofold 包整套同版升级，并更新 `requiredVersion` 和锁文件。0.8 的所有集合统一输出 schema 3，包括纯 Markdown 站点。同步升级 Knowledge Reader，重新构建并建立可信基线；schema 3 Reader 明确拒绝 schema 1/2 产物和旧基线，旧部署应保留配套旧版 Reader。不把格式切换当成批量删除。
+
+Markdown/MDX 的既有网址与身份语义保留。新增 `sources` 按需启用，普通站点无需注册来源或导入解析器。[OpenAPI 接口文档](/guide/writing/openapi/) 说明独立服务端入口、本地引用、生成表示和版本绑定；机器契约见 [AI 友好输出](/reference/output/ai-output/)。
+
+改写不兼容系列文档前，先用 `snapshot` 保存并校验上一系列，再显式登记历史版本。历史 OpenAPI 入口与全部引用必须在自身 `docsDir` 内，快照不自动添加来源绑定。部署前验证干净/缓存构建、入口/引用修改、失败及恢复。
+
 ## 0.7.1 文档版本配置
 
 `versions` 改为数组：把原 `items` 直接赋给 `versions`，将原 `current` 指向的项移到第一位，删除外层 `current` 和 `items`。旧对象格式不再接受；文档目录和网址路径无需改变。

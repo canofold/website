@@ -105,11 +105,11 @@ export default {
 
 如果关闭 `ai.fullContent`，同时 `llms-full.txt` 超过容量上限，`manifest` 策略也会让构建失败，而不会写入指向不存在的分片清单的链接。
 
-## 0.7.0 机器消费契约
+## 0.8 机器消费契约
 
-Canofold 0.7.0 使用 schema 2。旧版 0.6.x 的 Manifest 为 schema 1；升级生产者与读取工具后，才能使用下面的字段。
+Canofold 0.8 统一输出 schema 3。0.7.x 使用 schema 2，0.6.x 使用 schema 1；生产者与 Reader 同步升级后重新建立可信基线，不混读格式。下表说明作者 Markdown/MDX，派生表示另见下文。
 
-页面索引和完整 Manifest 共享 `schemaVersion: 2`、`scope`、`outputs`、`basePath`、`snapshotRevision`、`pages`。Manifest 自带页面清单，关闭索引也可读取完整内容；启用索引时，`pageIndex` 提供它的路径、字节数与 SHA-256，必须与 Manifest 的快照和清单匹配。
+页面索引和完整 Manifest 共享 `schemaVersion: 3`、`scope`、`outputs`、`basePath`、`snapshotRevision`、`pages`。Manifest 自带页面清单，关闭索引也可读取完整内容；启用索引时，`pageIndex` 提供路径、字节数与 SHA-256，必须与 Manifest 的快照和清单匹配。
 
 | 字段 | 消费含义 |
 | --- | --- |
@@ -131,11 +131,19 @@ Canofold 0.7.0 使用 schema 2。旧版 0.6.x 的 Manifest 为 schema 1；升级
 
 Markdown Mirror 保留完整 Extension 转换后源文；JSONL 与完整 `llms-full.txt` 使用其解析后的正文，均不反向序列化 HTML。插件可以使编译标题、摘要与正文源文不同；消费前应明确所需表示，并将获取的 MDX/指令作为数据处理。
 
-从 schema 1 升级时整套升级 Canofold 包与 Reader，重新构建并建立新基线，不把格式切换解释为大批文档新增或删除。读取流程及失败处理示例见 [Skills](/skills/)。
+从 schema 1/2 升级时整套升级 Canofold 包与 Reader，重新构建并建立新基线，不把格式切换解释为批量新增或删除。旧站点使用配套旧版 Reader 或可用的 Mirror/HTML。流程见 [Skills](/skills/)。
+
+### OpenAPI 派生表示
+
+OpenAPI 页声明 `source.kind: openapi`、项目相对入口 `source.path`、来源 ID `source.id`、文档键 `source.key` 与入口内的 `source.pointer`。键为 `overview` 或大写方法、空格与原始 API path。身份按 `[space, version, locale, kind, source.id, source.key]` 计算：入口改名、标题、tags、operationId 或地址变化不换 ID；来源 ID、method/path、版本或语言变化则会改变。
+
+`source.revision` 计算入口原始字节；`dependencies` 保留声明输入的路径与字节修订，`dependenciesRevision` 是聚合修订，另有 `adapterRevision` 和 `optionsRevision`。派生页没有作者源文的 `transformedRevision`。
+
+表示标签为 `source-derived-markdown`、`source-derived-static`、`openapi-static`。`derived` 保留接口事实及有限的原始 schema 组合/递归。Mirror、JSONL 和完整正文是生成 Markdown，不是原规范副本。示例是惰性数据，不证明请求已经执行。接入见 [OpenAPI](/guide/writing/openapi/)。
 
 ### 独立读取示例
 
-取得与 0.7.0 配套的 `canofold-knowledge-reader` Skill 完整目录后，可用 Node.js 22 或更新版本执行其参考脚本。它只读取公开文件，不导入 Core，也不会执行获取的 MDX：
+取得与 0.8 配套的 `canofold-knowledge-reader` Skill 完整目录后，可用 Node.js 22 或更新版本执行其参考脚本。它只读取公开文件，不导入 Core，也不会执行获取的 MDX：
 
 ```sh
 node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist /guide/

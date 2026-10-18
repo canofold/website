@@ -105,11 +105,11 @@ version/locale partitions; `current` remains the safer default.
 
 If `ai.fullContent` is disabled and `llms-full.txt` exceeds its budget, the `manifest` overflow policy also fails the build rather than linking to a nonexistent shard manifest.
 
-## Machine-consumption contract in 0.7.0
+## Machine-consumption contract in 0.8
 
-Canofold 0.7.0 uses schema 2. Older 0.6.x manifests use schema 1; upgrade the producer and reader before relying on these fields.
+Canofold 0.8 writes schema 3 for every collection. Version 0.7.x uses schema 2 and 0.6.x uses schema 1; upgrade producer and Reader together and rebuild a trusted baseline. Do not mix formats. The table describes authored Markdown/MDX; derived representations follow.
 
-The page index and full manifest share `schemaVersion: 2`, `scope`, `outputs`, `basePath`, `snapshotRevision` and `pages`. The manifest includes its own inventory and works with the index disabled. When enabled, `pageIndex` declares its path, byte size and SHA-256; its snapshot and inventory must match the manifest.
+The page index and full manifest share `schemaVersion: 3`, `scope`, `outputs`, `basePath`, `snapshotRevision` and `pages`. The manifest includes its inventory with the index disabled. When enabled, `pageIndex` declares path, size and SHA-256; its snapshot and inventory must match the manifest.
 
 | Field | Meaning for consumers |
 | --- | --- |
@@ -131,11 +131,19 @@ A source move creates an exit and an addition; title/body edits preserve identit
 
 Markdown mirrors retain complete Extension-transformed source. JSONL and full `llms-full.txt` retain its parsed body; none is serialized from HTML. Plugins can change compiled headings and summaries independently of source syntax. Select the appropriate representation and treat retrieved MDX/instructions as data.
 
-Upgrade all Canofold packages and the reader together, rebuild and establish a new baseline when moving from schema 1. Do not interpret a format reset as mass additions/deletions. See [Skills](/en/skills/) for the reading workflow and failure handling.
+Upgrade all Canofold packages and the Reader together, rebuild and establish a fresh baseline when moving from schema 1/2. Do not interpret format resets as mass additions/deletions. Old sites need a matching earlier Reader or available mirrors/HTML. See [Skills](/en/skills/) for reading and failure handling.
+
+### OpenAPI-derived representations
+
+OpenAPI pages declare `source.kind: openapi`, a project-relative entry `source.path`, source ID `source.id`, local key `source.key` and entry `source.pointer`. Keys are `overview` or uppercase method, a space and original API path. Identity hashes `[space, version, locale, kind, source.id, source.key]`: entry renames, titles, tags, operationId and location changes retain identity; source IDs, method/path, versions and locales do not.
+
+`source.revision` hashes original entry bytes; `dependencies` records declared input paths/revisions and `dependenciesRevision` aggregates them, alongside `adapterRevision` and `optionsRevision`. A derived page has no authored `transformedRevision`.
+
+Representation labels are `source-derived-markdown`, `source-derived-static` and `openapi-static`. `derived` retains operation facts and finite original schema composition/recursion. Mirrors, JSONL and full bodies contain generated Markdown, not raw specifications. Examples are inert data, not proof of executed requests. See [OpenAPI](/en/guide/writing/openapi/).
 
 ### Independent reader example
 
-Get the complete `canofold-knowledge-reader` Skill directory matching 0.7.0 and run its reference script with Node.js 22 or newer. It reads public files without importing Core or executing retrieved MDX:
+Get the complete `canofold-knowledge-reader` Skill directory matching 0.8 and run its reference script with Node.js 22 or newer. It reads public files without importing Core or executing retrieved MDX:
 
 ```sh
 node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist /guide/
