@@ -102,7 +102,7 @@ Each `versions[]` entry requires `id`, `label`, project-relative `docsDir`, and 
 
 See [OpenAPI documentation](/en/guide/writing/openapi/) for source fields, selection, and safety boundaries. Custom sources implement the public `ContentSource`, `ContentSourceContext`, and `SourceDocument` types and declare bounded dependencies through `context.read()`. Adapters do not own output writing or write generated files into author directories.
 
-`kind` identifies a derived type; `markdown` and `mdx` are reserved for authored documents. The reference Reader currently supports Markdown, MDX, and OpenAPI and explicitly rejects unknown representations instead of guessing how to interpret them.
+`kind` identifies a derived type; `markdown` and `mdx` are reserved for authored documents. The matching reference Reader validates Markdown, MDX and the derived envelope with `source-derived-markdown`, `source-derived-static` and `<kind>-static` analysis. Custom kind-specific facts remain data with semantics documented by their adapter; nonconforming representations are still rejected. See [Skills](/en/skills/) for the reading entry point.
 
 ## Internationalization and AI output
 
