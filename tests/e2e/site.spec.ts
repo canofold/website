@@ -33,7 +33,7 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1, name: 'Canofold' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible()
-  await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.0')
+  await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.2')
   await expect(page.locator('.cf-version-menu')).toHaveCount(1)
   await expect(page.locator('main > article.cf-content')).toHaveCount(0)
 
@@ -321,6 +321,71 @@ for (const base of ['', '/v0.7']) {
   })
 }
 
+for (const width of [320, 390, 560, 561]) {
+  test(`窄屏文档版本入口可操作且不挤出导航：${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 })
+    const expectNoRuntimeErrors = captureRuntimeErrors(page)
+    for (const locale of ['', '/en']) {
+      const route = `${locale}/guide/introduction/installation/`
+      await page.goto(route)
+      const trigger = page.locator('.cf-version-menu > summary')
+      await expect(trigger).toBeVisible()
+      await expect(trigger).toHaveAccessibleName(locale ? 'Documentation version' : '文档版本')
+      const controls = page.locator('.cf-header-inner > .cf-brand, .cf-search-trigger, .cf-header-right > .cf-menu > summary, .cf-header-right > a')
+      for (const control of await controls.all()) {
+        if (!await control.isVisible()) continue
+        const bounds = await control.boundingBox()
+        expect(bounds!.x).toBeGreaterThanOrEqual(0)
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width)
+      }
+      await trigger.focus()
+      await page.keyboard.press('Enter')
+      await expect(page.locator('.cf-version-menu')).toHaveAttribute('open', '')
+      const menuBounds = await page.locator('.cf-version-menu > .cf-menu-list').boundingBox()
+      expect(menuBounds!.x).toBeGreaterThanOrEqual(0)
+      expect(menuBounds!.x + menuBounds!.width).toBeLessThanOrEqual(width)
+      await page.keyboard.press('Escape')
+      await expect(page.locator('.cf-version-menu')).not.toHaveAttribute('open')
+      await trigger.click()
+      await page.locator('.cf-version-menu a').filter({ hasText: 'v0.7.x' }).click()
+      await expect(page).toHaveURL(`/v0.7${route}`)
+      await expect(page.locator('.cf-version-banner')).toBeVisible()
+      await expect(trigger).toBeVisible()
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+      await trigger.click()
+      await page.locator(`.cf-version-menu a[href="${route}"]`).click()
+      await expect(page).toHaveURL(route)
+      await expect(page.locator('.cf-version-banner')).toHaveCount(0)
+    }
+    expectNoRuntimeErrors()
+  })
+}
+
+test('全部主题外观保留 320px 首页与文档版本入口', async ({ page }) => {
+  const expectNoRuntimeErrors = captureRuntimeErrors(page)
+  await page.setViewportSize({ width: 320, height: 844 })
+  for (const route of ['/', '/guide/introduction/installation/']) {
+    await page.goto(route)
+    const options = page.locator('[data-canofold-theme-option]')
+    await expect(options).toHaveCount(15)
+    for (const option of await options.all()) {
+      await page.locator('.cf-theme-menu > summary').click()
+      await option.click()
+      const trigger = page.locator('.cf-version-menu > summary')
+      await expect(trigger).toBeVisible()
+      await trigger.click()
+      const menu = page.locator('.cf-version-menu > .cf-menu-list')
+      await expect(menu).toBeVisible()
+      const bounds = await menu.boundingBox()
+      expect(bounds!.x).toBeGreaterThanOrEqual(0)
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(320)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+      await page.keyboard.press('Escape')
+    }
+  }
+  expectNoRuntimeErrors()
+})
+
 for (const locale of ['', '/en']) {
   test(`文档版本切换保留语言与页面，旧版不混入 OpenAPI 文档（${locale || 'zh'}）`, async ({
     page
@@ -328,7 +393,7 @@ for (const locale of ['', '/en']) {
     const expectNoRuntimeErrors = captureRuntimeErrors(page)
     const route = `${locale}/guide/introduction/installation/`
     await page.goto(route)
-    await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.0')
+    await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.2')
     await expect(page.locator('main')).toContainText('22.12')
     await page.locator('.cf-version-menu > summary').click()
     await page.locator('.cf-version-menu a').filter({ hasText: 'v0.7.x' }).click()
@@ -338,7 +403,7 @@ for (const locale of ['', '/en']) {
     await expect(page.locator('main')).not.toContainText('22.12')
     await expect(page.locator('.cf-sidebar a[href*="/guide/writing/openapi/"]')).toHaveCount(0)
     await page.locator('.cf-version-menu > summary').click()
-    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.8.0' }).click()
+    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.8.2' }).click()
     await expect(page).toHaveURL(route)
     await expect(page.locator('.cf-version-banner')).toHaveCount(0)
     await page.goto(`${locale}/guide/writing/openapi/`)
