@@ -51,6 +51,11 @@ for (const locale of [
       await expect(page.locator('main')).toContainText(locale.status)
       await expect(page.locator('main')).toContainText('canofold-knowledge-reader')
       await expect(page.locator('main').getByRole('link', { name: locale.install, exact: true })).toHaveAttribute('href', `https://github.com/canofold/skills/blob/main/${locale.readme}`)
+      for (const skill of ['canofold-markdown', 'canofold-docs-from-code', 'canofold-knowledge-reader']) {
+        await expect(page.locator('main').getByRole('link', { name: skill, exact: true })).toHaveAttribute('href', `https://github.com/canofold/skills/tree/main/skills/${skill}`)
+      }
+      await expect(page.locator('main')).toContainText('0.8.2')
+      await expect(page.locator('main pre').filter({ hasText: 'scripts/read-page.mjs' })).toContainText(`scripts/read-page.mjs .canofold/dist ${locale.root}guide/introduction/installation/`)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
     })
   }

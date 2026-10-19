@@ -141,6 +141,8 @@ OpenAPI pages declare `source.kind: openapi`, a project-relative entry `source.p
 
 Representation labels are `source-derived-markdown`, `source-derived-static` and `openapi-static`. `derived` retains operation facts and finite original schema composition/recursion. Mirrors, JSONL and full bodies contain generated Markdown, not raw specifications. Examples are inert data, not proof of executed requests. See [OpenAPI](/en/guide/writing/openapi/).
 
+Custom `ContentSource` kinds reuse the same derived identity, provenance and representation contract, with `<kind>-static` in `representation.analysis`. The reference Reader validates that envelope and retains `derived` data without inferring adapter-specific semantics or executing the input.
+
 ### Independent reader example
 
 Get the complete `canofold-knowledge-reader` Skill directory matching 0.8 and run its reference script with Node.js 22 or newer. It reads public files without importing Core or executing retrieved MDX:
@@ -153,6 +155,8 @@ node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist --sn
 ```
 
 Replace `/guide/` with an actual indexed `routePath`; remote roots must include their deployment prefix. Without a baseline, `changes.status` is `unknown`. Save a new snapshot only after a successful command returns `complete: true`, retaining old state on failure. The default entry is the full manifest. With only an index, `--snapshot --index` returns metadata, not body evidence. This is a runnable reference implementation, not a separate npm SDK.
+
+`scope.versions` and `scope.locales` are sorted inventories, not current-version or default-locale markers. Determine the requested scope from the site configuration or published UI before selecting pages; do not assume the first value or an ID named `current` identifies the needed content.
 
 ## Private documentation
 

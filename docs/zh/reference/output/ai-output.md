@@ -141,6 +141,8 @@ OpenAPI 页声明 `source.kind: openapi`、项目相对入口 `source.path`、�
 
 表示标签为 `source-derived-markdown`、`source-derived-static`、`openapi-static`。`derived` 保留接口事实及有限的原始 schema 组合/递归。Mirror、JSONL 和完整正文是生成 Markdown，不是原规范副本。示例是惰性数据，不证明请求已经执行。接入见 [OpenAPI](/guide/writing/openapi/)。
 
+自定义 `ContentSource` 复用相同的派生身份、来源和表示契约，`representation.analysis` 为 `<kind>-static`。参考 Reader 校验该契约并保留 `derived` 数据，不替适配器推断类型专属语义，也不执行输入内容。
+
 ### 独立读取示例
 
 取得与 0.8 配套的 `canofold-knowledge-reader` Skill 完整目录后，可用 Node.js 22 或更新版本执行其参考脚本。它只读取公开文件，不导入 Core，也不会执行获取的 MDX：
@@ -153,6 +155,8 @@ node path/to/canofold-knowledge-reader/scripts/read-page.mjs .canofold/dist --sn
 ```
 
 将 `/guide/` 换成索引中的实际 `routePath`；远端根地址需要包含部署前缀。没有旧基线时 `changes.status` 为 `unknown`。只在命令成功并返回 `complete: true` 后保存新快照，读取失败时保留旧状态。默认读取完整 Manifest；只有索引时可用 `--snapshot --index` 取得元数据，但不能把它当作正文证据。此脚本是可运行参考实现，不是独立 npm SDK。
+
+`scope.versions` 与 `scope.locales` 是排序后的范围清单，不标记当前版本或默认语言。按站点配置或发布界面确定目标范围，再选择对应的页面；不要假定第一个值或名为 `current` 的版本就是所需内容。
 
 ## 私有文档注意事项
 

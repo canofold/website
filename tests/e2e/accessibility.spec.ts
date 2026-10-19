@@ -32,6 +32,8 @@ for (let index = 0; index < 15; index++) {
     for (const [top, mix, blur] of [[0, '0%', '0px'], [48, '34%', '11px'], [96, '68%', '22px'], [0, '0%', '0px']] as const) {
       await page.evaluate((top) => window.scrollTo({ top, behavior: 'instant' }), top)
       await expect.poll(() => header.evaluate((element) => getComputedStyle(element).getPropertyValue('--cf-header-surface-mix').trim())).toBe(mix)
+      // Scroll variables update before the resulting CSS transitions have finished.
+      await expect.poll(() => header.evaluate((element) => element.getAnimations().some((animation) => animation.playState === 'running'))).toBe(false)
       await expect(header).toHaveCSS('backdrop-filter', `blur(${blur}) saturate(${top === 0 ? 1 : top === 48 ? 1.3 : 1.6})`)
       await expect(header).toHaveCSS('border-bottom-width', '0px')
       await expect(header).toHaveCSS('box-shadow', 'none')

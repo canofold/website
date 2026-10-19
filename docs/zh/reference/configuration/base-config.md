@@ -102,7 +102,7 @@ Demo 引擎是 Canofold 的可替换能力，不改变项目原有构建工具�
 
 来源字段、选择范围与安全边界见 [OpenAPI 接口文档](/guide/writing/openapi/)。自定义来源实现公开的 `ContentSource`、`ContentSourceContext`、`SourceDocument` 类型，通过 `context.read()` 声明有界依赖；不得让适配器自行接管输出写入或把生成文件写回作者目录。
 
-`kind` 为派生类型标识；`markdown` 和 `mdx` 保留给作者文档，不能用于自定义派生来源。参考 Reader 目前支持 Markdown、MDX 和 OpenAPI，遇到未知表示会明确拒绝，不猜测解析。
+`kind` 为派生类型标识；`markdown` 和 `mdx` 保留给作者文档，不能用于自定义派生来源。配套参考 Reader 校验 Markdown、MDX，以及使用 `source-derived-markdown`、`source-derived-static` 和 `<kind>-static` 的派生契约。自定义来源的类型专属事实保持为数据，其含义由适配器文档说明；不符合契约的表示仍会被拒绝。读取入口见 [Skills](/skills/)。
 
 ## 多语言与 AI 输出
 
