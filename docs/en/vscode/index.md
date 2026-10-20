@@ -1,7 +1,7 @@
 ---
 title: VS Code extension
-seoTitle: Canofold VS Code Extension | Live Markdown, Math & Diagrams
-description: Install Canofold Markdown Preview to switch source and live preview in the current VS Code tab, with math, Mermaid and other diagrams, and restricted iframes.
+seoTitle: Canofold VS Code Extension | Markdown Preview & Project Checks
+description: Preview Markdown, math and diagrams in VS Code. Check documentation with your project's local Canofold CLI, locate Problems, fix them and check again.
 group: Editor Extension
 order: 40
 ---
@@ -9,6 +9,8 @@ order: 40
 # VS Code extension
 
 Canofold Markdown Preview brings Canofold's Markdown rendering to your editor. Read documents and inspect diagrams in the current tab, then return to source without creating a documentation site first.
+
+In a Canofold project, you can also run documentation checks, locate issues in Problems, and check again after editing. Preview handles reading; the project's CLI owns validation. Each retains its own content and configuration boundaries.
 
 ## Install and open
 
@@ -27,6 +29,22 @@ This optional editor does not replace VS Code's default Markdown editor. Switchi
 - Relative images, links, and static HTML iframes within the workspace.
 
 Diagrams render locally without sending source to public rendering services. The preview uses a light appearance independently of the editor theme. YAML frontmatter is not displayed as body content.
+
+## Check project documentation
+
+Starting with extension **0.2.0**, open the Command Palette from a project file and run **Canofold: Check Project**:
+
+1. Open the local project folder in VS Code and install dependencies through its normal workflow. The project must declare `canofold` in `dependencies` or `devDependencies`.
+2. Save that project's edits and run the command. The extension searches upward from the current file for the nearest Canofold project inside the workspace, then executes its installed `canofold check --json`.
+3. Review errors and warnings in **Problems**, click an issue with a source location to navigate, then fix, save, and run the check again.
+
+Checks require a trusted workspace because the CLI executes project configuration and plugins. The extension host must run Node.js **22.12** or later; update VS Code if it does not. Standalone Markdown preview does not require a project CLI and remains available when checks cannot run.
+
+The command reads saved files only. It does not save edits, install tools from the network, or use a global CLI. Rules and results come from the project's installed CLI, not a second validator in the extension. Unsaved changes prevent checking; editing project files clears obsolete results, so save and check again.
+
+Cancel from the progress notification. Re-running replaces obsolete work; different projects retain separate diagnostics. A multi-root workspace without a file context prompts you to choose a folder. This is not automatic whole-site validation on every keystroke.
+
+Only CLI-supplied source lines and columns are used for navigation; a line-only location is labeled accordingly. Project-level issues, missing source files, and OpenAPI pointers explicitly state that no exact source position is available. Generated-content positions are not presented as specification locations. A passing check does not replace a production build; [build and preview](/en/guide/delivery/build-preview/) before publishing.
 
 ## File and security boundaries
 
