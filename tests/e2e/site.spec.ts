@@ -33,7 +33,7 @@ test('首页、搜索和站内导航可以正常使用', async ({ page }) => {
 
   await expect(page.getByRole('heading', { level: 1, name: 'Canofold' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '主导航' })).toBeVisible()
-  await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.2')
+  await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.3')
   await expect(page.locator('.cf-version-menu')).toHaveCount(1)
   await expect(page.locator('main > article.cf-content')).toHaveCount(0)
 
@@ -393,7 +393,7 @@ for (const locale of ['', '/en']) {
     const expectNoRuntimeErrors = captureRuntimeErrors(page)
     const route = `${locale}/guide/introduction/installation/`
     await page.goto(route)
-    await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.2')
+    await expect(page.locator('.cf-version-badge')).toHaveText('v0.8.3')
     await expect(page.locator('main')).toContainText('22.12')
     await page.locator('.cf-version-menu > summary').click()
     await page.locator('.cf-version-menu a').filter({ hasText: 'v0.7.x' }).click()
@@ -403,7 +403,7 @@ for (const locale of ['', '/en']) {
     await expect(page.locator('main')).not.toContainText('22.12')
     await expect(page.locator('.cf-sidebar a[href*="/guide/writing/openapi/"]')).toHaveCount(0)
     await page.locator('.cf-version-menu > summary').click()
-    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.8.2' }).click()
+    await page.locator('.cf-version-menu a').filter({ hasText: 'v0.8.3' }).click()
     await expect(page).toHaveURL(route)
     await expect(page.locator('.cf-version-banner')).toHaveCount(0)
     await page.goto(`${locale}/guide/writing/openapi/`)

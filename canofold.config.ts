@@ -24,9 +24,9 @@ export default defineConfig({
   siteUrl: 'https://canofold.dev',
   github: 'https://github.com/canofold/canofold',
   editUrl: 'https://github.com/canofold/website/edit/main/docs',
-  requiredVersion: '^0.8.2',
+  requiredVersion: '^0.8.3',
   versions: [
-    { id: 'current', label: 'v0.8.2', docsDir: 'docs', base: '/' },
+    { id: 'current', label: 'v0.8.3', docsDir: 'docs', base: '/' },
     { id: 'v0.7', label: 'v0.7.x', docsDir: 'versions/v0.7', base: '/v0.7/', status: 'archived' }
   ],
   themes: [
