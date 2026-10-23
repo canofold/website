@@ -20,6 +20,8 @@ AI Manifest 与扩展描述符带有独立版本；消费者遇到不支持的�
 
 构建期来源通过 `sources` 配置；`canofold` 公开 `ContentSource`、`ContentSourceContext`、`SourceDocument` 类型，统一交付页面、搜索和机器内容。官方 `openapi()` 仅由 `@canofold/plugins/openapi` 服务端子路径导出，不进入聚合根入口或浏览器包。接入与边界见 [OpenAPI 接口文档](/guide/writing/openapi/)。
 
+来源上下文提供 `context.fail({ message, file?, pointer?, line?, column? })`，用于报告可修复的输入内容错误并终止该来源，不提交部分页面。`file` 省略时为入口；指定时可用绝对路径或相对于来源 `root` 的路径，且必须是通过 `context.read()` 读取的受限输入。位置从 1 开始，无准确位置时省略；设置 `column` 时也须提供 `line`。普通适配器异常仍按工具失败处理。该方法由宿主提供，适配器不导入 Core 私有错误类；官方 OpenAPI 适配器使用它交付结构化诊断。命令行为见 [CLI 参考](/reference/configuration/cli/)。
+
 ## 版本策略
 
 在 `0.x` 阶段，Patch 版本保持向后兼容。Minor 版本只有在 Changelog 明确说明影响和升级路径时才允许做破坏性修正；可平滑迁移的非安全删除至少弃用一个 Minor 版本。

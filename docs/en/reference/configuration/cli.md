@@ -64,11 +64,13 @@ canofold dev --port 3334
 
 Only one dev session may run per project. Startup checks ownership before loading configuration or building, including when the project is reached through a directory symlink. A duplicate exits with an explicit error without rebuilding or opening another port. Normal shutdown releases ownership; the next startup recovers after a crashed process. Port conflicts between different projects still use the fallback described above.
 
-The command performs an initial build and watches project inputs: configured content roots, local styles, components, extensions, and all six supported configuration names. It ignores `.git`, `node_modules`, `.canofold`, build output, and temporary swap directories.
+The server starts watching project inputs before its initial build so saves made during startup are not missed. Watched inputs include configured content roots, local styles, components, extensions, and all six supported configuration names. It ignores `.git`, `node_modules`, `.canofold`, build output, and temporary swap directories.
 
 A Markdown or MDX edit can use a single-page rebuild when navigation metadata is unchanged. Configuration, new files, and content-graph changes trigger a full rebuild.
 
 Successful rebuilds print one short status line. Unchanged cached builds neither repeat statistics nor reload the browser. Detailed cache reasons, sizes, and output paths remain in `.canofold/cache/build-report.json`. Interactive terminals distinguish statuses with color; redirected output and `NO_COLOR` stay plain text. Build errors remain visible and preserve the last successful output.
+
+Recoverable initial Frontmatter, MDX syntax or source-content errors do not end the session. If no output is available, the browser shows an error page and recovers automatically after the source is fixed and saved. Later failures preserve the last complete output; newly opened or reconnected pages also receive the active error. Unsafe startup failures such as configuration, listener or tooling initialization failures still exit. Draft homepages remain available in development.
 
 ## `canofold check`
 
@@ -90,7 +92,9 @@ The command reports undeclared code languages, missing titles or descriptions, b
 
 `check` also validates drafts, while production builds omit them. The JSON report contains `schemaVersion: 1`, `diagnostics`, `translationCoverage`, and `translationStatus`; diagnostics include line/column when known. Configuration errors or a missing published home page prevent the content graph from loading, so the command exits with an error instead of a JSON report. Use `checks.rules` to set a rule to `off`, `warning`, or `error`. Any final `error` causes a nonzero exit code.
 
-Content analysis executes compiler plugins, but does not render complete pages or run browser scripts. MDX component execution, Demos, and generated extension files still require a production build. Run `check` before `build` when publishing.
+Independently located Frontmatter, MDX syntax and OpenAPI content failures return as `content-syntax` diagnostics without interrupting checks of other valid files. OpenAPI diagnostics carry the source file, JSON Pointer and available authored line/column, never generated-page positions. Disabling a check rule cannot make uncompilable content publishable; configuration, plugin execution and safety failures still fail explicitly.
+
+Content analysis executes compiler plugins, but does not render complete pages or run browser scripts. MDX component execution, Demos, and generated extension files still require a production build. Run `check` before `build` when publishing. Passing content checks does not replace browser acceptance.
 
 ## `canofold build [--no-cache]`
 
@@ -106,6 +110,8 @@ The build fails when:
 - Markdown, MDX, or a local React component cannot compile;
 - routes, output files, navigation, or group metadata conflict;
 - versions, redirects, or locale configuration are invalid.
+
+The build checks content before committing or reusing output, honoring `checks.rules`: errors fail the build; warnings do not. Pages identifiable as drafts stay outside publication checks, but published links to drafts remain errors. Unparseable Frontmatter still fails rather than guessing the page status. Cache hits do not skip checks.
 
 Canofold stores a versioned manifest under `.canofold/cache`. It verifies both inputs and generated
 files before a cache hit, rebuilds only invalidated pages when safe, and replaces `outputDir`

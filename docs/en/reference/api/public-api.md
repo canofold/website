@@ -20,6 +20,8 @@ Generated AI Manifests and extension descriptors carry explicit versions. Reject
 
 Configure build-time sources through `sources`. The public `ContentSource`, `ContentSourceContext`, and `SourceDocument` types from `canofold` feed pages, search, and machine content through one pipeline. The official `openapi()` factory is exported only by the server-side `@canofold/plugins/openapi` subpath, not the aggregate root or browser bundle. See [OpenAPI documentation](/en/guide/writing/openapi/) for setup and boundaries.
 
+The source context provides `context.fail({ message, file?, pointer?, line?, column? })` to report a repairable input error and stop that source without committing partial pages. Omit `file` to use the entry. A supplied path may be absolute or relative to the source's `root`, and must name a bounded input already read through `context.read()`. Positions are one-based and omitted when unavailable; a `column` also requires a `line`. Ordinary adapter exceptions remain tooling failures. The host supplies this method, so adapters do not import private Core error classes; the official OpenAPI adapter uses it for structured diagnostics. See the [CLI reference](/en/reference/configuration/cli/) for command behavior.
+
 ## Version policy
 
 During `0.x`, patch releases remain compatible. A minor release may make a breaking correction only when the Changelog states its impact and upgrade path. When possible, a non-security removal is deprecated for at least one minor release.
